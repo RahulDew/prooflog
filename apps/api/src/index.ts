@@ -1,18 +1,17 @@
 import { Hono } from "hono";
-const app = new Hono();
+import type { AppEnv } from "./config/env";
+import { errorMiddleware } from "./middleware/error.middleware";
+import health from "./routes/health.routes";
+import ingest from "./routes/ingest.routes";
+import verify from "./routes/verify.routes";
 
-app.get('/health', (c) => {
-return c.json({
-    status: 'ok',
-    service: 'prooflog-api',
-    version: '0.0.1',
-    timestamp: new Date().toISOString()
-})
-})
+const app = new Hono<AppEnv>();
 
-app.post('/v1/ingest', async (c) => {
-  const body = await c.req.json()
-  return c.json({ received: true }, 202)
-})
+// Catches any unhandled errors from routes
+app.use("*", errorMiddleware);
 
-export default app
+app.route("/", health);
+app.route("/v1/ingest", ingest);
+app.route("/v1/verify", verify);
+
+export default app;
