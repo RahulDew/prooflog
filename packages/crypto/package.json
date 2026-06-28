@@ -5,6 +5,10 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "build": "tsc --declaration --emitDeclarationOnly",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@noble/hashes": "^2.2.0",
     "fast-json-stable-stringify": "^2.1.0"
