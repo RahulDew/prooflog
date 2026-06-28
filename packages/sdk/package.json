@@ -15,7 +15,8 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch"
+    "dev": "tsup --watch",
+    "test": "vitest run"
   },
   "peerDependencies": {
     "drizzle-orm": ">=0.45.0"
@@ -28,6 +29,7 @@
     "@prooflog/db": "workspace:*",
     "drizzle-orm": "^0.45.2",
     "tsup": "^8.5.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.9"
   }
 }
