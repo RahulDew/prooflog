@@ -6,7 +6,8 @@ import { ingestEvent } from "../services/audit.service";
 
 export async function ingestHandler(c: Context<AppEnv>) {
   const db = getDb(c.env.DATABASE_URL);
-  const organisationId = c.get("organisationId");
+  const organisationId = c.req.header("X-Org-Id");
+  if (!organisationId) return c.json({ success: false, error: "Missing X-Org-Id header" }, 400);
 
   // body is already validated by zValidator in the route — safe to cast
   const body = c.req.valid("json" as never) as IngestRequest;
