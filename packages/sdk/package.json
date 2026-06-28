@@ -1,7 +1,25 @@
 {
   "name": "@prooflog/node",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cryptographically tamper-proof audit logging for Node.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RahulDew/prooflog.git",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://github.com/RahulDew/prooflog/tree/main/packages/sdk#readme",
+  "bugs": {
+    "url": "https://github.com/RahulDew/prooflog/issues"
+  },
+  "keywords": [
+    "audit",
+    "log",
+    "crypto",
+    "hash-chain",
+    "tamper-proof",
+    "security",
+    "compliance"
+  ],
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
