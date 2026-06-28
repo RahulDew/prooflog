@@ -11,13 +11,7 @@ the chain breaks and verification fails instantly.
 npm install @prooflog/node
 ```
 
-## Setup
 
-Run the database migration once to create the required tables:
-
-```bash
-npx @prooflog/node migrate
-```
 
 ## Usage
 
