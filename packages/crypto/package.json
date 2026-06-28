@@ -6,9 +6,11 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@noble/hashes": "^2.2.0"
+    "@noble/hashes": "^2.2.0",
+    "fast-json-stable-stringify": "^2.1.0"
   },
   "devDependencies": {
+    "@types/fast-json-stable-stringify": "^2.1.2",
     "typescript": "^5"
   }
 }
