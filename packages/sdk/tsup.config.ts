@@ -7,8 +7,6 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   external: [
-    "@prooflog/crypto",
-    "@prooflog/db",
     "drizzle-orm",
     "@neondatabase/serverless",
   ],
