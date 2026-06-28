@@ -12,21 +12,17 @@ import type {
 
 export class ProofLog {
   private db: ReturnType<typeof drizzle>;
-  private organisationId: string;
-
   constructor(config: ProofLogConfig) {
     if (!config.databaseUrl) throw new Error("databaseUrl is required");
-    if (!config.organisationId) throw new Error("organisationId is required");
     const sql = neon(config.databaseUrl);
     this.db = drizzle(sql);
-    this.organisationId = config.organisationId;
   }
 
   /**
    * Pushes a new audit log event directly to the database.
    * Handles concurrency retries internally.
    */
-  async ingest(options: IngestOptions): Promise<IngestResult> {
+  async ingest(organisationId: string, options: IngestOptions): Promise<IngestResult> {
     const maxRetries = 3;
     
     for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -34,7 +30,7 @@ export class ProofLog {
         const lastEntry = await this.db
           .select()
           .from(auditLogs)
-          .where(eq(auditLogs.organisationId, this.organisationId))
+          .where(eq(auditLogs.organisationId, organisationId))
           .orderBy(desc(auditLogs.sequence))
           .limit(1);
 
@@ -44,7 +40,7 @@ export class ProofLog {
 
         const hash = computeHash(
           {
-            organisationId: this.organisationId,
+            organisationId,
             sequence,
             action: options.action,
             actor: options.actor,
@@ -56,7 +52,7 @@ export class ProofLog {
         );
 
         await this.db.insert(auditLogs).values({
-          organisationId: this.organisationId,
+          organisationId,
           sequence,
           action: options.action,
           actor: options.actor,
@@ -85,7 +81,7 @@ export class ProofLog {
   /**
    * Triggers a cryptographic verification of the audit log chain for the organisation in batches.
    */
-  async verify(): Promise<VerifyResult> {
+  async verify(organisationId: string): Promise<VerifyResult> {
     const batchSize = 1000;
     let hasMore = true;
     let currentSequence = 0;
@@ -98,7 +94,7 @@ export class ProofLog {
         .from(auditLogs)
         .where(
           and(
-            eq(auditLogs.organisationId, this.organisationId),
+            eq(auditLogs.organisationId, organisationId),
             gt(auditLogs.sequence, currentSequence)
           )
         )

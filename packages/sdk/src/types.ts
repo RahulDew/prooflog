@@ -1,6 +1,5 @@
 export interface ProofLogConfig {
   databaseUrl: string;
-  organisationId: string;
 }
 
 export interface IngestOptions {
