@@ -34,6 +34,10 @@ await log.ingest('your-org-id', {
 const result = await log.verify('your-org-id')
 console.log(result)
 // { valid: true, totalEntries: 42 }
+
+// Fetch logs
+const logs = await log.getEntries('your-org-id', { limit: 10, order: 'desc' })
+console.log(logs.data)
 ```
 
 ## API
@@ -67,6 +71,18 @@ Recomputes every hash in the chain and returns:
   reason?: string       // human readable explanation
 }
 ```
+
+### `log.getEntries(organisationId, options)`
+
+Fetches logs from the database, ready to be displayed in a UI.
+
+| Option | Type | Required | Description |
+|---|---|---|---|
+| `limit` | `number` | ❌ | Max entries to return (default `50`) |
+| `cursor` | `number` | ❌ | Sequence number to paginate after |
+| `order` | `'asc' \| 'desc'` | ❌ | Sort direction (default `'desc'`) |
+
+Returns `{ data: AuditLogEntry[], hasMore: boolean }`.
 
 ## How it works
 
