@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
-import { eq, desc, asc, and, gt } from "drizzle-orm";
+import { eq, desc, asc, and, gt, lt } from "drizzle-orm";
 import { auditLogs } from "@prooflog/db";
 import { computeHash, GENESIS_HASH } from "@prooflog/crypto";
 import type {
@@ -8,6 +8,8 @@ import type {
   IngestOptions,
   IngestResult,
   VerifyResult,
+  GetEntriesOptions,
+  GetEntriesResult,
 } from "./types";
 
 export class ProofLog {
@@ -142,5 +144,55 @@ export class ProofLog {
     }
 
     return { valid: true, totalEntries };
+  }
+
+  /**
+   * Fetches audit log entries with optional pagination.
+   */
+  async getEntries(
+    organisationId: string,
+    options: GetEntriesOptions = {}
+  ): Promise<GetEntriesResult> {
+    const limitCount = options.limit ?? 50;
+    const orderDirection = options.order === "asc" ? asc : desc;
+    
+    // Default cursor behavior:
+    // If desc: we want sequences LESS than cursor
+    // If asc: we want sequences GREATER than cursor
+    let cursorCondition = undefined;
+    if (options.cursor !== undefined) {
+      cursorCondition = options.order === "asc" 
+        ? gt(auditLogs.sequence, options.cursor)
+        : lt(auditLogs.sequence, options.cursor);
+    }
+
+    const conditions = cursorCondition 
+      ? and(eq(auditLogs.organisationId, organisationId), cursorCondition)
+      : eq(auditLogs.organisationId, organisationId);
+
+    // Fetch limit + 1 to determine if there are more pages
+    const results = await this.db
+      .select({
+        sequence: auditLogs.sequence,
+        action: auditLogs.action,
+        actor: auditLogs.actor,
+        target: auditLogs.target,
+        metadata: auditLogs.metadata,
+        hash: auditLogs.hash,
+        previousHash: auditLogs.previousHash,
+        createdAt: auditLogs.createdAt,
+      })
+      .from(auditLogs)
+      .where(conditions)
+      .orderBy(orderDirection(auditLogs.sequence))
+      .limit(limitCount + 1);
+
+    const hasMore = results.length > limitCount;
+    const data = hasMore ? results.slice(0, limitCount) : results;
+
+    return {
+      data: data as GetEntriesResult["data"],
+      hasMore,
+    };
   }
 }

@@ -20,3 +20,25 @@ export interface VerifyResult {
   tamperedAt?: number;
   reason?: string;
 }
+
+export interface GetEntriesOptions {
+  limit?: number;
+  cursor?: number; // Sequence number to start after
+  order?: "asc" | "desc";
+}
+
+export interface AuditLogEntry {
+  sequence: number;
+  action: string;
+  actor: Record<string, unknown> & { id: string };
+  target: Record<string, unknown> | null;
+  metadata: Record<string, unknown> | null;
+  hash: string;
+  previousHash: string;
+  createdAt: Date;
+}
+
+export interface GetEntriesResult {
+  data: AuditLogEntry[];
+  hasMore: boolean;
+}
