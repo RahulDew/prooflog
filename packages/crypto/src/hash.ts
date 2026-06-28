@@ -1,6 +1,8 @@
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex } from "@noble/hashes/utils.js";
 
+import stringify from "fast-json-stable-stringify";
+
 export const GENESIS_HASH = "0".repeat(64);
 
 export interface AuditEvent {
@@ -14,7 +16,7 @@ export interface AuditEvent {
 }
 
 export function computeHash(event: AuditEvent, previousHash: string): string {
-  const payload = JSON.stringify({
+  const payload = stringify({
     organisationId: event.organisationId,
     sequence: event.sequence,
     action: event.action,
