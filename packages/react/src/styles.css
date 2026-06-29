@@ -1,0 +1,107 @@
+.prooflog-widget {
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #f9fafb;
+  background: #08080a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.prooflog-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.prooflog-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.prooflog-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+}
+
+.prooflog-timeline::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 20px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.prooflog-item {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.prooflog-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.prooflog-icon.verified {
+  border-color: rgba(79, 70, 229, 0.5);
+  box-shadow: 0 0 12px rgba(79, 70, 229, 0.2);
+}
+
+.prooflog-content {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.prooflog-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+  color: #a1a1aa;
+}
+
+.prooflog-action {
+  font-weight: 600;
+  color: #e4e4e7;
+  font-size: 0.95rem;
+  margin: 0 0 8px 0;
+}
+
+.prooflog-hash {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #52525b;
+  word-break: break-all;
+}
+
+.prooflog-badge {
+  background: rgba(79, 70, 229, 0.15);
+  color: #818cf8;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
