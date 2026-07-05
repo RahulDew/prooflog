@@ -19,7 +19,7 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Geist', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Outfit', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['Geist Mono', 'monospace'],
       },
       animation: {

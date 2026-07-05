@@ -20,7 +20,7 @@ export default function Home() {
         <header className="max-w-7xl mx-auto px-6 pt-24 pb-12 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 backdrop-blur-md text-[12.5px] text-indigo-300 font-medium mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_8px_theme(colors.indigo.400)] animate-pulse" />
-            ProofLog SDK v0.1.2 is now live
+            ProofLog SDK v0.1.3 is now live
           </div>
           
           <h1 className="text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-tight font-extrabold max-w-[860px] mx-auto text-gray-50">

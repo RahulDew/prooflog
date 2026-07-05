@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom"
-import { Search, Shield, Menu } from "lucide-react"
+import { Search, Menu } from "lucide-react"
 
 export function Navbar() {
   const location = useLocation()
@@ -22,7 +22,18 @@ export function Navbar() {
           
           <Link to="/" className="flex items-center gap-2.5 text-gray-50 no-underline shrink-0">
             <span className="grid place-items-center w-8 h-8 rounded-lg bg-gradient-to-br from-[#161220] to-[#0b0a10] border border-primary-glow shadow-[0_0_18px_rgba(79,70,229,0.2)_inset,0_0_14px_rgba(79,70,229,0.14)]">
-              <Shield className="w-4 h-4 text-indigo-400" />
+              <svg className="w-[18px] h-[18px]" viewBox="0 0 200 200" fill="none">
+                <defs>
+                  <linearGradient id="prooflog-grad-nav" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#9E82FF" />
+                    <stop offset="100%" stop-color="#6B46FF" />
+                  </linearGradient>
+                </defs>
+                <path d="M 60,40 L 120,40 A 30,30 0 0,1 120,100 L 60,100 L 60,80 L 120,80 A 10,10 0 0,0 120,60 L 60,60 Z" fill="url(#prooflog-grad-nav)" />
+                <rect x="60" y="110" width="20" height="15" rx="6" fill="url(#prooflog-grad-nav)" />
+                <rect x="60" y="135" width="20" height="15" rx="6" fill="url(#prooflog-grad-nav)" />
+                <rect x="60" y="160" width="20" height="15" rx="6" fill="url(#prooflog-grad-nav)" />
+              </svg>
             </span>
             <span className="font-bold text-base tracking-tight">ProofLog</span>
           </Link>
