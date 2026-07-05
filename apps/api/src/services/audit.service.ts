@@ -10,6 +10,24 @@ export async function ingestEvent(
   organisationId: string,
   body: IngestRequest,
 ) {
+  // Check for pre-existing matching idempotency key to prevent duplicate processing
+  if (body.idempotencyKey) {
+    const existing = await db
+      .select()
+      .from(auditLogs)
+      .where(
+        and(
+          eq(auditLogs.organisationId, organisationId),
+          eq(auditLogs.idempotencyKey, body.idempotencyKey)
+        )
+      )
+      .limit(1);
+
+    if (existing.length > 0) {
+      return { sequence: existing[0].sequence, hash: existing[0].hash };
+    }
+  }
+
   const maxRetries = 3;
   
   for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -19,10 +37,10 @@ export async function ingestEvent(
         db,
         organisationId,
       );
-
+ 
       const sequence = lastSequence + 1;
       const createdAt = new Date().toISOString();
-
+ 
       // Step 2 — compute new hash linking to previous
       const hash = buildHash({
         organisationId,
@@ -34,7 +52,7 @@ export async function ingestEvent(
         createdAt,
         previousHash,
       });
-
+ 
       // Step 3 — write to DB
       await db.insert(auditLogs).values({
         organisationId,
@@ -45,18 +63,37 @@ export async function ingestEvent(
         metadata: body.metadata ?? null,
         hash,
         previousHash,
+        idempotencyKey: body.idempotencyKey ?? null,
         createdAt: new Date(createdAt),
       });
-
+ 
       return { sequence, hash };
     } catch (error: any) {
       // Check for unique constraint violation (Postgres error code 23505)
-      // This happens if a race condition occurred and another request took the sequence.
-      if (error.code === '23505' || error.message?.includes('23505') || error.message?.includes('unique constraint')) {
+      // This happens if a race condition occurred and another request took the sequence,
+      // or if another concurrent request successfully wrote the same idempotency key.
+      const isUniqueViolation = error.code === '23505' || error.message?.includes('23505') || error.message?.includes('unique constraint');
+      if (isUniqueViolation) {
+        if (body.idempotencyKey) {
+          const existing = await db
+            .select()
+            .from(auditLogs)
+            .where(
+              and(
+                eq(auditLogs.organisationId, organisationId),
+                eq(auditLogs.idempotencyKey, body.idempotencyKey)
+              )
+            )
+            .limit(1);
+          if (existing.length > 0) {
+            return { sequence: existing[0].sequence, hash: existing[0].hash };
+          }
+        }
+
         if (attempt === maxRetries - 1) {
           throw new Error("Failed to ingest audit log due to high concurrency. Please try again.");
         }
-        // Retry
+        // Retry sequence collision
         continue;
       }
       throw error;

@@ -26,6 +26,7 @@ vi.mock("drizzle-orm/neon-http", () => ({
           orderBy: mockOrderBy.mockReturnValue({
             limit: mockLimit,
           }),
+          limit: mockLimit,
         }),
       }),
     }),
@@ -154,6 +155,68 @@ describe("ProofLog SDK", () => {
       await expect(log.getEntries("org_1")).rejects.toThrow(
         "getEntries is not yet supported in hosted API mode. Please configure databaseUrl."
       );
+    });
+  });
+
+  describe("ProofLog SDK - Idempotency checks", () => {
+    it("should return cached results immediately in DB mode if idempotency key exists", async () => {
+      // Mock db lookup for idempotency key -> returns existing record
+      mockLimit.mockResolvedValueOnce([{ sequence: 100, hash: "hash100" }]);
+
+      const log = new ProofLog({ databaseUrl: "postgres://fake" });
+      const result = await log.ingest("org_1", {
+        action: "login",
+        actor: { id: "user_1" },
+        idempotencyKey: "test_idem_1",
+      });
+
+      expect(mockLimit).toHaveBeenCalledTimes(1); // Only checked for idempotency
+      expect(mockInsert).not.toHaveBeenCalled();
+      expect(result).toEqual({ sequence: 100, hash: "hash100" });
+    });
+
+    it("should recover and return cached result on insert conflict in DB mode", async () => {
+      // Attempt 1: check idempotency key -> empty
+      mockLimit.mockResolvedValueOnce([]);
+      // Attempt 1: get chain tip -> resolves genesis tip
+      mockLimit.mockResolvedValueOnce([]);
+      // Attempt 1: insert -> unique constraint clash
+      mockValues.mockRejectedValueOnce({ code: "23505" });
+      // Catch block: search db for the idempotency key -> resolves existing record (inserted concurrently)
+      mockLimit.mockResolvedValueOnce([{ sequence: 105, hash: "hash105" }]);
+
+      const log = new ProofLog({ databaseUrl: "postgres://fake" });
+      const result = await log.ingest("org_1", {
+        action: "login",
+        actor: { id: "user_1" },
+        idempotencyKey: "test_idem_1",
+      });
+
+      // Checked idempotency (1), tip (2), and post-conflict lookup (3)
+      expect(mockLimit).toHaveBeenCalledTimes(3);
+      expect(result).toEqual({ sequence: 105, hash: "hash105" });
+    });
+
+    it("should pass idempotencyKey in request body in hosted mode", async () => {
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: { sequence: 200, hash: "hash200" }
+        })
+      });
+      vi.stubGlobal("fetch", mockFetch);
+
+      const log = new ProofLog({ apiKey: "test-key" });
+      await log.ingest("org_1", {
+        action: "login",
+        actor: { id: "user_1" },
+        idempotencyKey: "test_idem_1",
+      });
+
+      const fetchArgs = mockFetch.mock.calls[0][1];
+      const parsedBody = JSON.parse(fetchArgs.body);
+      expect(parsedBody.idempotencyKey).toBe("test_idem_1");
     });
   });
 });

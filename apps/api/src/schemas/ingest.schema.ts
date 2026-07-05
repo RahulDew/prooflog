@@ -17,6 +17,8 @@ export const IngestRequestSchema = z.object({
   target: z.record(z.string(), z.unknown()).optional(),
 
   metadata: z.record(z.string(), z.unknown()).optional(),
+
+  idempotencyKey: z.string().optional(),
 });
 
 // Schema se automatically TypeScript type ban jaati hai

@@ -9,6 +9,7 @@ export interface IngestOptions {
   actor: Record<string, unknown> & { id: string };
   target?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
+  idempotencyKey?: string;
 }
 
 export interface IngestResult {

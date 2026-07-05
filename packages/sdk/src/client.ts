@@ -36,6 +36,24 @@ export class ProofLog {
    */
   async ingest(organisationId: string, options: IngestOptions): Promise<IngestResult> {
     if (this.db) {
+      // Check if this idempotency key was already ingested to return original result
+      if (options.idempotencyKey) {
+        const existing = await this.db
+          .select()
+          .from(auditLogs)
+          .where(
+            and(
+              eq(auditLogs.organisationId, organisationId),
+              eq(auditLogs.idempotencyKey, options.idempotencyKey)
+            )
+          )
+          .limit(1);
+
+        if (existing.length > 0) {
+          return { sequence: existing[0].sequence, hash: existing[0].hash };
+        }
+      }
+
       const maxRetries = 3;
       
       for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -73,12 +91,30 @@ export class ProofLog {
             metadata: options.metadata ?? null,
             hash,
             previousHash,
+            idempotencyKey: options.idempotencyKey ?? null,
             createdAt: new Date(createdAt),
           });
 
           return { sequence, hash };
         } catch (error: any) {
-          if (error.code === '23505' || error.message?.includes('23505') || error.message?.includes('unique constraint')) {
+          const isUniqueViolation = error.code === '23505' || error.message?.includes('23505') || error.message?.includes('unique constraint');
+          if (isUniqueViolation) {
+            if (options.idempotencyKey) {
+              const existing = await this.db
+                .select()
+                .from(auditLogs)
+                .where(
+                  and(
+                    eq(auditLogs.organisationId, organisationId),
+                    eq(auditLogs.idempotencyKey, options.idempotencyKey)
+                  )
+                )
+                .limit(1);
+              if (existing.length > 0) {
+                return { sequence: existing[0].sequence, hash: existing[0].hash };
+              }
+            }
+
             if (attempt === maxRetries - 1) {
               throw new Error("Failed to ingest audit log due to high concurrency. Please try again.");
             }
