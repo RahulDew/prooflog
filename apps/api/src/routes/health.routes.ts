@@ -5,8 +5,8 @@ import { healthHandler } from "../controllers/health.controller";
 const health = new Hono<AppEnv>();
 
 // Root page — human friendly HTML
-health.get("/", (c) => {
-  return c.html(`
+health.get("/", (context) => {
+  return context.html(`
     <!DOCTYPE html>
     <html lang="en">
       <head>

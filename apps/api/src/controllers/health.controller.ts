@@ -1,8 +1,8 @@
 import type { Context } from "hono";
 import type { AppEnv } from "../config/env";
 
-export async function healthHandler(c: Context<AppEnv>) {
-  return c.json({
+export async function healthHandler(context: Context<AppEnv>) {
+  return context.json({
     success: true,
     data: {
       status: "ok",

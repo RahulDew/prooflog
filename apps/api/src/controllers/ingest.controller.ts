@@ -3,18 +3,28 @@ import type { AppEnv } from "../config/env";
 import type { IngestRequest } from "../schemas/ingest.schema";
 import { getDb } from "../connections/db";
 import { ingestEvent } from "../services/audit.service";
+import { HttpStatus } from "../config/http-status";
 
-export async function ingestHandler(c: Context<AppEnv>) {
-  const db = getDb(c.env.DATABASE_URL);
-  const organisationId = c.req.header("X-Org-Id");
-  if (!organisationId) return c.json({ success: false, error: "Missing X-Org-Id header" }, 400);
+// Define a specialized Context type that registers the validated JSON schema payload type
+type IngestContext = Context<AppEnv, "/", { out: { json: IngestRequest } }>;
 
-  // body is already validated by zValidator in the route — safe to cast
-  const body = c.req.valid("json" as never) as IngestRequest;
+export async function ingestHandler(context: IngestContext) {
+  const db = getDb(context.env.DATABASE_URL);
+
+  const organisationId = context.var.organisationId;
+  if (!organisationId) {
+    return context.json(
+      { success: false, error: "Unauthorized: Missing organization ID" },
+      HttpStatus.UNAUTHORIZED,
+    );
+  }
+
+  // Retrieve the validated JSON body without any type bypasses or 'as never' casts
+  const body = context.req.valid("json");
 
   const result = await ingestEvent(db, organisationId, body);
 
-  return c.json(
+  return context.json(
     {
       success: true,
       data: {
@@ -23,6 +33,6 @@ export async function ingestHandler(c: Context<AppEnv>) {
         hash: result.hash,
       },
     },
-    202,
+    HttpStatus.ACCEPTED,
   );
 }
