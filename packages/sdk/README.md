@@ -63,6 +63,9 @@ At least one of `apiKey` or `databaseUrl` must be provided.
 | `actor` | `{ id: string, ...}` | ✅ | Who performed the action |
 | `target` | `object` | ❌ | What was acted upon |
 | `metadata` | `object` | ❌ | Extra context e.g. IP, userAgent |
+| `idempotencyKey` | `string` | ❌ | Unique key to guarantee request idempotency under retries |
+| `chainVersion` | `number` | ❌ | Ledger chain structure version (defaults to `1`) |
+| `hashAlgorithm` | `'sha256' \| 'sha512' \| 'sha384'` | ❌ | Hashing algorithm for block linkage (defaults to `'sha256'`) |
 
 Returns `{ sequence, hash }`.
 
@@ -72,10 +75,13 @@ Recomputes every hash in the chain and returns:
 
 ```typescript
 {
-  valid: boolean        // true if chain is intact
-  totalEntries: number  // entries verified
-  tamperedAt?: number   // sequence number where tampering detected
-  reason?: string       // human readable explanation
+  valid: boolean          // true if chain is intact
+  totalEntries: number    // entries verified
+  tamperedAt?: number     // sequence number where tampering detected
+  reason?: string         // human readable explanation
+  expectedHash?: string   // recomputed hash expected at failure point
+  actualHash?: string     // actual invalid hash stored in record
+  failedTimestamp?: string // ISO timestamp of the failed block
 }
 ```
 
