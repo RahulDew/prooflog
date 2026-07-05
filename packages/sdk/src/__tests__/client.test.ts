@@ -160,7 +160,6 @@ describe("ProofLog SDK", () => {
 
   describe("ProofLog SDK - Idempotency checks", () => {
     it("should return cached results immediately in DB mode if idempotency key exists", async () => {
-      // Mock db lookup for idempotency key -> returns existing record
       mockLimit.mockResolvedValueOnce([{ sequence: 100, hash: "hash100" }]);
 
       const log = new ProofLog({ databaseUrl: "postgres://fake" });
@@ -170,19 +169,15 @@ describe("ProofLog SDK", () => {
         idempotencyKey: "test_idem_1",
       });
 
-      expect(mockLimit).toHaveBeenCalledTimes(1); // Only checked for idempotency
+      expect(mockLimit).toHaveBeenCalledTimes(1);
       expect(mockInsert).not.toHaveBeenCalled();
       expect(result).toEqual({ sequence: 100, hash: "hash100" });
     });
 
     it("should recover and return cached result on insert conflict in DB mode", async () => {
-      // Attempt 1: check idempotency key -> empty
       mockLimit.mockResolvedValueOnce([]);
-      // Attempt 1: get chain tip -> resolves genesis tip
       mockLimit.mockResolvedValueOnce([]);
-      // Attempt 1: insert -> unique constraint clash
       mockValues.mockRejectedValueOnce({ code: "23505" });
-      // Catch block: search db for the idempotency key -> resolves existing record (inserted concurrently)
       mockLimit.mockResolvedValueOnce([{ sequence: 105, hash: "hash105" }]);
 
       const log = new ProofLog({ databaseUrl: "postgres://fake" });
@@ -192,7 +187,6 @@ describe("ProofLog SDK", () => {
         idempotencyKey: "test_idem_1",
       });
 
-      // Checked idempotency (1), tip (2), and post-conflict lookup (3)
       expect(mockLimit).toHaveBeenCalledTimes(3);
       expect(result).toEqual({ sequence: 105, hash: "hash105" });
     });
@@ -222,7 +216,7 @@ describe("ProofLog SDK", () => {
 
   describe("ProofLog SDK - Crypto hardening", () => {
     it("should support custom chainVersion and hashAlgorithm in database mode", async () => {
-      mockLimit.mockResolvedValueOnce([]); // No previous entries
+      mockLimit.mockResolvedValueOnce([]);
 
       const log = new ProofLog({ databaseUrl: "postgres://fake" });
       const result = await log.ingest("org_1", {
@@ -236,12 +230,10 @@ describe("ProofLog SDK", () => {
       const insertedValues = mockValues.mock.calls[0][0];
       expect(insertedValues.chainVersion).toBe(2);
       expect(insertedValues.hashAlgorithm).toBe("sha512");
-      // SHA-512 outputs 128 character hex string
       expect(result.hash.length).toBe(128);
     });
 
     it("should return expectedHash and actualHash on verification failure in database mode", async () => {
-      // Mock db verify log batch fetch (returns one tampered entry)
       mockLimit.mockResolvedValueOnce([
         {
           sequence: 1,
@@ -263,7 +255,7 @@ describe("ProofLog SDK", () => {
       expect(result.valid).toBe(false);
       expect(result.tamperedAt).toBe(1);
       expect(result.expectedHash).toBeTypeOf("string");
-      expect(result.expectedHash!.length).toBe(64); // SHA-256
+      expect(result.expectedHash!.length).toBe(64);
       expect(result.actualHash).toBe("stored_tampered_hash");
       expect(result.failedTimestamp).toBe("2026-07-05T12:00:00.000Z");
     });

@@ -36,7 +36,7 @@ export class ProofLog {
    */
   async ingest(organisationId: string, options: IngestOptions): Promise<IngestResult> {
     if (this.db) {
-      // Check if this idempotency key was already ingested to return original result
+      // Prevent duplicate insertion by returning cached ledger metadata if key was already processed.
       if (options.idempotencyKey) {
         const existing = await this.db
           .select()
@@ -103,6 +103,7 @@ export class ProofLog {
 
           return { sequence, hash };
         } catch (error: any) {
+          // Resolve race conditions under high concurrency if the record was inserted concurrently.
           const isUniqueViolation = error.code === '23505' || error.message?.includes('23505') || error.message?.includes('unique constraint');
           if (isUniqueViolation) {
             if (options.idempotencyKey) {

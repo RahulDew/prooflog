@@ -10,7 +10,7 @@ export async function ingestEvent(
   organisationId: string,
   body: IngestRequest,
 ) {
-  // Check for pre-existing matching idempotency key to prevent duplicate processing
+  // Return cached result immediately if this request has already been processed.
   if (body.idempotencyKey) {
     const existing = await db
       .select()
@@ -32,7 +32,7 @@ export async function ingestEvent(
   
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      // Step 1 — get last hash and sequence number for this org
+      // Resolve current head of the ledger chain.
       const { previousHash, sequence: lastSequence } = await getChainTip(
         db,
         organisationId,
@@ -43,7 +43,7 @@ export async function ingestEvent(
       const chainVersion = body.chainVersion ?? 1;
       const hashAlgorithm = body.hashAlgorithm ?? "sha256";
  
-      // Step 2 — compute new hash linking to previous
+      // Link the new block to the preceding cryptographic hash.
       const hash = buildHash({
         organisationId,
         sequence,
@@ -57,7 +57,6 @@ export async function ingestEvent(
         hashAlgorithm,
       });
  
-      // Step 3 — write to DB
       await db.insert(auditLogs).values({
         organisationId,
         sequence,
@@ -75,9 +74,7 @@ export async function ingestEvent(
  
       return { sequence, hash };
     } catch (error: any) {
-      // Check for unique constraint violation (Postgres error code 23505)
-      // This happens if a race condition occurred and another request took the sequence,
-      // or if another concurrent request successfully wrote the same idempotency key.
+      // Handle sequence conflicts (retry) and concurrent idempotency races (fallback return).
       const isUniqueViolation = error.code === '23505' || error.message?.includes('23505') || error.message?.includes('unique constraint');
       if (isUniqueViolation) {
         if (body.idempotencyKey) {
@@ -99,7 +96,6 @@ export async function ingestEvent(
         if (attempt === maxRetries - 1) {
           throw new Error("Failed to ingest audit log due to high concurrency. Please try again.");
         }
-        // Retry sequence collision
         continue;
       }
       throw error;
@@ -117,7 +113,7 @@ export async function verifyOrgChain(db: DbClient, organisationId: string) {
   let expectedPreviousHash = GENESIS_HASH;
 
   while (hasMore) {
-    // Fetch in batches to prevent Out-Of-Memory (OOM) on Cloudflare Workers
+    // Process chain verification in chunked batches to protect memory allocation bounds.
     const batch = await db
       .select()
       .from(auditLogs)

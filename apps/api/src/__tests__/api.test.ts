@@ -207,13 +207,9 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
   });
 
   it("should process ingestion and write to database when a new idempotencyKey is used", async () => {
-    // 1. mock api keys fetch
     mockLimit.mockResolvedValueOnce([mockActiveKey]);
-    // 2. mock idempotency key check (empty means no duplicate)
     mockLimit.mockResolvedValueOnce([]);
-    // 3. mock chain tip fetch (empty result means first ever log)
     mockLimit.mockResolvedValueOnce([]);
-    // 4. mock db insert success
     mockValues.mockResolvedValueOnce({ inserted: true });
 
     const res = await app.request("/v1/ingest", {
@@ -236,9 +232,7 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
   });
 
   it("should bypass DB insert and return cached result when duplicate idempotencyKey is used", async () => {
-    // 1. mock api keys fetch
     mockLimit.mockResolvedValueOnce([mockActiveKey]);
-    // 2. mock idempotency key check (returns existing record)
     mockLimit.mockResolvedValueOnce([
       {
         sequence: 42,
@@ -263,16 +257,12 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     expect(json.success).toBe(true);
     expect(json.data.sequence).toBe(42);
     expect(json.data.hash).toBe("cached_hash_123");
-    // Ensure we bypassed the write operation
     expect(mockInsert).not.toHaveBeenCalled();
   });
 
   it("should support ingestion with custom hashAlgorithm and chainVersion", async () => {
-    // 1. mock api keys fetch
     mockLimit.mockResolvedValueOnce([mockActiveKey]);
-    // 2. mock chain tip fetch (empty result)
     mockLimit.mockResolvedValueOnce([]);
-    // 3. mock db insert success
     mockValues.mockResolvedValueOnce({ inserted: true });
 
     const res = await app.request("/v1/ingest", {
@@ -293,14 +283,11 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     expect(json.success).toBe(true);
     expect(json.data.sequence).toBe(1);
     expect(json.data.hash).toBeTypeOf("string");
-    // Ensure SHA-512 was used (SHA-512 outputs 128 character hex string)
     expect(json.data.hash.length).toBe(128);
   });
 
   it("should return a detailed report on chain verification mismatch/tampering", async () => {
-    // 1. mock api keys fetch
     mockLimit.mockResolvedValueOnce([mockActiveKey]);
-    // 2. mock verify audit logs batch fetch with a tampered entry (wrong hash stored)
     mockLimit.mockResolvedValueOnce([
       {
         sequence: 1,
@@ -329,7 +316,7 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     expect(json.data.valid).toBe(false);
     expect(json.data.tamperedAt).toBe(1);
     expect(json.data.expectedHash).toBeTypeOf("string");
-    expect(json.data.expectedHash.length).toBe(64); // SHA-256
+    expect(json.data.expectedHash.length).toBe(64);
     expect(json.data.actualHash).toBe("tampered_stored_hash_value");
     expect(json.data.failedTimestamp).toBe("2026-07-05T12:00:00.000Z");
   });
