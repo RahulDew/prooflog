@@ -19,7 +19,7 @@ npm install @prooflog/node
 import { ProofLog } from '@prooflog/node'
 
 const log = new ProofLog({
-  databaseUrl: process.env.DATABASE_URL,
+  apiKey: process.env.PROOFLOG_API_KEY,
 })
 
 // Log an event
@@ -35,8 +35,11 @@ const result = await log.verify('your-org-id')
 console.log(result)
 // { valid: true, totalEntries: 42 }
 
-// Fetch logs
-const logs = await log.getEntries('your-org-id', { limit: 10, order: 'desc' })
+// Fetch logs (Note: getEntries requires databaseUrl configuration)
+const logDb = new ProofLog({
+  databaseUrl: process.env.DATABASE_URL,
+})
+const logs = await logDb.getEntries('your-org-id', { limit: 10, order: 'desc' })
 console.log(logs.data)
 ```
 
@@ -44,9 +47,13 @@ console.log(logs.data)
 
 ### `new ProofLog(config)`
 
+At least one of `apiKey` or `databaseUrl` must be provided.
+
 | Option | Type | Required | Description |
 |---|---|---|---|
-| `databaseUrl` | `string` | ✅ | PostgreSQL connection string |
+| `apiKey` | `string` | ❌ | API key for hosted API ingestion & verification |
+| `databaseUrl` | `string` | ❌ | PostgreSQL connection string for direct DB access |
+| `baseUrl` | `string` | ❌ | Custom base URL for hosted API (default: `https://api.prooflog.dev`) |
 
 ### `log.ingest(organisationId, options)`
 

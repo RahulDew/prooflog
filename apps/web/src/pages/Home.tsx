@@ -58,15 +58,16 @@ export default function Home() {
               <pre>
                 <code className="text-indigo-400">import</code> {'{ ProofLog }'} <code className="text-indigo-400">from</code> <code className="text-emerald-300">'@prooflog/node'</code>;<br/><br/>
                 <code className="text-zinc-500">{"// 1. Initialize the client"}</code><br/>
-                <code className="text-indigo-400">const</code> log = <code className="text-indigo-400">new</code> ProofLog({'{'} secret: <code className="text-emerald-300">'YOUR_SECRET_KEY'</code> {'}'});<br/><br/>
+                <code className="text-indigo-400">const</code> log = <code className="text-indigo-400">new</code> ProofLog({'{'} apiKey: <code className="text-emerald-300">'YOUR_API_KEY'</code> {'}'});<br/><br/>
                 <code className="text-zinc-500">{"// 2. Ingest an immutable log"}</code><br/>
                 <code className="text-indigo-400">await</code> log.ingest(<code className="text-emerald-300">'org_123'</code>, {'{'}<br/>
-                {'  '}action: <code className="text-emerald-300">'USER_LOGIN'</code>,<br/>
+                {'  '}action: <code className="text-emerald-300">'user.login'</code>,<br/>
+                {'  '}actor: {'{'} id: <code className="text-emerald-300">'usr_1'</code> {'}'},<br/>
                 {'  '}metadata: {'{'} ip: <code className="text-emerald-300">'192.168.1.1'</code> {'}'}<br/>
                 {'}'});<br/><br/>
                 <code className="text-zinc-500">{"// 3. Verify the hash chain cryptographically"}</code><br/>
-                <code className="text-indigo-400">const</code> isValid = <code className="text-indigo-400">await</code> log.verify(<code className="text-emerald-300">'org_123'</code>);<br/>
-                console.log(isValid); <code className="text-zinc-500">{"// true"}</code>
+                <code className="text-indigo-400">const</code> result = <code className="text-indigo-400">await</code> log.verify(<code className="text-emerald-300">'org_123'</code>);<br/>
+                console.log(result.valid); <code className="text-zinc-500">{"// true"}</code>
               </pre>
             </div>
           </div>

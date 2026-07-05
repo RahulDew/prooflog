@@ -55,8 +55,8 @@ export default function Docs() {
               <div className="p-4 overflow-x-auto text-sm font-mono leading-relaxed text-zinc-300">
                 <pre>
                   <code className="text-indigo-400">import</code> {'{ ProofLog }'} <code className="text-indigo-400">from</code> <code className="text-emerald-300">'@prooflog/node'</code>;<br/><br/>
-                  <code className="text-indigo-400">const</code> client = <code className="text-indigo-400">new</code> ProofLog({'{'} secret: <code className="text-emerald-300">'env.SECRET'</code> {'}'});<br/>
-                  <code className="text-indigo-400">await</code> client.ingest(<code className="text-emerald-300">'user_1'</code>, {'{'} action: <code className="text-emerald-300">'LOGIN'</code> {'}'});
+                  <code className="text-indigo-400">const</code> client = <code className="text-indigo-400">new</code> ProofLog({'{'} apiKey: <code className="text-emerald-300">'YOUR_API_KEY'</code> {'}'});<br/>
+                  <code className="text-indigo-400">await</code> client.ingest(<code className="text-emerald-300">'org_123'</code>, {'{'} action: <code className="text-emerald-300">'user.login'</code>, actor: {'{'} id: <code className="text-emerald-300">'usr_1'</code> {'}'} {'}'});
                 </pre>
               </div>
             </div>

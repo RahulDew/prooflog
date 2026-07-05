@@ -55,7 +55,7 @@ import { Hono } from 'hono';
 import { ProofLog } from '@prooflog/node';
 
 const app = new Hono();
-const prooflog = new ProofLog({ databaseUrl: process.env.DATABASE_URL });
+const prooflog = new ProofLog({ apiKey: process.env.PROOFLOG_API_KEY });
 
 app.post('/login', async (c) => {
   const { userId } = await c.req.json();
@@ -64,8 +64,8 @@ app.post('/login', async (c) => {
   
   // 2. Log the action securely
   await prooflog.ingest('org_1234', {
-    action: 'USER_LOGIN',
-    actor: userId,
+    action: 'user.login',
+    actor: { id: userId },
     metadata: { ip: '192.168.1.1' }
   });
 
