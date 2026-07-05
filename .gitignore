@@ -8,3 +8,5 @@ dist
 *.log
 agents
 .agents
+.dev.vars
+.dev.vars.local
