@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/shield-check.svg" alt="ProofLog Logo" width="120" height="120">
+  <img src="./apps/web/public/logo.svg" alt="ProofLog Logo" width="120" height="120">
   <h1 align="center">ProofLog</h1>
   <p align="center">
-    <strong>Zero-Trust Cryptographic Audit Logging for Modern Apps</strong>
+    <strong>Zero-trust cryptographic audit log ledger for typescript applications</strong>
   </p>
   <p align="center">
     <a href="https://github.com/RahulDew/prooflog/actions"><img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"></a>
@@ -13,94 +13,84 @@
 
 ---
 
-**ProofLog** is a blazing-fast, serverless-ready audit logging system that uses cryptographic hash chaining to ensure your logs are immutable and tamper-proof. If an attacker breaches your database and alters a log, the cryptographic chain breaks, making the tampering instantly detectable.
+**ProofLog** is an open-source audit logging system using cryptographic hash chaining to guarantee log integrity. Each log entry is linked to its preceding event payload. If any historical record is modified or deleted at the database layer, the validation chain breaks, exposing the tampering sequence.
 
-## 📦 Packages
+## 📦 Monorepo Workspace Packages
 
-This is a monorepo managed with `pnpm` containing the following packages:
+Managed with `pnpm` workspaces:
 
 | Package | Description | Version |
 |---------|-------------|---------|
-| [`@prooflog/node`](./packages/sdk) | Core Node.js/TypeScript SDK for ingesting and verifying logs | `0.1.2` |
-| [`@prooflog/react`](./packages/react) | Embeddable React Widget for displaying secure audit timelines | `0.1.0` |
-| [`@prooflog/crypto`](./packages/crypto) | Pure cryptographic hash functions and primitives | `0.0.1` |
-| [`@prooflog/db`](./packages/db) | Drizzle ORM schema definitions for PostgreSQL | `0.0.1` |
-| [`@prooflog/web`](./apps/web) | The official documentation and marketing website | `private` |
+| [`@prooflog/node`](./packages/sdk) | Client SDK for log ingestion and cryptographic verification | `0.1.2` |
+| [`@prooflog/react`](./packages/react) | Component library for secure audit timeline displays | `0.1.0` |
+| [`@prooflog/crypto`](./packages/crypto) | SHA-256/384/512 cryptographic hashing operations | `0.0.1` |
+| [`@prooflog/db`](./packages/db) | Drizzle ORM schema mappings for PostgreSQL | `0.0.1` |
+| [`@prooflog/web`](./apps/web) | Documentation landing page and verification dashboard | `private` |
 
-## 🚀 Why ProofLog?
+## ⚙️ Key Primitives
 
-1. **Cryptographic Integrity**: Every log entry hashes itself combined with the hash of the *previous* log entry.
-2. **Serverless & Edge Ready**: Built on top of Neon Database and Drizzle ORM via HTTP, making it perfect for Cloudflare Workers, Vercel Edge, or Hono.
-3. **Drop-in React Widget**: Includes `@prooflog/react` for a beautifully styled, zero-dependency timeline UI out of the box.
+1. **Cryptographic Integrity**: Links event blocks sequentially using customizable hashing configurations (SHA-256, SHA-384, or SHA-512).
+2. **Safe Retry Delivery**: Utilizes unique idempotency keys to recover from concurrent network retries without creating duplicate log writes.
+3. **Serverless Infrastructure**: Built using Hono Workers on Cloudflare edge context and optimized Neon Serverless drivers over HTTP connections.
 
 ---
 
 ## 💻 Installation
 
-Install the core SDK and the React widget:
-
 ```bash
-npm install @prooflog/node @prooflog/react
+pnpm add @prooflog/node @prooflog/react
 ```
 
-## 🛠️ Usage
+## 🛠️ Implementation Example
 
-### 1. Backend: Ingesting Logs (Works great with Hono, Express, etc.)
+### 1. Ingestion (Cloudflare Worker or Node.js server)
 
-Because `@prooflog/node` is a pure TypeScript SDK, you can use it in any Node.js or Edge framework.
+Initialize the SDK client and pass payload attributes along with idempotency and hardening parameters:
 
 ```typescript
-// Example using Hono
-import { Hono } from 'hono';
 import { ProofLog } from '@prooflog/node';
 
-const app = new Hono();
-const prooflog = new ProofLog({ apiKey: process.env.PROOFLOG_API_KEY });
+const client = new ProofLog({ apiKey: process.env.PROOFLOG_API_KEY });
 
-app.post('/login', async (c) => {
-  const { userId } = await c.req.json();
-  
-  // 1. Do your business logic...
-  
-  // 2. Log the action securely
-  await prooflog.ingest('org_1234', {
-    action: 'user.login',
-    actor: { id: userId },
-    metadata: { ip: '192.168.1.1' }
-  });
-
-  return c.json({ success: true });
+// Ingest a tamper-proof block
+await client.ingest('org_1234', {
+  action: 'billing.invoice_paid',
+  actor: { id: 'usr_99' },
+  idempotencyKey: 'invoice_payment_req_xyz',
+  chainVersion: 2, // binds ledger version metadata
+  hashAlgorithm: 'sha512' // options: sha256 | sha384 | sha512
 });
 ```
 
-### 2. Backend: Verifying the Chain
+### 2. Cryptographic Chain Verification
 
-Run this periodically or via a cron job to ensure no logs have been tampered with:
+Periodically execute verification routines to mathematically guarantee ledger integrity:
 
 ```typescript
-const result = await prooflog.verify('org_1234');
+const result = await client.verify('org_1234');
 
 if (!result.valid) {
-  console.error(`🚨 ALERT: Log tampering detected at sequence ${result.tamperedAt}!`);
+  console.error(`Tampering detected at sequence: ${result.tamperedAt}`);
+  console.error(`Expected: ${result.expectedHash} | Stored: ${result.actualHash}`);
 } else {
-  console.log(`✅ All ${result.totalEntries} logs are cryptographically secure.`);
+  console.log(`Success: All ${result.totalEntries} event blocks verified.`);
 }
 ```
 
-### 3. Frontend: Displaying the Timeline
+### 3. Frontend Timeline Interface
 
-Use our highly optimized, glassmorphic React widget to display logs to your users.
+Import the styling sheet and embed the timeline widget:
 
 ```tsx
 import { ProofLogTimeline } from '@prooflog/react';
-import '@prooflog/react/dist/index.css'; // Optional: if you want the default premium styles
+import '@prooflog/react/dist/index.css';
 
-function AuditLogPage({ logs }) {
+function LogViewer({ logs }) {
   return (
-    <div className="p-8 bg-zinc-950 min-h-screen">
+    <div className="min-h-screen bg-zinc-950 p-8">
       <ProofLogTimeline 
         logs={logs} 
-        title="Security Audit Trail" 
+        title="Audit Trail" 
       />
     </div>
   );
@@ -109,28 +99,42 @@ function AuditLogPage({ logs }) {
 
 ---
 
-## 🧠 Architecture
+## 🏗️ System Flow
 
 ```mermaid
-graph TD
-    A[Client App] -->|1. Perform Action| B(Your API e.g. Hono/Express)
-    B -->|2. prooflog.ingest| C{@prooflog/node}
-    C -->|3. Compute Hash n + Hash n-1| D[Neon PostgreSQL]
-    E[Cron Job] -->|Verify Chain| C
-    F[React Dashboard] -->|View Timeline| G{@prooflog/react}
+sequenceDiagram
+    participant Client as Application client
+    participant API as Hono API Worker
+    participant DB as Neon PostgreSQL
+    
+    Client->>API: Ingest (Payload, IdempotencyKey)
+    API->>DB: Check idempotency cache
+    alt Duplicate Request
+        API-->>Client: Return cached success response
+    else New Request
+        API->>API: Compute Hash (Payload + Previous Hash)
+        API->>DB: Insert block entry & save idempotency cache
+        API-->>Client: Return 202 Accepted
+    end
 ```
 
-1. **Genesis Log**: The first log uses a hardcoded `GENESIS_HASH`.
-2. **Subsequent Logs**: Compute `SHA-256(current_data + previous_hash)`.
-3. **Verification**: The SDK fetches the chain and re-computes every hash. If a single bit in the database changes, the re-computed hash won't match, and the chain breaks.
+---
 
-## 🤝 Contributing
+## 🤝 Local Setup & Contribution
 
-1. Clone the repo
-2. Install dependencies: `pnpm install`
-3. Setup PostgreSQL database and put the URL in `.env`
-4. Push database schema: `pnpm --filter @prooflog/db run push`
-5. Start development: `pnpm -r dev`
+1. Clone the repository and install workspace dependencies:
+   ```bash
+   pnpm install
+   ```
+2. Configure environment credentials in `.env` inside target package paths.
+3. Push database tables and run migration tasks:
+   ```bash
+   pnpm --filter @prooflog/db run push
+   ```
+4. Start local development watch loops:
+   ```bash
+   pnpm -r dev
+   ```
 
 ## License
 
