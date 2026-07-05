@@ -1,0 +1,2 @@
+# Database connection string for local Cloudflare Workers environment
+DATABASE_URL=your-postgress-connection-string
