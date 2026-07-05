@@ -13,6 +13,8 @@ export interface BuildHashInput {
   metadata: unknown;
   createdAt: string;
   previousHash: string;
+  chainVersion?: number;
+  hashAlgorithm?: string;
 }
 
 // Gets the last entry for an org — needed to continue the chain
@@ -49,6 +51,8 @@ export function buildHash(input: BuildHashInput): string {
       target: input.target,
       metadata: input.metadata,
       createdAt: input.createdAt,
+      chainVersion: input.chainVersion,
+      hashAlgorithm: input.hashAlgorithm,
     },
     input.previousHash,
   );

@@ -68,6 +68,8 @@ export class ProofLog {
           const previousHash = lastEntry.length ? lastEntry[0].hash : GENESIS_HASH;
           const sequence = lastEntry.length ? lastEntry[0].sequence + 1 : 1;
           const createdAt = new Date().toISOString();
+          const chainVersion = options.chainVersion ?? 1;
+          const hashAlgorithm = options.hashAlgorithm ?? "sha256";
 
           const hash = computeHash(
             {
@@ -78,6 +80,8 @@ export class ProofLog {
               target: options.target ?? null,
               metadata: options.metadata ?? null,
               createdAt,
+              chainVersion,
+              hashAlgorithm,
             },
             previousHash,
           );
@@ -92,6 +96,8 @@ export class ProofLog {
             hash,
             previousHash,
             idempotencyKey: options.idempotencyKey ?? null,
+            chainVersion,
+            hashAlgorithm,
             createdAt: new Date(createdAt),
           });
 
@@ -186,6 +192,9 @@ export class ProofLog {
               totalEntries,
               tamperedAt: entry.sequence,
               reason: `Chain broken at sequence ${entry.sequence}`,
+              expectedHash: expectedPreviousHash,
+              actualHash: entry.previousHash,
+              failedTimestamp: entry.createdAt.toISOString(),
             };
           }
 
@@ -197,6 +206,8 @@ export class ProofLog {
             target: entry.target,
             metadata: entry.metadata,
             createdAt: entry.createdAt.toISOString(),
+            chainVersion: entry.chainVersion,
+            hashAlgorithm: entry.hashAlgorithm,
           }, entry.previousHash);
 
           if (recomputed !== entry.hash) {
@@ -205,6 +216,9 @@ export class ProofLog {
               totalEntries,
               tamperedAt: entry.sequence,
               reason: `Hash mismatch at sequence ${entry.sequence} — data tampered`,
+              expectedHash: recomputed,
+              actualHash: entry.hash,
+              failedTimestamp: entry.createdAt.toISOString(),
             };
           }
 

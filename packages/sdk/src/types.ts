@@ -10,6 +10,8 @@ export interface IngestOptions {
   target?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
   idempotencyKey?: string;
+  chainVersion?: number;
+  hashAlgorithm?: "sha256" | "sha512" | "sha384";
 }
 
 export interface IngestResult {
@@ -22,6 +24,9 @@ export interface VerifyResult {
   totalEntries: number;
   tamperedAt?: number;
   reason?: string;
+  expectedHash?: string;
+  actualHash?: string;
+  failedTimestamp?: string;
 }
 
 export interface GetEntriesOptions {
@@ -38,6 +43,8 @@ export interface AuditLogEntry {
   metadata: Record<string, unknown> | null;
   hash: string;
   previousHash: string;
+  chainVersion: number;
+  hashAlgorithm: string;
   createdAt: Date;
 }
 

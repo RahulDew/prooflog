@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import app from "../index";
 import { mockEnv, mockActiveKey, createIngestBody } from "./stubs";
+import { GENESIS_HASH } from "@prooflog/crypto";
 
 // Mock the Neon serverless driver and drizzle connection to avoid real DB hits
 vi.mock("@neondatabase/serverless", () => ({
@@ -264,5 +265,72 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     expect(json.data.hash).toBe("cached_hash_123");
     // Ensure we bypassed the write operation
     expect(mockInsert).not.toHaveBeenCalled();
+  });
+
+  it("should support ingestion with custom hashAlgorithm and chainVersion", async () => {
+    // 1. mock api keys fetch
+    mockLimit.mockResolvedValueOnce([mockActiveKey]);
+    // 2. mock chain tip fetch (empty result)
+    mockLimit.mockResolvedValueOnce([]);
+    // 3. mock db insert success
+    mockValues.mockResolvedValueOnce({ inserted: true });
+
+    const res = await app.request("/v1/ingest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer pl_live_goodkey",
+      },
+      body: JSON.stringify({
+        ...createIngestBody(),
+        chainVersion: 2,
+        hashAlgorithm: "sha512",
+      }),
+    }, mockEnv);
+
+    expect(res.status).toBe(202);
+    const json = (await res.json()) as any;
+    expect(json.success).toBe(true);
+    expect(json.data.sequence).toBe(1);
+    expect(json.data.hash).toBeTypeOf("string");
+    // Ensure SHA-512 was used (SHA-512 outputs 128 character hex string)
+    expect(json.data.hash.length).toBe(128);
+  });
+
+  it("should return a detailed report on chain verification mismatch/tampering", async () => {
+    // 1. mock api keys fetch
+    mockLimit.mockResolvedValueOnce([mockActiveKey]);
+    // 2. mock verify audit logs batch fetch with a tampered entry (wrong hash stored)
+    mockLimit.mockResolvedValueOnce([
+      {
+        sequence: 1,
+        action: "user.login",
+        actor: { id: "u_1" },
+        target: null,
+        metadata: null,
+        hash: "tampered_stored_hash_value",
+        previousHash: GENESIS_HASH,
+        createdAt: new Date("2026-07-05T12:00:00.000Z"),
+        chainVersion: 1,
+        hashAlgorithm: "sha256",
+      },
+    ]);
+
+    const res = await app.request("/v1/verify", {
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer pl_live_goodkey",
+      },
+    }, mockEnv);
+
+    expect(res.status).toBe(200);
+    const json = (await res.json()) as any;
+    expect(json.success).toBe(true);
+    expect(json.data.valid).toBe(false);
+    expect(json.data.tamperedAt).toBe(1);
+    expect(json.data.expectedHash).toBeTypeOf("string");
+    expect(json.data.expectedHash.length).toBe(64); // SHA-256
+    expect(json.data.actualHash).toBe("tampered_stored_hash_value");
+    expect(json.data.failedTimestamp).toBe("2026-07-05T12:00:00.000Z");
   });
 });

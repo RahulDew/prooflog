@@ -1,4 +1,4 @@
-import { sha256 } from "@noble/hashes/sha2.js";
+import { sha256, sha384, sha512 } from "@noble/hashes/sha2.js";
 import { bytesToHex } from "@noble/hashes/utils.js";
 import stringify from "fast-json-stable-stringify";
 import type { AuditEvent, ChainEntry, VerificationResult } from "./types";
@@ -6,38 +6,12 @@ import type { AuditEvent, ChainEntry, VerificationResult } from "./types";
 /**
  * ProofLog Cryptographic Core Utility
  *
- * This module is responsible for computing and verifying SHA-256 hash chains
+ * This module is responsible for computing and verifying SHA-256/384/512 hash chains
  * to ensure audit log integrity.
  *
  * Every audit log entry is linked to its preceding entry by including the
  * previous entry's hash in its payload. If any historical record is modified,
  * deleted, or reordered, the cryptographic chain is broken.
- *
- * Example:
- *
- *   const genesisHash = "0".repeat(64);
- *
- *   const event1 = {
- *     organisationId: "org_1",
- *     sequence: 1,
- *     action: "user.login",
- *     actor: { id: "usr_123" },
- *     createdAt: new Date().toISOString()
- *   };
- *
- *   // Compute hash of the first entry
- *   const hash1 = computeHash(event1, genesisHash);
- *
- *   const event2 = {
- *     organisationId: "org_1",
- *     sequence: 2,
- *     action: "project.create",
- *     actor: { id: "usr_123" },
- *     createdAt: new Date().toISOString()
- *   };
- *
- *   // Link second entry to the first
- *   const hash2 = computeHash(event2, hash1);
  */
 
 // The hardcoded starting link for any organization's audit trail.
@@ -47,7 +21,7 @@ export const GENESIS_HASH = "0".repeat(64);
 const encoder = new TextEncoder();
 
 /**
- * Computes a deterministic SHA-256 hash for a given audit event.
+ * Computes a deterministic hash for a given audit event.
  *
  * We use stable JSON stringification to ensure that different runtime
  * environments or object key orderings produce the exact same byte
@@ -55,10 +29,21 @@ const encoder = new TextEncoder();
  *
  * @param event The audit log event containing data to hash
  * @param previousHash The hash of the previous log entry (or GENESIS_HASH if first)
- * @returns The SHA-256 hexadecimal hash string (64 characters)
+ * @returns The hexadecimal hash string
  */
 export function computeHash(event: AuditEvent, previousHash: string): string {
-  const payload = stringify({
+  const algo = event.hashAlgorithm ? event.hashAlgorithm.toLowerCase() : "sha256";
+  let hashFn: (message: Uint8Array) => Uint8Array;
+  if (algo === "sha512") {
+    hashFn = sha512;
+  } else if (algo === "sha384") {
+    hashFn = sha384;
+  } else {
+    hashFn = sha256;
+  }
+
+  const version = event.chainVersion ?? 1;
+  const payloadObj: Record<string, any> = {
     organisationId: event.organisationId,
     sequence: event.sequence,
     action: event.action,
@@ -67,8 +52,16 @@ export function computeHash(event: AuditEvent, previousHash: string): string {
     metadata: event.metadata ?? null,
     createdAt: event.createdAt,
     previousHash,
-  });
-  return bytesToHex(sha256(encoder.encode(payload)));
+  };
+
+  // For version 2 and above, we bind configuration parameters to the payload
+  if (version >= 2) {
+    payloadObj.chainVersion = version;
+    payloadObj.hashAlgorithm = algo;
+  }
+
+  const payload = stringify(payloadObj);
+  return bytesToHex(hashFn(encoder.encode(payload)));
 }
 
 /**
@@ -101,6 +94,9 @@ export function verifyChain(entries: ChainEntry[]): VerificationResult {
         totalEntries: entries.length,
         tamperedAt: entry.sequence,
         reason: `Chain broken at sequence ${entry.sequence}`,
+        expectedHash: expectedPreviousHash,
+        actualHash: entry.previousHash,
+        failedTimestamp: entry.createdAt,
       };
     }
 
@@ -112,6 +108,9 @@ export function verifyChain(entries: ChainEntry[]): VerificationResult {
         totalEntries: entries.length,
         tamperedAt: entry.sequence,
         reason: `Hash mismatch at sequence ${entry.sequence} — data tampered`,
+        expectedHash: recomputed,
+        actualHash: entry.hash,
+        failedTimestamp: entry.createdAt,
       };
     }
   }

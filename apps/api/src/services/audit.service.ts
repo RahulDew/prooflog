@@ -40,6 +40,8 @@ export async function ingestEvent(
  
       const sequence = lastSequence + 1;
       const createdAt = new Date().toISOString();
+      const chainVersion = body.chainVersion ?? 1;
+      const hashAlgorithm = body.hashAlgorithm ?? "sha256";
  
       // Step 2 — compute new hash linking to previous
       const hash = buildHash({
@@ -51,6 +53,8 @@ export async function ingestEvent(
         metadata: body.metadata ?? null,
         createdAt,
         previousHash,
+        chainVersion,
+        hashAlgorithm,
       });
  
       // Step 3 — write to DB
@@ -64,6 +68,8 @@ export async function ingestEvent(
         hash,
         previousHash,
         idempotencyKey: body.idempotencyKey ?? null,
+        chainVersion,
+        hashAlgorithm,
         createdAt: new Date(createdAt),
       });
  
@@ -136,6 +142,9 @@ export async function verifyOrgChain(db: DbClient, organisationId: string) {
           totalEntries,
           tamperedAt: entry.sequence,
           reason: `Chain broken at sequence ${entry.sequence}`,
+          expectedHash: expectedPreviousHash,
+          actualHash: entry.previousHash,
+          failedTimestamp: entry.createdAt.toISOString(),
         };
       }
 
@@ -147,6 +156,8 @@ export async function verifyOrgChain(db: DbClient, organisationId: string) {
         target: entry.target,
         metadata: entry.metadata,
         createdAt: entry.createdAt.toISOString(),
+        chainVersion: entry.chainVersion,
+        hashAlgorithm: entry.hashAlgorithm,
       }, entry.previousHash);
 
       if (recomputed !== entry.hash) {
@@ -155,6 +166,9 @@ export async function verifyOrgChain(db: DbClient, organisationId: string) {
           totalEntries,
           tamperedAt: entry.sequence,
           reason: `Hash mismatch at sequence ${entry.sequence} — data tampered`,
+          expectedHash: recomputed,
+          actualHash: entry.hash,
+          failedTimestamp: entry.createdAt.toISOString(),
         };
       }
 

@@ -6,6 +6,7 @@ import {
   bigint,
   jsonb,
   unique,
+  integer,
 } from "drizzle-orm/pg-core";
 
 export const organisations = pgTable("organisations", {
@@ -31,6 +32,8 @@ export const auditLogs = pgTable(
     hash: text("hash").notNull(),
     previousHash: text("previous_hash").notNull(),
     idempotencyKey: text("idempotency_key"),
+    chainVersion: integer("chain_version").notNull().default(1),
+    hashAlgorithm: text("hash_algorithm").notNull().default("sha256"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [

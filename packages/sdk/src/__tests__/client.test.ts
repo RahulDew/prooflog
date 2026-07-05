@@ -219,4 +219,53 @@ describe("ProofLog SDK", () => {
       expect(parsedBody.idempotencyKey).toBe("test_idem_1");
     });
   });
+
+  describe("ProofLog SDK - Crypto hardening", () => {
+    it("should support custom chainVersion and hashAlgorithm in database mode", async () => {
+      mockLimit.mockResolvedValueOnce([]); // No previous entries
+
+      const log = new ProofLog({ databaseUrl: "postgres://fake" });
+      const result = await log.ingest("org_1", {
+        action: "login",
+        actor: { id: "user_1" },
+        chainVersion: 2,
+        hashAlgorithm: "sha512",
+      });
+
+      expect(mockInsert).toHaveBeenCalled();
+      const insertedValues = mockValues.mock.calls[0][0];
+      expect(insertedValues.chainVersion).toBe(2);
+      expect(insertedValues.hashAlgorithm).toBe("sha512");
+      // SHA-512 outputs 128 character hex string
+      expect(result.hash.length).toBe(128);
+    });
+
+    it("should return expectedHash and actualHash on verification failure in database mode", async () => {
+      // Mock db verify log batch fetch (returns one tampered entry)
+      mockLimit.mockResolvedValueOnce([
+        {
+          sequence: 1,
+          action: "login",
+          actor: { id: "u_1" },
+          target: null,
+          metadata: null,
+          hash: "stored_tampered_hash",
+          previousHash: GENESIS_HASH,
+          createdAt: new Date("2026-07-05T12:00:00.000Z"),
+          chainVersion: 1,
+          hashAlgorithm: "sha256",
+        },
+      ]);
+
+      const log = new ProofLog({ databaseUrl: "postgres://fake" });
+      const result = await log.verify("org_1");
+
+      expect(result.valid).toBe(false);
+      expect(result.tamperedAt).toBe(1);
+      expect(result.expectedHash).toBeTypeOf("string");
+      expect(result.expectedHash!.length).toBe(64); // SHA-256
+      expect(result.actualHash).toBe("stored_tampered_hash");
+      expect(result.failedTimestamp).toBe("2026-07-05T12:00:00.000Z");
+    });
+  });
 });
