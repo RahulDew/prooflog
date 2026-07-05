@@ -8,9 +8,9 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#4f46e5', // indigo-600
-          hover: '#6366f1', // indigo-500
-          glow: 'rgba(79, 70, 229, 0.25)', // For shadows
+          DEFAULT: '#3b82f6', // Electric Blue (blue-500)
+          hover: '#f97316', // Cyber Orange (orange-500)
+          glow: 'rgba(59, 130, 246, 0.25)', // Blue glow
         },
         dark: {
           bg: '#08080a',
