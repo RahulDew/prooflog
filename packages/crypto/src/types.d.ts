@@ -6,6 +6,8 @@ export interface AuditEvent {
     target?: unknown;
     metadata?: unknown;
     createdAt: string;
+    chainVersion?: number;
+    hashAlgorithm?: string;
 }
 export interface ChainEntry extends AuditEvent {
     hash: string;
@@ -16,5 +18,8 @@ export interface VerificationResult {
     totalEntries: number;
     tamperedAt?: number;
     reason?: string;
+    expectedHash?: string;
+    actualHash?: string;
+    failedTimestamp?: string;
 }
 //# sourceMappingURL=types.d.ts.map
