@@ -38,9 +38,11 @@ describe("ProofLog SDK", () => {
   });
 
   it("should initialize with correct config", () => {
-    expect(() => new ProofLog({ databaseUrl: "" })).toThrow("databaseUrl is required");
-    const log = new ProofLog({ databaseUrl: "postgres://fake" });
-    expect(log).toBeInstanceOf(ProofLog);
+    expect(() => new ProofLog({})).toThrow("Either apiKey or databaseUrl is required");
+    const logDb = new ProofLog({ databaseUrl: "postgres://fake" });
+    expect(logDb).toBeInstanceOf(ProofLog);
+    const logApi = new ProofLog({ apiKey: "test-key" });
+    expect(logApi).toBeInstanceOf(ProofLog);
   });
 
   it("should ingest a new log with genesis hash if it's the first log", async () => {
@@ -86,5 +88,72 @@ describe("ProofLog SDK", () => {
     expect(finalInsertedValues.sequence).toBe(3);
     expect(finalInsertedValues.previousHash).toBe("hash2");
     expect(result.sequence).toBe(3);
+  });
+
+  describe("ProofLog SDK - Hosted API mode", () => {
+    beforeEach(() => {
+      vi.stubGlobal("fetch", vi.fn());
+    });
+
+    it("should ingest via fetch in hosted mode", async () => {
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: { sequence: 5, hash: "mock-hash" }
+        })
+      });
+      vi.stubGlobal("fetch", mockFetch);
+
+      const log = new ProofLog({ apiKey: "test-key", baseUrl: "https://api-test.prooflog.dev" });
+      const result = await log.ingest("org_1", {
+        action: "login",
+        actor: { id: "user_1" }
+      });
+
+      expect(mockFetch).toHaveBeenCalledWith("https://api-test.prooflog.dev/v1/ingest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer test-key",
+          "X-Org-Id": "org_1",
+        },
+        body: JSON.stringify({
+          action: "login",
+          actor: { id: "user_1" }
+        })
+      });
+      expect(result).toEqual({ sequence: 5, hash: "mock-hash" });
+    });
+
+    it("should verify via fetch in hosted mode", async () => {
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: { valid: true, totalEntries: 10 }
+        })
+      });
+      vi.stubGlobal("fetch", mockFetch);
+
+      const log = new ProofLog({ apiKey: "test-key", baseUrl: "https://api-test.prooflog.dev" });
+      const result = await log.verify("org_1");
+
+      expect(mockFetch).toHaveBeenCalledWith("https://api-test.prooflog.dev/v1/verify", {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer test-key",
+          "X-Org-Id": "org_1",
+        }
+      });
+      expect(result).toEqual({ valid: true, totalEntries: 10 });
+    });
+
+    it("should throw error for getEntries in hosted mode", async () => {
+      const log = new ProofLog({ apiKey: "test-key" });
+      await expect(log.getEntries("org_1")).rejects.toThrow(
+        "getEntries is not yet supported in hosted API mode. Please configure databaseUrl."
+      );
+    });
   });
 });

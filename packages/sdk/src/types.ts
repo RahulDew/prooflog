@@ -1,5 +1,7 @@
 export interface ProofLogConfig {
-  databaseUrl: string;
+  apiKey?: string;
+  databaseUrl?: string;
+  baseUrl?: string;
 }
 
 export interface IngestOptions {
