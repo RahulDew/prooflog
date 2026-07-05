@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { computeHash, verifyChain, GENESIS_HASH, type AuditEvent, type ChainEntry } from "../hash";
+import { computeHash, verifyChain, GENESIS_HASH } from "../hash";
+import type { AuditEvent, ChainEntry } from "../types";
 
 describe("crypto hash logic", () => {
   it("should compute a deterministic hash regardless of object key ordering", () => {
