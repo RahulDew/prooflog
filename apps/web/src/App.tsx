@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
+import { Footer } from "./components/Footer";
 
 // Lazy load pages for maximum performance (Code Splitting)
 const Home = lazy(() => import("./pages/Home"));
@@ -18,7 +19,7 @@ const PageLoader = () => (
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-dark-bg text-gray-50 font-sans selection:bg-indigo-500/30 selection:text-white overflow-x-hidden">
+      <div className="min-h-screen bg-dark-bg text-gray-50 font-sans selection:bg-indigo-500/30 selection:text-white overflow-x-clip">
         <Navbar />
         <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -28,6 +29,7 @@ function App() {
             <Route path="/changelog" element={<Changelog />} />
           </Routes>
         </Suspense>
+        <Footer />
       </div>
     </BrowserRouter>
   );
