@@ -136,6 +136,15 @@ sequenceDiagram
    pnpm -r dev
    ```
 
+## 💼 Resume Positioning & Highlights
+
+If you are showcasing **ProofLog** on your resume or portfolio, here are the key engineering highlights you can feature:
+
+* **Cryptographic Event Chain**: Implemented a tamper-evident audit logging engine using sequential hashing algorithms (SHA-256/384/512) to mathematically prove the integrity of client event ledgers.
+* **Asynchronous Ingestion Pipeline**: Designed a high-throughput, edge-compatible backend using Hono (Cloudflare Workers) that enqueues logs to a Redis-backed queue (BullMQ), processed asynchronously by a NestJS background worker to decouple HTTP response latency from database write times.
+* **Concurrency & Race Condition Handling**: Engineered retry mechanisms inside the background worker to handle sequence clashes during high concurrency, catching PostgreSQL unique constraint violations to recalculate and insert blocks dynamically.
+* **Robust Node Client SDK**: Developed a typed SDK supporting custom timeouts, automatic exponential backoff retry loops for transient failures, and custom mapped errors (e.g., `AuthenticationError`, `ValidationError`).
+
 ## License
 
 MIT

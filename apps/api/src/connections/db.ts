@@ -3,7 +3,6 @@ import { drizzle } from "drizzle-orm/neon-http";
 
 export function getDb(databaseUrl: string) {
   const sql = neon(databaseUrl);
-  console.log(sql);
   return drizzle(sql);
 }
 

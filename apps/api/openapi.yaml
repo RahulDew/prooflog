@@ -1,0 +1,332 @@
+openapi: 3.0.0
+info:
+  title: ProofLog API
+  description: High-performance, cryptographically-verifiable audit log ledger.
+  version: 1.0.0
+servers:
+  - url: https://api.prooflog.dev
+    description: Production Server
+  - url: http://localhost:3000
+    description: Local Development Server
+
+paths:
+  /v1/ingest:
+    post:
+      summary: Ingest Audit Log Entry
+      description: Enqueues a new audit log event for hashing, sequence computation, and database persistence.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: X-Org-Id
+          in: header
+          required: true
+          description: Unique identifier of the target organization.
+          schema:
+            type: string
+            example: org_99
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngestRequest'
+      responses:
+        '202':
+          description: Ingestion job successfully enqueued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Validation error or malformed payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Authentication failed. Invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Permission denied. API key lacks 'logs:write' scope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/verify:
+    get:
+      summary: Verify Ledger Integrity
+      description: Crypto-graphically verifies the entire hash chain for an organization to prove zero tampering occurred.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: X-Org-Id
+          in: header
+          required: true
+          description: Unique identifier of the target organization.
+          schema:
+            type: string
+            example: org_99
+      responses:
+        '200':
+          description: Cryptographic verification results.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/VerifyResponse'
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Permission denied. API key lacks 'logs:verify' scope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/entries:
+    get:
+      summary: Get Audit Log Entries
+      description: Fetches audit log records with cursor-based pagination and configurable sorting order.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: X-Org-Id
+          in: header
+          required: true
+          description: Unique identifier of the target organization.
+          schema:
+            type: string
+            example: org_99
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of entries to return.
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+        - name: cursor
+          in: query
+          required: false
+          description: Sequence ID cursor used for pagination.
+          schema:
+            type: integer
+        - name: order
+          in: query
+          required: false
+          description: Ordering direction based on sequence ID.
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Paged list of audit logs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AuditLogEntry'
+                      hasMore:
+                        type: boolean
+                        example: false
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Permission denied. API key lacks 'logs:read' scope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
+
+  schemas:
+    Envelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            received:
+              type: boolean
+              example: true
+            status:
+              type: string
+              example: enqueued
+            idempotencyKey:
+              type: string
+              nullable: true
+              example: idem_991
+
+    IngestRequest:
+      type: object
+      required:
+        - action
+        - actor
+      properties:
+        action:
+          type: string
+          example: user.login
+        actor:
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              example: usr_1
+          additionalProperties: true
+        target:
+          type: object
+          properties:
+            id:
+              type: string
+              example: proj_5
+          additionalProperties: true
+        metadata:
+          type: object
+          additionalProperties: true
+        idempotencyKey:
+          type: string
+          example: idem_991
+        chainVersion:
+          type: integer
+          default: 1
+        hashAlgorithm:
+          type: string
+          enum: [sha256, sha384, sha512]
+          default: sha256
+
+    VerifyResponse:
+      type: object
+      required:
+        - valid
+        - totalEntries
+      properties:
+        valid:
+          type: boolean
+          example: true
+        totalEntries:
+          type: integer
+          example: 125
+        tamperedAt:
+          type: integer
+          description: Sequence number of the first identified tampered entry.
+          example: 42
+        reason:
+          type: string
+          example: Hash mismatch at sequence 42
+        expectedHash:
+          type: string
+          example: 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8
+        actualHash:
+          type: string
+          example: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+        failedTimestamp:
+          type: string
+          format: date-time
+          example: '2026-07-09T22:09:57Z'
+
+    AuditLogEntry:
+      type: object
+      properties:
+        sequence:
+          type: integer
+          example: 12
+        action:
+          type: string
+          example: user.login
+        actor:
+          type: object
+          properties:
+            id:
+              type: string
+              example: usr_1
+        target:
+          type: object
+          properties:
+            id:
+              type: string
+              example: proj_5
+        metadata:
+          type: object
+        hash:
+          type: string
+          example: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        previousHash:
+          type: string
+          example: 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-07-09T22:09:57Z'
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Invalid API key or scope authorization failed.

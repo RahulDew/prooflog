@@ -8,6 +8,15 @@ vi.mock("@neondatabase/serverless", () => ({
   neon: vi.fn(() => "mock-sql"),
 }));
 
+// Mock the BullMQ Queue class so we don't try to connect to a live Redis during tests
+vi.mock("bullmq", () => {
+  return {
+    Queue: class {
+      add = vi.fn().mockResolvedValue({ id: "mock_job_id" });
+    },
+  };
+});
+
 const mockInsert = vi.fn();
 const mockValues = vi.fn();
 const mockSelect = vi.fn();
@@ -15,9 +24,11 @@ const mockFrom = vi.fn();
 const mockWhere = vi.fn();
 const mockOrderBy = vi.fn();
 const mockLimit = vi.fn();
+const mockExecute = vi.fn();
 
 vi.mock("drizzle-orm/neon-http", () => ({
   drizzle: vi.fn(() => ({
+    execute: mockExecute,
     insert: mockInsert.mockReturnValue({ values: mockValues }),
     select: mockSelect.mockReturnValue({
       from: mockFrom.mockReturnValue({
@@ -165,10 +176,6 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
   it("should accept ingest and return 202 if authenticated with valid scope", async () => {
     // mock api keys fetch
     mockLimit.mockResolvedValueOnce([mockActiveKey]);
-    // mock chain tip fetch (empty result means first ever log / sequence 1)
-    mockLimit.mockResolvedValueOnce([]);
-    // mock db insert success
-    mockValues.mockResolvedValueOnce({ inserted: true });
 
     const res = await app.request("/v1/ingest", {
       method: "POST",
@@ -183,8 +190,7 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     const json = (await res.json()) as any;
     expect(json.success).toBe(true);
     expect(json.data.received).toBe(true);
-    expect(json.data.sequence).toBe(1);
-    expect(json.data.hash).toBeTypeOf("string");
+    expect(json.data.status).toBe("enqueued");
   });
 
   it("should accept verify and return 200 if authenticated with valid scope", async () => {
@@ -209,8 +215,6 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
   it("should process ingestion and write to database when a new idempotencyKey is used", async () => {
     mockLimit.mockResolvedValueOnce([mockActiveKey]);
     mockLimit.mockResolvedValueOnce([]);
-    mockLimit.mockResolvedValueOnce([]);
-    mockValues.mockResolvedValueOnce({ inserted: true });
 
     const res = await app.request("/v1/ingest", {
       method: "POST",
@@ -227,8 +231,8 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     expect(res.status).toBe(202);
     const json = (await res.json()) as any;
     expect(json.success).toBe(true);
-    expect(json.data.sequence).toBe(1);
-    expect(mockInsert).toHaveBeenCalledTimes(1);
+    expect(json.data.status).toBe("enqueued");
+    expect(json.data.idempotencyKey).toBe("idem_1");
   });
 
   it("should bypass DB insert and return cached result when duplicate idempotencyKey is used", async () => {
@@ -255,6 +259,7 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     expect(res.status).toBe(202);
     const json = (await res.json()) as any;
     expect(json.success).toBe(true);
+    expect(json.data.status).toBe("completed");
     expect(json.data.sequence).toBe(42);
     expect(json.data.hash).toBe("cached_hash_123");
     expect(mockInsert).not.toHaveBeenCalled();
@@ -262,8 +267,6 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
 
   it("should support ingestion with custom hashAlgorithm and chainVersion", async () => {
     mockLimit.mockResolvedValueOnce([mockActiveKey]);
-    mockLimit.mockResolvedValueOnce([]);
-    mockValues.mockResolvedValueOnce({ inserted: true });
 
     const res = await app.request("/v1/ingest", {
       method: "POST",
@@ -281,9 +284,7 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     expect(res.status).toBe(202);
     const json = (await res.json()) as any;
     expect(json.success).toBe(true);
-    expect(json.data.sequence).toBe(1);
-    expect(json.data.hash).toBeTypeOf("string");
-    expect(json.data.hash.length).toBe(128);
+    expect(json.data.status).toBe("enqueued");
   });
 
   it("should return a detailed report on chain verification mismatch/tampering", async () => {
@@ -319,5 +320,42 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     expect(json.data.expectedHash.length).toBe(64);
     expect(json.data.actualHash).toBe("tampered_stored_hash_value");
     expect(json.data.failedTimestamp).toBe("2026-07-05T12:00:00.000Z");
+  });
+
+  describe("ProofLog API - Health Check Probes", () => {
+    const healthMockEnv = {
+      ...mockEnv,
+      REDIS_URL: "redis://localhost:6379",
+    };
+
+    it("should return HTML operational dashboard on root GET", async () => {
+      const res = await app.request("/", { method: "GET" }, healthMockEnv);
+      expect(res.status).toBe(200);
+      const text = await res.text();
+      expect(text).toContain("operational");
+    });
+
+    it("should return 200 OK when database and Redis are operational", async () => {
+      mockExecute.mockResolvedValueOnce({ rows: [[1]] });
+
+      const res = await app.request("/health", { method: "GET" }, healthMockEnv);
+      expect(res.status).toBe(200);
+      const json = (await res.json()) as any;
+      expect(json.success).toBe(true);
+      expect(json.data.status).toBe("ok");
+      expect(json.data.details.database).toBe("up");
+    });
+
+    it("should return 503 Service Unavailable when database probe fails", async () => {
+      mockExecute.mockRejectedValueOnce(new Error("Connection reset"));
+
+      const res = await app.request("/health", { method: "GET" }, healthMockEnv);
+      expect(res.status).toBe(503);
+      const json = (await res.json()) as any;
+      expect(json.success).toBe(false);
+      expect(json.data.status).toBe("degraded");
+      expect(json.data.details.database).toBe("down");
+      expect(json.error).toContain("connection failed");
+    });
   });
 });

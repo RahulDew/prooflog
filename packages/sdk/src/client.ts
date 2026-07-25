@@ -11,11 +11,22 @@ import type {
   GetEntriesOptions,
   GetEntriesResult,
 } from "./types";
+import {
+  ProofLogError,
+  TimeoutError,
+  NetworkError,
+  AuthenticationError,
+  ValidationError,
+  RateLimitError,
+  ServerError,
+} from "./errors";
 
 export class ProofLog {
   private db?: ReturnType<typeof drizzle>;
   private apiKey?: string;
   private baseUrl: string;
+  private timeout: number;
+  private retry: { maxRetries: number; delay: number };
 
   constructor(config: ProofLogConfig) {
     if (!config.apiKey && !config.databaseUrl) {
@@ -24,10 +35,101 @@ export class ProofLog {
     this.apiKey = config.apiKey;
     this.baseUrl = config.baseUrl ?? "https://api.prooflog.dev";
     
+    // Default request timeout is 10 seconds
+    this.timeout = config.timeout ?? 10000;
+    
+    // Default transient retries is 3 attempts, starting with a 1-second delay
+    this.retry = {
+      maxRetries: config.retry?.maxRetries ?? 3,
+      delay: config.retry?.delay ?? 1000,
+    };
+
     if (config.databaseUrl) {
       const sql = neon(config.databaseUrl);
       this.db = drizzle(sql);
     }
+  }
+
+  /**
+   * Safe request client that wraps native fetch with Timeout support.
+   */
+  private async requestWithTimeout(url: string, init: RequestInit): Promise<any> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...init,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timer);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        const errorMessage = errorText || response.statusText;
+
+        switch (response.status) {
+          case 401:
+            throw new AuthenticationError(`Authentication failed: ${errorMessage}`);
+          case 400:
+            throw new ValidationError(`Invalid request payload: ${errorMessage}`);
+          case 429:
+            throw new RateLimitError(`Rate limit exceeded: ${errorMessage}`);
+          default:
+            if (response.status >= 500) {
+              throw new ServerError(`Server error returned: ${errorMessage}`, response.status);
+            }
+            throw new ProofLogError(`Request failed with status ${response.status}: ${errorMessage}`, response.status);
+        }
+      }
+
+      const json = (await response.json()) as any;
+      if (!json.success || !json.data) {
+        throw new ProofLogError(json.error ?? "Malformed API response structure");
+      }
+
+      return json.data;
+    } catch (error: any) {
+      clearTimeout(timer);
+
+      if (error instanceof ProofLogError) {
+        throw error;
+      }
+      if (error.name === "AbortError") {
+        throw new TimeoutError(`Request to ${url} exceeded timeout limit of ${this.timeout}ms`);
+      }
+      throw new NetworkError(`Network connection failure: ${error.message}`);
+    }
+  }
+
+  /**
+   * Wraps requestWithTimeout with an exponential backoff retry loop for transient failures.
+   */
+  private async requestWithRetry(url: string, init: RequestInit): Promise<any> {
+    let lastError: any = null;
+
+    for (let attempt = 0; attempt <= this.retry.maxRetries; attempt++) {
+      try {
+        return await this.requestWithTimeout(url, init);
+      } catch (error: any) {
+        lastError = error;
+
+        // Do not retry client-side authentication or validation failures
+        if (error instanceof AuthenticationError || error instanceof ValidationError) {
+          throw error;
+        }
+
+        // Only retry if we haven't exhausted our retry limits
+        if (attempt < this.retry.maxRetries) {
+          const backoffDelay = this.retry.delay * Math.pow(2, attempt);
+          await new Promise((resolve) => setTimeout(resolve, backoffDelay));
+          continue;
+        }
+      }
+    }
+
+    throw lastError;
   }
 
   /**
@@ -36,7 +138,6 @@ export class ProofLog {
    */
   async ingest(organisationId: string, options: IngestOptions): Promise<IngestResult> {
     if (this.db) {
-      // Prevent duplicate insertion by returning cached ledger metadata if key was already processed.
       if (options.idempotencyKey) {
         const existing = await this.db
           .select()
@@ -50,7 +151,13 @@ export class ProofLog {
           .limit(1);
 
         if (existing.length > 0) {
-          return { sequence: existing[0].sequence, hash: existing[0].hash };
+          return {
+            received: true,
+            status: "completed",
+            idempotencyKey: options.idempotencyKey,
+            sequence: existing[0].sequence,
+            hash: existing[0].hash,
+          };
         }
       }
 
@@ -101,9 +208,14 @@ export class ProofLog {
             createdAt: new Date(createdAt),
           });
 
-          return { sequence, hash };
+          return {
+            received: true,
+            status: "completed",
+            idempotencyKey: options.idempotencyKey ?? null,
+            sequence,
+            hash,
+          };
         } catch (error: any) {
-          // Resolve race conditions under high concurrency if the record was inserted concurrently.
           const isUniqueViolation = error.code === '23505' || error.message?.includes('23505') || error.message?.includes('unique constraint');
           if (isUniqueViolation) {
             if (options.idempotencyKey) {
@@ -118,7 +230,13 @@ export class ProofLog {
                 )
                 .limit(1);
               if (existing.length > 0) {
-                return { sequence: existing[0].sequence, hash: existing[0].hash };
+                return {
+                  received: true,
+                  status: "completed",
+                  idempotencyKey: options.idempotencyKey,
+                  sequence: existing[0].sequence,
+                  hash: existing[0].hash,
+                };
               }
             }
 
@@ -133,7 +251,7 @@ export class ProofLog {
       
       throw new Error("Unreachable");
     } else {
-      const response = await fetch(`${this.baseUrl}/v1/ingest`, {
+      const result = await this.requestWithRetry(`${this.baseUrl}/v1/ingest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -143,17 +261,7 @@ export class ProofLog {
         body: JSON.stringify(options),
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to ingest log: ${response.status} ${response.statusText}${errorText ? ` - ${errorText}` : ""}`);
-      }
-
-      const json = (await response.json()) as any;
-      if (!json.success || !json.data) {
-        throw new Error(json.error ?? "Failed to ingest log: unknown API error");
-      }
-
-      return json.data;
+      return result;
     }
   }
 
@@ -231,7 +339,7 @@ export class ProofLog {
 
       return { valid: true, totalEntries };
     } else {
-      const response = await fetch(`${this.baseUrl}/v1/verify`, {
+      const result = await this.requestWithRetry(`${this.baseUrl}/v1/verify`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${this.apiKey}`,
@@ -239,17 +347,7 @@ export class ProofLog {
         },
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to verify chain: ${response.status} ${response.statusText}${errorText ? ` - ${errorText}` : ""}`);
-      }
-
-      const json = (await response.json()) as any;
-      if (!json.success || !json.data) {
-        throw new Error(json.error ?? "Failed to verify chain: unknown API error");
-      }
-
-      return json.data;
+      return result;
     }
   }
 
@@ -264,9 +362,6 @@ export class ProofLog {
       const limitCount = options.limit ?? 50;
       const orderDirection = options.order === "asc" ? asc : desc;
       
-      // Default cursor behavior:
-      // If desc: we want sequences LESS than cursor
-      // If asc: we want sequences GREATER than cursor
       let cursorCondition = undefined;
       if (options.cursor !== undefined) {
         cursorCondition = options.order === "asc" 
@@ -278,7 +373,6 @@ export class ProofLog {
         ? and(eq(auditLogs.organisationId, organisationId), cursorCondition)
         : eq(auditLogs.organisationId, organisationId);
 
-      // Fetch limit + 1 to determine if there are more pages
       const results = await this.db
         .select({
           sequence: auditLogs.sequence,
@@ -303,7 +397,29 @@ export class ProofLog {
         hasMore,
       };
     } else {
-      throw new Error("getEntries is not yet supported in hosted API mode. Please configure databaseUrl.");
+      const params = new URLSearchParams();
+      if (options.limit !== undefined) {
+        params.append("limit", options.limit.toString());
+      }
+      if (options.cursor !== undefined) {
+        params.append("cursor", options.cursor.toString());
+      }
+      if (options.order !== undefined) {
+        params.append("order", options.order);
+      }
+
+      const queryString = params.toString();
+      const url = `${this.baseUrl}/v1/entries${queryString ? `?${queryString}` : ""}`;
+
+      const result = await this.requestWithRetry(url, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${this.apiKey}`,
+          "X-Org-Id": organisationId,
+        },
+      });
+
+      return result;
     }
   }
 }

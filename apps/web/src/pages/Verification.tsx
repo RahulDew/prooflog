@@ -15,8 +15,10 @@ interface VerifyResult {
 export default function Verification() {
   const [apiKey, setApiKey] = useState("")
   const [loading, setLoading] = useState(false)
+  const [loadingEntries, setLoadingEntries] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<VerifyResult | null>(null)
+  const [entries, setEntries] = useState<any[] | null>(null)
 
   const handleVerify = async (e: FormEvent) => {
     e.preventDefault()
@@ -28,6 +30,7 @@ export default function Verification() {
     setLoading(true)
     setError(null)
     setResult(null)
+    setEntries(null)
 
     try {
       const response = await fetch(`${API_BASE_URL}/v1/verify`, {
@@ -40,8 +43,28 @@ export default function Verification() {
       const json = await response.json()
       if (!response.ok || !json.success) {
         setError(json.error || "Failed to execute cryptographic verification check.")
-      } else {
-        setResult(json.data)
+        return
+      }
+
+      setResult(json.data)
+
+      // Fetch recent entries
+      setLoadingEntries(true)
+      try {
+        const entriesResponse = await fetch(`${API_BASE_URL}/v1/entries?limit=10&order=desc`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${apiKey.trim()}`,
+          },
+        })
+        const entriesJson = await entriesResponse.json()
+        if (entriesResponse.ok && entriesJson.success) {
+          setEntries(entriesJson.data.data)
+        }
+      } catch (entriesErr) {
+        console.error("Failed to load entries:", entriesErr)
+      } finally {
+        setLoadingEntries(false)
       }
     } catch (err: any) {
       console.error("Verification failed:", err)
@@ -158,6 +181,57 @@ export default function Verification() {
                     </div>
                   )}
                 </div>
+              </div>
+            )}
+
+            {/* Recent Audit Logs Panel */}
+            {(loadingEntries || (entries && entries.length > 0)) && (
+              <div className="mt-8 p-6 rounded-2xl border border-white/10 bg-white/[0.01] backdrop-blur-xl text-left">
+                <h3 className="text-lg font-bold text-gray-50 mb-6 flex items-center gap-2">
+                  <Database className="w-5 h-5 text-blue-400" />
+                  <span>Recent Audit Log Entries</span>
+                </h3>
+
+                {loadingEntries ? (
+                  <div className="flex items-center gap-3 text-zinc-500 py-4 justify-center">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Loading logs...</span>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {entries?.map((entry) => (
+                      <div key={entry.sequence} className="p-4 rounded-xl border border-white/5 bg-[#07060a]/50 hover:bg-[#07060a]/80 transition-all">
+                        <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
+                          <div className="flex items-center gap-3">
+                            <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono font-bold">
+                              #{entry.sequence}
+                            </span>
+                            <span className="font-semibold text-gray-200 text-sm">
+                              {entry.action}
+                            </span>
+                          </div>
+                          <span className="text-zinc-500 text-xs font-mono">
+                            {new Date(entry.createdAt).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-zinc-400">
+                          <div>
+                            <span className="text-zinc-500 font-bold block mb-1">Actor:</span>
+                            <pre className="p-2 rounded bg-white/[0.02] border border-white/5 overflow-x-auto text-[10px]">
+                              {JSON.stringify(entry.actor, null, 2)}
+                            </pre>
+                          </div>
+                          <div>
+                            <span className="text-zinc-500 font-bold block mb-1">Hash:</span>
+                            <pre className="p-2 rounded bg-white/[0.02] border border-white/5 overflow-x-auto text-[10px] text-zinc-500 break-all whitespace-pre-wrap">
+                              {entry.hash}
+                            </pre>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

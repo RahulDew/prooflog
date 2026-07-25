@@ -2,6 +2,11 @@ export interface ProofLogConfig {
   apiKey?: string;
   databaseUrl?: string;
   baseUrl?: string;
+  timeout?: number; // Request timeout in milliseconds (default: 10000)
+  retry?: {
+    maxRetries?: number; // Max retry count for transient failures (default: 3)
+    delay?: number;      // Delay between retries in milliseconds (default: 1000)
+  };
 }
 
 export interface IngestOptions {
@@ -15,8 +20,11 @@ export interface IngestOptions {
 }
 
 export interface IngestResult {
-  sequence: number;
-  hash: string;
+  received: boolean;
+  status: "enqueued" | "completed";
+  idempotencyKey?: string | null;
+  sequence?: number;
+  hash?: string;
 }
 
 export interface VerifyResult {
