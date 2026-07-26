@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
+    "@prooflog/enums": "workspace:*",
     "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {

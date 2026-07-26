@@ -231,6 +231,9 @@ importers:
       '@neondatabase/serverless':
         specifier: ^1.1.0
         version: 1.1.0
+      '@prooflog/enums':
+        specifier: workspace:*
+        version: link:../enums
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@cloudflare/workers-types@4.20260627.1)(@neondatabase/serverless@1.1.0)(postgres@3.4.9)
@@ -241,6 +244,12 @@ importers:
       drizzle-kit:
         specifier: ^0.31.10
         version: 0.31.10
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  packages/enums:
+    devDependencies:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
