@@ -31,21 +31,23 @@ export default function Home() {
     const interval = setInterval(() => {
       const actions = ["auth.mfa_enabled", "apiKey.created", "tenant.config_updated", "billing.plan_upgraded", "user.logout"];
       const randomAction = actions[Math.floor(Math.random() * actions.length)];
-      const nextSeq = (logs[0]?.sequence || 1042) + 1;
-      const newLog: LiveLog = {
-        sequence: nextSeq,
-        action: randomAction,
-        idempotencyKey: `req_${Math.random().toString(36).substring(2, 7)}`,
-        hash: `sha256_${Math.random().toString(36).substring(2, 10)}...${Math.random().toString(36).substring(2, 5)}`,
-        status: "Verified",
-        timestamp: "Just now"
-      };
 
-      setLogs((prev) => [newLog, ...prev.slice(0, 4)]);
+      setLogs((prev) => {
+        const nextSeq = (prev[0]?.sequence || 1042) + 1;
+        const newLog: LiveLog = {
+          sequence: nextSeq,
+          action: randomAction,
+          idempotencyKey: `req_${Math.random().toString(36).substring(2, 7)}`,
+          hash: `sha256_${Math.random().toString(36).substring(2, 10)}...${Math.random().toString(36).substring(2, 5)}`,
+          status: "Verified",
+          timestamp: "Just now"
+        };
+        return [newLog, ...prev.slice(0, 4)];
+      });
     }, 4500);
 
     return () => clearInterval(interval);
-  }, [logs]);
+  }, []);
 
   // GSAP Animations setup
   useGSAP(
@@ -96,16 +98,25 @@ export default function Home() {
         isDark ? "bg-[#050505] text-zinc-100" : "bg-[#ffffff] text-zinc-900"
       }`}
     >
-      {/* Subtle Background Grid */}
-      <div className="fixed inset-0 pointer-events-none z-0">
+      {/* Vintage Retro Grid Pattern with Radial Vignette */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Vignette Masked Grid */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0"
           style={{
             backgroundImage: isDark
-              ? "linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px)"
-              : "linear-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.08) 1px, transparent 1px)",
-            backgroundSize: "40px 40px"
+              ? "linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)"
+              : "linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+            WebkitMaskImage: "radial-gradient(circle at 50% 35%, black 30%, rgba(0, 0, 0, 0.4) 65%, transparent 90%)",
+            maskImage: "radial-gradient(circle at 50% 35%, black 30%, rgba(0, 0, 0, 0.4) 65%, transparent 90%)"
           }}
+        />
+        {/* Vintage CRT Warm Sepia Center Ambient Glow */}
+        <div
+          className={`absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] pointer-events-none rounded-full blur-[140px] opacity-20 ${
+            isDark ? "bg-orange-600/30" : "bg-amber-400/20"
+          }`}
         />
       </div>
 

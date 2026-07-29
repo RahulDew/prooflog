@@ -1,3 +1,5 @@
+import { Clock } from "lucide-react";
+
 interface MetricsDashboardProps {
   isDark: boolean;
 }
@@ -5,46 +7,59 @@ interface MetricsDashboardProps {
 export function MetricsDashboard({ isDark }: MetricsDashboardProps) {
   return (
     <section className="py-20 gsap-reveal">
-      <div className="text-left mb-8">
-        <span className="text-xs font-mono uppercase tracking-widest text-orange-500 font-bold">Metrics</span>
-        <h2 className="text-3xl font-extrabold mt-1">State Integrity Dashboard</h2>
+      <div className="flex items-start justify-between mb-8">
+        <div>
+          <span className="text-xs font-mono uppercase tracking-widest text-orange-500 font-bold">Metrics</span>
+          <h2 className="text-3xl font-extrabold mt-1">State Integrity Dashboard</h2>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1 rounded-none border text-xs font-mono uppercase tracking-wider border-orange-500/40 bg-orange-500/10 text-orange-400">
+          <Clock className="w-3.5 h-3.5" />
+          <span>Coming Soon</span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Stat Cards */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className={`p-6 rounded-none border ${isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-white border-zinc-300 shadow-sm"}`}>
-            <span className={`text-xs font-mono uppercase tracking-wider ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>System Integrity</span>
-            <p className="text-4xl font-extrabold text-emerald-400 mt-2 font-mono">100.00%</p>
-            <span className="text-[11px] text-zinc-500 mt-1 block">Zero chain breaks recorded</span>
-          </div>
-          <div className={`p-6 rounded-none border ${isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-white border-zinc-300 shadow-sm"}`}>
-            <span className={`text-xs font-mono uppercase tracking-wider ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>Total Audited Events</span>
-            <p className="text-4xl font-extrabold text-blue-500 mt-2 font-mono">14.8M+</p>
-            <span className="text-[11px] text-zinc-500 mt-1 block">Across all active org ledgers</span>
+      {/* Blurred preview with Coming Soon overlay */}
+      <div className="relative">
+        {/* Faded preview content */}
+        <div className="opacity-30 pointer-events-none select-none blur-[2px]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-4 space-y-6">
+              <div className={`p-6 rounded-none border ${isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-white border-zinc-300"}`}>
+                <span className={`text-xs font-mono uppercase tracking-wider ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>System Integrity</span>
+                <p className="text-4xl font-extrabold text-emerald-400 mt-2 font-mono">100.00%</p>
+                <span className="text-[11px] text-zinc-500 mt-1 block">Zero chain breaks recorded</span>
+              </div>
+              <div className={`p-6 rounded-none border ${isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-white border-zinc-300"}`}>
+                <span className={`text-xs font-mono uppercase tracking-wider ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>Total Audited Events</span>
+                <p className="text-4xl font-extrabold text-blue-500 mt-2 font-mono">14.8M+</p>
+                <span className="text-[11px] text-zinc-500 mt-1 block">Across all active org ledgers</span>
+              </div>
+            </div>
+            <div className={`lg:col-span-8 p-6 rounded-none border flex flex-col justify-between ${isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-white border-zinc-300"}`}>
+              <div className="flex items-center justify-between mb-4">
+                <span className={`text-xs font-mono font-bold uppercase tracking-wider ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>Verifications / Hour</span>
+                <span className="text-xs text-emerald-400 font-mono font-bold">100% PASSED</span>
+              </div>
+              <div className="h-44 w-full">
+                <svg viewBox="0 0 500 150" className="w-full h-full">
+                  <polyline points="0,120 50,120 50,80 120,80 120,100 200,100 200,50 300,50 300,70 400,70 400,30 500,30" fill="none" stroke="#f97316" strokeWidth="2.5" />
+                  <polygon points="0,120 50,120 50,80 120,80 120,100 200,100 200,50 300,50 300,70 400,70 400,30 500,30 500,150 0,150" fill="#f97316" opacity="0.1" />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Sharp Stepped Line Graph */}
-        <div className={`lg:col-span-8 p-6 rounded-none border flex flex-col justify-between ${isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-white border-zinc-300 shadow-sm"}`}>
-          <div className="flex items-center justify-between mb-4">
-            <span className={`text-xs font-mono font-bold uppercase tracking-wider ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>Verifications / Hour</span>
-            <span className="text-xs text-emerald-400 font-mono font-bold">100% PASSED</span>
-          </div>
-          <div className="h-44 w-full">
-            <svg viewBox="0 0 500 150" className="w-full h-full">
-              <polyline
-                points="0,120 50,120 50,80 120,80 120,100 200,100 200,50 300,50 300,70 400,70 400,30 500,30"
-                fill="none"
-                stroke="#f97316"
-                strokeWidth="2.5"
-              />
-              <polygon
-                points="0,120 50,120 50,80 120,80 120,100 200,100 200,50 300,50 300,70 400,70 400,30 500,30 500,150 0,150"
-                fill="#f97316"
-                opacity="0.1"
-              />
-            </svg>
+        {/* Coming Soon Centered Banner */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+          <div className={`px-6 py-5 rounded-none border text-center ${isDark ? "bg-[#0a0a0c]/90 border-zinc-800" : "bg-white/90 border-zinc-300"}`}>
+            <div className="flex items-center justify-center gap-2 text-orange-500 mb-2">
+              <Clock className="w-5 h-5" />
+              <span className="text-sm font-mono font-bold uppercase tracking-widest">Under Development</span>
+            </div>
+            <p className={`text-xs font-mono max-w-xs ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
+              The live metrics dashboard is currently being built. Real-time chain integrity stats will be available in an upcoming release.
+            </p>
           </div>
         </div>
       </div>

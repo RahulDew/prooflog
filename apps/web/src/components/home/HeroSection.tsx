@@ -49,14 +49,14 @@ export function HeroSection({ isDark }: HeroSectionProps) {
         <div className="flex flex-wrap items-center gap-4 pt-2">
           <Link
             to="/docs"
-            className="h-12 px-6 rounded-none bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer"
+            className="h-12 px-6 rounded-none bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer dark-hover-shimmer"
           >
             <span>Read Documentation</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <button
             onClick={handleCopy}
-            className={`h-12 px-5 rounded-none border font-mono text-xs transition-all flex items-center gap-3 cursor-pointer ${
+            className={`h-12 px-5 rounded-none border font-mono text-xs transition-all flex items-center gap-3 cursor-pointer dark-hover-shimmer ${
               isDark
                 ? "bg-[#0a0a0c] border-zinc-800 hover:border-zinc-700 text-zinc-300"
                 : "bg-white border-zinc-300 hover:border-zinc-400 text-zinc-800"

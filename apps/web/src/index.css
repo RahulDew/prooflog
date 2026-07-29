@@ -58,6 +58,54 @@
   }
 }
 
+/* Monochrome Left-to-Right Travelling Border Shimmer Keyframes */
+@keyframes borderShimmerLeftToRight {
+  0% {
+    background-position: -200% 0%;
+  }
+  100% {
+    background-position: 200% 0%;
+  }
+}
+
+/* Minimalist Monochrome Gray Border Shimmer for Dark Mode */
+.dark-hover-shimmer {
+  position: relative;
+}
+
+.dark .dark-hover-shimmer::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.05) 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.dark .dark-hover-shimmer:hover::before {
+  opacity: 1;
+  animation: borderShimmerLeftToRight 5s linear infinite;
+}
+
+.dark .dark-hover-shimmer:hover {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
 /* Global override to hide native OS cursor across all interactive elements & hover states */
 @media (any-hover: hover) and (any-pointer: fine) {
   *,
