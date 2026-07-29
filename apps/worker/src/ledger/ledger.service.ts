@@ -8,9 +8,7 @@ import { computeHash, GENESIS_HASH } from '@prooflog/crypto';
 export class LedgerService {
   private readonly logger = new Logger(LedgerService.name);
 
-  constructor(
-    private readonly db: DrizzleConnection,
-  ) {}
+  constructor(private readonly db: DrizzleConnection) {}
 
   /**
    * Appends an audit log entry cryptographically.

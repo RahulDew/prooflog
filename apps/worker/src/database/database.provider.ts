@@ -2,6 +2,9 @@ import { neon } from '@neondatabase/serverless';
 import { drizzle, NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import { ConfigService } from '@nestjs/config';
 
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 // 1. Empty class token: prevents JavaScript inheritance crashes in mocked unit tests
 export abstract class DrizzleConnection {}
 

@@ -15,6 +15,9 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   const logger = app.get(LoggerService);
-  logger.log('ProofLog background queue worker initialized successfully.', 'Bootstrap');
+  logger.log(
+    'ProofLog background queue worker initialized successfully.',
+    'Bootstrap',
+  );
 }
 bootstrap();

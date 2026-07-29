@@ -1,4 +1,11 @@
-import { pgTable, uuid, text, timestamp, pgEnum, bigint } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  text,
+  timestamp,
+  pgEnum,
+  bigint,
+} from "drizzle-orm/pg-core";
 import { DbMode } from "@prooflog/enums";
 
 // Define the native PostgreSQL enum type using uppercase values

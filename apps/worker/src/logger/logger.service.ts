@@ -18,9 +18,7 @@ export class LoggerService implements NestLoggerService {
     const grayTime = `\x1b[90m${timestamp}\x1b[0m`;
 
     const messageString =
-      typeof message === 'object'
-        ? JSON.stringify(message, null, 2)
-        : message;
+      typeof message === 'object' ? JSON.stringify(message, null, 2) : message;
 
     return `${prefix} ${levelTag} ${grayTime} ${formattedContext}${messageString}`;
   }
@@ -30,7 +28,9 @@ export class LoggerService implements NestLoggerService {
   }
 
   error(message: any, trace?: string, context?: string) {
-    console.error(this.formatMessage('ERROR', '\x1b[31m\x1b[1m', message, context)); // Bold Red
+    console.error(
+      this.formatMessage('ERROR', '\x1b[31m\x1b[1m', message, context),
+    ); // Bold Red
     if (trace) {
       console.error(`\x1b[31mStack Trace:\n${trace}\x1b[0m`);
     }
