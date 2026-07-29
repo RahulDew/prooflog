@@ -2,7 +2,7 @@ export interface ReleaseInfo {
   version: string;
   date: string;
   title: string;
-  type: "major" | "feature" | "fix";
+  type: "major" | "minor" | "patch";
   description: string;
   changes: string[];
 }
@@ -12,12 +12,12 @@ export const RELEASES: ReleaseInfo[] = [
     version: "v0.1.2",
     date: "July 5, 2026",
     title: "Cryptographic Hardening & Idempotent Ingestion",
-    type: "feature",
+    type: "patch",
     description: "Added support for custom cryptographic hashing algorithms (SHA-384, SHA-512) and explicit ledger block version metadata. Integrated unique idempotency keys to guarantee query duplication recovery under high concurrency retry scenarios.",
     changes: [
       "Dynamic SHA-256/384/512 cryptographic ledger links",
-      "Idempotency constraints for log Ingestion safety",
-      "Detailed verify verification failure diagnostics",
+      "Idempotency constraints for log ingestion safety",
+      "Detailed chain verification failure diagnostics",
       "Outfit typography integration and custom branding logo"
     ]
   },
@@ -25,7 +25,7 @@ export const RELEASES: ReleaseInfo[] = [
     version: "v0.1.1",
     date: "June 29, 2026",
     title: "Performance Optimizations & React Support",
-    type: "feature",
+    type: "patch",
     description: "Added code-splitting via React.lazy and optimized the Vite build process. The SDK now uses highly optimized cryptographic hashing algorithms internally.",
     changes: [
       "Introduced @prooflog/web core landing page",
@@ -37,7 +37,7 @@ export const RELEASES: ReleaseInfo[] = [
     version: "v0.1.0",
     date: "June 25, 2026",
     title: "Initial Alpha Release",
-    type: "major",
+    type: "minor",
     description: "The very first release of the ProofLog Node.js SDK. Introduces the core primitives for zero-trust immutable audit logging.",
     changes: [
       "log.ingest() for appending secure logs",

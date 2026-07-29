@@ -1,102 +1,108 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 export function Footer() {
+  const { isDark } = useTheme();
+
   return (
-    <footer className="border-t border-white/10 bg-dark-bg relative z-20">
+    <footer
+      className={`border-t transition-colors relative z-20 ${
+        isDark
+          ? "border-zinc-800 bg-[#050505] text-zinc-100"
+          : "border-zinc-200 bg-white text-zinc-900"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-2.5 text-gray-50 no-underline shrink-0">
-              <span className="grid place-items-center w-7 h-7 rounded-lg bg-gradient-to-br from-[#161220] to-[#0b0a10] border border-primary-glow shadow-[0_0_15px_rgba(79,70,229,0.15)_inset]">
-                <svg className="w-[15px] h-[15px]" viewBox="0 0 200 200" fill="none">
-                  <defs>
-                    <linearGradient id="prooflog-grad-foot" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stop-color="#3B82F6" />
-                      <stop offset="100%" stop-color="#F97316" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M 60,40 L 120,40 A 30,30 0 0,1 120,100 L 60,100 L 60,80 L 120,80 A 10,10 0 0,0 120,60 L 60,60 Z" fill="url(#prooflog-grad-foot)" />
-                  <rect x="60" y="110" width="20" height="15" rx="6" fill="url(#prooflog-grad-foot)" />
-                  <rect x="60" y="135" width="20" height="15" rx="6" fill="url(#prooflog-grad-foot)" />
-                  <rect x="60" y="160" width="20" height="15" rx="6" fill="url(#prooflog-grad-foot)" />
-                </svg>
+            <Link to="/" className="flex items-center gap-2.5 no-underline shrink-0">
+              <span
+                className={`grid place-items-center w-7 h-7 rounded-none border font-mono font-bold text-xs ${
+                  isDark
+                    ? "bg-zinc-900 border-zinc-700 text-orange-500"
+                    : "bg-zinc-100 border-zinc-300 text-blue-600"
+                }`}
+              >
+                PL
               </span>
               <span className="font-bold text-base tracking-tight">ProofLog</span>
             </Link>
-            <p className="text-zinc-400 text-sm max-w-sm leading-relaxed">
+            <p className={`text-xs max-w-sm leading-relaxed ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
               Zero-trust serverless audit ledger for B2B SaaS applications. Secure your event compliance tracking with mathematical certainty.
             </p>
           </div>
 
           {/* Product Links */}
           <div>
-            <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-4">Product</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-orange-500 mb-4">Product</h4>
+            <ul className="space-y-2 text-xs font-mono">
               <li>
-                <Link to="/docs" className="text-zinc-500 hover:text-indigo-400 transition-colors no-underline">
+                <Link to="/docs" className={`hover:underline no-underline ${isDark ? "text-zinc-400 hover:text-white" : "text-zinc-600 hover:text-zinc-900"}`}>
                   Documentation
                 </Link>
               </li>
               <li>
-                <Link to="/verification" className="text-zinc-500 hover:text-indigo-400 transition-colors no-underline">
+                <Link to="/verification" className={`hover:underline no-underline ${isDark ? "text-zinc-400 hover:text-white" : "text-zinc-600 hover:text-zinc-900"}`}>
                   Verify Ledger
                 </Link>
               </li>
               <li>
-                <a href="#installation" className="text-zinc-500 hover:text-indigo-400 transition-colors no-underline">
+                <Link to="/docs" className={`hover:underline no-underline ${isDark ? "text-zinc-400 hover:text-white" : "text-zinc-600 hover:text-zinc-900"}`}>
                   SDK Install
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Developer / Company Links */}
+          {/* Developer Links */}
           <div>
-            <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-4">Developers</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-blue-500 mb-4">Developers</h4>
+            <ul className="space-y-2 text-xs font-mono">
               <li>
-                <Link to="/changelog" className="text-zinc-500 hover:text-indigo-400 transition-colors no-underline">
+                <Link to="/changelog" className={`hover:underline no-underline ${isDark ? "text-zinc-400 hover:text-white" : "text-zinc-600 hover:text-zinc-900"}`}>
                   Changelog
                 </Link>
               </li>
               <li>
-                <a 
-                  href="https://github.com/RahulDew/prooflog" 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="text-zinc-500 hover:text-indigo-400 transition-colors no-underline"
+                <a
+                  href="https://github.com/RahulDew/prooflog"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`hover:underline no-underline ${isDark ? "text-zinc-400 hover:text-white" : "text-zinc-600 hover:text-zinc-900"}`}
                 >
                   GitHub
                 </a>
               </li>
               <li>
-                <a 
-                  href="https://npmjs.com/package/@prooflog/node" 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="text-zinc-500 hover:text-indigo-400 transition-colors no-underline"
+                <a
+                  href="https://npmjs.com/package/@prooflog/node"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`hover:underline no-underline ${isDark ? "text-zinc-400 hover:text-white" : "text-zinc-600 hover:text-zinc-900"}`}
                 >
                   NPM Registry
                 </a>
               </li>
             </ul>
           </div>
-
         </div>
 
-        <div className="border-t border-white/5 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-zinc-500 text-xs">
-            Open-source on <a href="https://github.com/RahulDew/prooflog" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-indigo-400 underline transition-colors">GitHub</a>.
+        <div className={`border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono ${isDark ? "border-zinc-800 text-zinc-500" : "border-zinc-200 text-zinc-600"}`}>
+          <p>
+            Open-source on{" "}
+            <a href="https://github.com/RahulDew/prooflog" target="_blank" rel="noreferrer" className="underline font-bold">
+              GitHub
+            </a>
+            .
           </p>
-          
-          <div className="flex items-center gap-2 text-xs text-zinc-500">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]" />
+
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 bg-emerald-400" />
             <span>Cryptographic link chains operational</span>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }

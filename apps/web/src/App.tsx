@@ -2,6 +2,9 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+import { ThemeProvider } from "./context/ThemeContext";
+import { SmoothCursor } from "./components/SmoothCursor";
+import { SmoothScroll } from "./components/SmoothScroll";
 
 // Lazy load pages for maximum performance (Code Splitting)
 const Home = lazy(() => import("./pages/Home"));
@@ -12,26 +15,31 @@ const Changelog = lazy(() => import("./pages/Changelog"));
 // A lightweight fallback while pages load
 const PageLoader = () => (
   <div className="pt-24 min-h-screen flex items-center justify-center">
-    <div className="w-6 h-6 border-2 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+    <div className="w-6 h-6 border-2 border-orange-500/20 border-t-orange-500 rounded-none animate-spin"></div>
   </div>
 );
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-dark-bg text-gray-50 font-sans selection:bg-indigo-500/30 selection:text-white overflow-x-clip">
-        <Navbar />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/docs/*" element={<Docs />} />
-            <Route path="/verification" element={<Verification />} />
-            <Route path="/changelog" element={<Changelog />} />
-          </Routes>
-        </Suspense>
-        <Footer />
-      </div>
-    </BrowserRouter>
+    <ThemeProvider>
+      <SmoothScroll>
+        <SmoothCursor />
+        <BrowserRouter>
+          <div className="min-h-screen font-sans selection:bg-orange-500 selection:text-white overflow-x-clip">
+            <Navbar />
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/docs/*" element={<Docs />} />
+                <Route path="/verification" element={<Verification />} />
+                <Route path="/changelog" element={<Changelog />} />
+              </Routes>
+            </Suspense>
+            <Footer />
+          </div>
+        </BrowserRouter>
+      </SmoothScroll>
+    </ThemeProvider>
   );
 }
 
