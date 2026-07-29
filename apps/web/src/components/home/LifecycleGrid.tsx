@@ -22,7 +22,7 @@ export function LifecycleGrid({ isDark }: LifecycleGridProps) {
           return (
             <div
               key={idx}
-              className={`gsap-lifecycle-card p-6 rounded-none border transition-all duration-200 group ${
+              className={`gsap-lifecycle-card p-6 rounded-none border transition-all duration-200 group dark-hover-shimmer ${
                 isDark
                   ? "bg-[#0a0a0c] border-zinc-800 hover:border-orange-500"
                   : "bg-white border-zinc-300 hover:border-blue-600 shadow-sm"
