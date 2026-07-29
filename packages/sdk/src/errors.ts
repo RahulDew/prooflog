@@ -5,8 +5,8 @@ export class ProofLogError extends Error {
   constructor(message: string, public readonly statusCode?: number) {
     super(message);
     this.name = this.constructor.name;
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
+    if ((Error as any).captureStackTrace) {
+      (Error as any).captureStackTrace(this, this.constructor);
     }
   }
 }
