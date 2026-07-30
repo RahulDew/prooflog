@@ -7,6 +7,7 @@ import {
 } from "../constants/docs.constants";
 import { useTheme } from "../context/ThemeContext";
 import { CodeBlock } from "../components/CodeBlock";
+import { PackageManagerInstall } from "../components/PackageManagerInstall";
 
 const ALL_SECTION_IDS = DOC_SECTIONS.map((s) => s.id);
 
@@ -337,12 +338,16 @@ export default function Docs() {
                 </div>
               )}
 
-              {section.codeBlock && (
-                <CodeBlock
-                  code={section.codeBlock}
-                  language={section.codeLanguage || "typescript"}
-                  isDark={isDark}
-                />
+              {section.id === "installation" ? (
+                <PackageManagerInstall isDark={isDark} />
+              ) : (
+                section.codeBlock && (
+                  <CodeBlock
+                    code={section.codeBlock}
+                    language={section.codeLanguage || "typescript"}
+                    isDark={isDark}
+                  />
+                )
               )}
             </section>
           ))}

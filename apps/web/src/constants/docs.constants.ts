@@ -75,7 +75,7 @@ export const DOC_SECTIONS: DocSection[] = [
     category: "Getting Started",
     title: "Quick Installation",
     description: "Install the official ProofLog Node.js SDK using your package manager of choice:",
-    codeBlock: "$ pnpm add @prooflog/node\n# Or with npm / yarn / bun:\n$ npm install @prooflog/node",
+    codeBlock: "$ npm install @prooflog/node\n$ pnpm add @prooflog/node\n$ yarn add @prooflog/node\n$ bun add @prooflog/node",
     codeLanguage: "terminal"
   },
   {
