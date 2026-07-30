@@ -72,9 +72,9 @@ export function CodeBlock({
         }`}
       >
         <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+          <div className="w-2.5 h-2.5 rounded-none bg-red-500" />
+          <div className="w-2.5 h-2.5 rounded-none bg-yellow-500" />
+          <div className="w-2.5 h-2.5 rounded-none bg-green-500" />
           <span
             className={`ml-2 text-xs font-mono ${
               isDark ? "text-zinc-400" : "text-zinc-600 font-medium"

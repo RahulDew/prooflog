@@ -134,20 +134,36 @@ console.log('Chain Intact:', result.valid);`;
 
             {/* Feature Callout Details */}
             <div className="lg:col-span-5 text-left space-y-4 font-mono text-xs">
-              <div className="p-3 border border-zinc-800/80 bg-black/40">
+              <div
+                className={`p-3 border rounded-none ${
+                  isDark
+                    ? "border-zinc-800/80 bg-black/40 text-zinc-400"
+                    : "border-zinc-300 bg-white text-zinc-600 shadow-sm"
+                }`}
+              >
                 <div className="flex items-center gap-2 text-orange-500 font-bold mb-1">
                   <Shield className="w-4 h-4" />
                   <span>Sequential Hash Linking</span>
                 </div>
-                <p className="text-zinc-400 text-[11px]">Re-computes SHA-256 digests across historical event payloads.</p>
+                <p className={`text-[11px] ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
+                  Re-computes SHA-256 digests across historical event payloads.
+                </p>
               </div>
 
-              <div className="p-3 border border-zinc-800/80 bg-black/40">
-                <div className="flex items-center gap-2 text-blue-400 font-bold mb-1">
-                  <CheckCircle className="w-4 h-4 text-emerald-400" />
+              <div
+                className={`p-3 border rounded-none ${
+                  isDark
+                    ? "border-zinc-800/80 bg-black/40 text-zinc-400"
+                    : "border-zinc-300 bg-white text-zinc-600 shadow-sm"
+                }`}
+              >
+                <div className="flex items-center gap-2 text-blue-500 font-bold mb-1">
+                  <CheckCircle className="w-4 h-4 text-emerald-500" />
                   <span>Zero-Trust Tamper Alert</span>
                 </div>
-                <p className="text-zinc-400 text-[11px]">Detects modified database bytes instantly with zero false positives.</p>
+                <p className={`text-[11px] ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
+                  Detects modified database bytes instantly with zero false positives.
+                </p>
               </div>
             </div>
           </div>
@@ -156,14 +172,20 @@ console.log('Chain Intact:', result.valid);`;
         {/* Disabled Form Section */}
         <div
           className={`p-8 rounded-none border text-left relative overflow-hidden ${
-            isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-white border-zinc-300 shadow-sm"
+            isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-zinc-50 border-zinc-300 shadow-sm"
           }`}
         >
           {/* Overlay Coming Soon Ribbon */}
-          <div className="flex items-center justify-between pb-4 border-b border-zinc-800/80 mb-6">
+          <div
+            className={`flex items-center justify-between pb-4 border-b mb-6 ${
+              isDark ? "border-zinc-800/80" : "border-zinc-200"
+            }`}
+          >
             <div className="flex items-center gap-2">
               <Lock className="w-4 h-4 text-orange-500" />
-              <span className="font-bold uppercase tracking-wider text-xs font-mono">Web Verification Portal</span>
+              <span className="font-bold uppercase tracking-wider text-xs font-mono">
+                Web Verification Portal
+              </span>
             </div>
             <span className="text-xs font-mono font-bold text-orange-500 bg-orange-500/10 border border-orange-500/30 px-3 py-1">
               COMING SOON
@@ -172,7 +194,11 @@ console.log('Chain Intact:', result.valid);`;
 
           <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
             <div>
-              <label className="block text-xs font-mono font-bold uppercase tracking-wider text-zinc-400 mb-2">
+              <label
+                className={`block text-xs font-mono font-bold uppercase tracking-wider mb-2 ${
+                  isDark ? "text-zinc-400" : "text-zinc-600"
+                }`}
+              >
                 API Key (Hosted Portal Disabled)
               </label>
               <div className="relative">
@@ -184,17 +210,21 @@ console.log('Chain Intact:', result.valid);`;
                   className={`w-full px-4 py-3 text-xs font-mono rounded-none border cursor-not-allowed opacity-60 ${
                     isDark
                       ? "bg-black/60 border-zinc-800 text-zinc-500"
-                      : "bg-zinc-100 border-zinc-300 text-zinc-500"
+                      : "bg-white border-zinc-300 text-zinc-400"
                   }`}
                 />
-                <Lock className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500" />
+                <Lock className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400" />
               </div>
             </div>
 
             <button
               type="button"
               disabled
-              className="w-full py-3.5 px-6 rounded-none bg-zinc-800 text-zinc-500 font-mono font-bold text-xs uppercase tracking-wider cursor-not-allowed border border-zinc-700 flex items-center justify-center gap-2"
+              className={`w-full py-3.5 px-6 rounded-none font-mono font-bold text-xs uppercase tracking-wider cursor-not-allowed border flex items-center justify-center gap-2 ${
+                isDark
+                  ? "bg-zinc-800 text-zinc-500 border-zinc-700"
+                  : "bg-zinc-200 text-zinc-500 border-zinc-300"
+              }`}
             >
               <Lock className="w-4 h-4" />
               <span>Verify Chain (Web Form Disabled — Coming Soon)</span>
@@ -204,26 +234,45 @@ console.log('Chain Intact:', result.valid);`;
 
         {/* SDK Verification Alternative Guide */}
         <div
-          className={`p-8 rounded-none border text-left dark-hover-shimmer ${
-            isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-[#18181b] border-zinc-800 text-gray-100"
+          className={`p-8 rounded-none border text-left ${
+            isDark
+              ? "bg-[#0a0a0c] border-zinc-800 text-zinc-100"
+              : "bg-zinc-50 border-zinc-300 text-zinc-900 shadow-sm"
           }`}
         >
           <div className="mb-4">
-            <span className="text-xs font-mono uppercase tracking-widest text-emerald-400 font-bold block mb-1">
+            <span className="text-xs font-mono uppercase tracking-widest text-emerald-500 font-bold block mb-1">
               Active Alternative
             </span>
-            <h3 className="text-xl font-bold font-mono text-white">Execute Verification via Node.js SDK</h3>
+            <h3
+              className={`text-xl font-bold font-mono ${
+                isDark ? "text-white" : "text-zinc-900"
+              }`}
+            >
+              Execute Verification via Node.js SDK
+            </h3>
           </div>
 
-          <p className="text-xs font-mono text-zinc-400 mb-4 leading-relaxed">
+          <p
+            className={`text-xs font-mono mb-4 leading-relaxed ${
+              isDark ? "text-zinc-400" : "text-zinc-600"
+            }`}
+          >
             Run zero-trust cryptographic chain validation programmatically in your microservices or background health checks:
           </p>
 
-          <CodeBlock code={sdkSnippet} language="typescript" title="sdk-verify.ts" />
+          <CodeBlock code={sdkSnippet} language="typescript" title="sdk-verify.ts" isDark={isDark} />
 
-          <div className="mt-6 pt-4 border-t border-zinc-800 flex items-center justify-between text-xs font-mono">
-            <span className="text-zinc-400">Need documentation on client.verifyChain()?</span>
-            <Link to="/docs" className="text-orange-500 hover:text-orange-400 font-bold flex items-center gap-1">
+          <div
+            className={`mt-6 pt-4 border-t flex items-center justify-between text-xs font-mono ${
+              isDark ? "border-zinc-800 text-zinc-400" : "border-zinc-200 text-zinc-600"
+            }`}
+          >
+            <span>Need documentation on client.verifyChain()?</span>
+            <Link
+              to="/docs"
+              className="text-orange-500 hover:text-orange-600 font-bold flex items-center gap-1"
+            >
               <span>Read Documentation</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
