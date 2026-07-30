@@ -60,28 +60,42 @@ export function CodeBlock({
   return (
     <div
       className={`rounded-none border overflow-hidden transition-colors ${
-        isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-[#18181b] border-zinc-800 text-gray-100"
+        isDark
+          ? "bg-[#0a0a0c] border-zinc-800 text-zinc-100"
+          : "bg-zinc-50 border-zinc-300 text-zinc-900 shadow-sm"
       } ${className}`}
     >
       {/* Header bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-black/40">
+      <div
+        className={`flex items-center justify-between px-4 py-2.5 border-b ${
+          isDark ? "border-zinc-800 bg-black/40" : "border-zinc-300 bg-zinc-200/60"
+        }`}
+      >
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
           <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
           <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-          <span className="ml-2 text-xs font-mono text-zinc-400">
+          <span
+            className={`ml-2 text-xs font-mono ${
+              isDark ? "text-zinc-400" : "text-zinc-600 font-medium"
+            }`}
+          >
             {title || language}
           </span>
         </div>
         <button
           onClick={handleCopy}
           type="button"
-          className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400 hover:text-white cursor-pointer transition-colors"
+          className={`flex items-center gap-1.5 text-[11px] font-mono transition-colors cursor-pointer ${
+            isDark
+              ? "text-zinc-400 hover:text-white"
+              : "text-zinc-600 hover:text-zinc-900"
+          }`}
         >
           {copied ? (
             <>
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-emerald-400 font-semibold">Copied</span>
+              <Check className="w-3.5 h-3.5 text-emerald-500" />
+              <span className="text-emerald-500 font-semibold">Copied</span>
             </>
           ) : (
             <>
@@ -93,17 +107,27 @@ export function CodeBlock({
       </div>
 
       {/* Code container */}
-      <div className="p-4 overflow-x-auto text-xs font-mono leading-relaxed text-zinc-300">
+      <div
+        className={`p-4 overflow-x-auto text-xs font-mono leading-relaxed ${
+          isDark ? "text-zinc-300" : "text-zinc-800"
+        }`}
+      >
         <pre className="font-mono">
           {lines.map((line, idx) => (
             <div key={idx} className="flex">
               {displayLineNumbers && (
-                <span className="w-8 shrink-0 text-right pr-4 text-zinc-600 select-none border-r border-zinc-800/60 mr-4">
+                <span
+                  className={`w-8 shrink-0 text-right pr-4 select-none border-r mr-4 ${
+                    isDark
+                      ? "text-zinc-600 border-zinc-800/60"
+                      : "text-zinc-400 border-zinc-300"
+                  }`}
+                >
                   {idx + 1}
                 </span>
               )}
               <span className="whitespace-pre flex-1">
-                {highlightLine(line, language)}
+                {highlightLine(line, language, isDark)}
               </span>
             </div>
           ))}
@@ -113,7 +137,7 @@ export function CodeBlock({
   );
 }
 
-function highlightLine(line: string, language: string): React.ReactNode {
+function highlightLine(line: string, language: string, isDark: boolean): React.ReactNode {
   const lang = language.toLowerCase();
 
   // Terminal / Bash mode
@@ -130,7 +154,10 @@ function highlightLine(line: string, language: string): React.ReactNode {
     if (promptMatch) {
       if (promptMatch[1]) tokens.push(promptMatch[1]);
       tokens.push(
-        <span key="prompt" className="text-orange-500 font-bold select-none">
+        <span
+          key="prompt"
+          className={`${isDark ? "text-orange-500" : "text-orange-600"} font-bold select-none`}
+        >
           $
         </span>
       );
@@ -148,19 +175,25 @@ function highlightLine(line: string, language: string): React.ReactNode {
         )
       ) {
         tokens.push(
-          <span key={i} className="text-blue-400 font-medium">
+          <span
+            key={i}
+            className={`${isDark ? "text-blue-400" : "text-blue-600"} font-medium`}
+          >
             {part}
           </span>
         );
       } else if (part.startsWith("@")) {
         tokens.push(
-          <span key={i} className="text-emerald-400 font-mono font-medium">
+          <span
+            key={i}
+            className={`${isDark ? "text-emerald-400" : "text-emerald-600"} font-mono font-medium`}
+          >
             {part}
           </span>
         );
       } else {
         tokens.push(
-          <span key={i} className="text-zinc-300">
+          <span key={i} className={isDark ? "text-zinc-300" : "text-zinc-800"}>
             {part}
           </span>
         );
@@ -177,23 +210,23 @@ function highlightLine(line: string, language: string): React.ReactNode {
     const commentPart = line.slice(commentIndex);
     return (
       <>
-        {tokenizeCode(codePart)}
+        {tokenizeCode(codePart, isDark)}
         <span className="text-zinc-500 italic">{commentPart}</span>
       </>
     );
   }
 
-  return tokenizeCode(line);
+  return tokenizeCode(line, isDark);
 }
 
-function tokenizeCode(text: string): React.ReactNode {
+function tokenizeCode(text: string, isDark: boolean): React.ReactNode {
   if (!text) return null;
 
   const regex =
     /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`|@[A-Za-z0-9_]+|\b\d+(?:\.\d+)?\b|[A-Za-z0-9_$]+|[^\s\w]+|\s+)/g;
 
   const matches = text.match(regex);
-  if (!matches) return <span className="text-zinc-300">{text}</span>;
+  if (!matches) return <span className={isDark ? "text-zinc-300" : "text-zinc-800"}>{text}</span>;
 
   let searchPos = 0;
   return matches.map((token, idx) => {
@@ -207,7 +240,7 @@ function tokenizeCode(text: string): React.ReactNode {
       (token.startsWith("`") && token.endsWith("`"))
     ) {
       return (
-        <span key={idx} className="text-emerald-400">
+        <span key={idx} className={isDark ? "text-emerald-400" : "text-emerald-600 font-medium"}>
           {token}
         </span>
       );
@@ -216,25 +249,25 @@ function tokenizeCode(text: string): React.ReactNode {
     // 2. Decorators (@Module) -> Green
     if (token.startsWith("@")) {
       return (
-        <span key={idx} className="text-emerald-400 font-medium">
+        <span key={idx} className={`${isDark ? "text-emerald-400" : "text-emerald-600"} font-medium`}>
           {token}
         </span>
       );
     }
 
-    // 3. Keywords (import, export, from, const, let, await, async, function, new, return, if, etc.) -> Blue
+    // 3. Keywords -> Blue
     if (KEYWORDS.has(token)) {
       return (
-        <span key={idx} className="text-blue-400 font-medium">
+        <span key={idx} className={`${isDark ? "text-blue-400" : "text-blue-600"} font-medium`}>
           {token}
         </span>
       );
     }
 
-    // 4. Globals / Classes (ProofLog, console, process) -> Blue
+    // 4. Globals / Classes -> Blue
     if (GLOBALS.has(token)) {
       return (
-        <span key={idx} className="text-blue-400 font-medium">
+        <span key={idx} className={`${isDark ? "text-blue-400" : "text-blue-600"} font-medium`}>
           {token}
         </span>
       );
@@ -243,7 +276,7 @@ function tokenizeCode(text: string): React.ReactNode {
     // 5. Booleans / null -> Blue
     if (BOOLEANS.has(token)) {
       return (
-        <span key={idx} className="text-blue-400 font-medium">
+        <span key={idx} className={`${isDark ? "text-blue-400" : "text-blue-600"} font-medium`}>
           {token}
         </span>
       );
@@ -252,24 +285,24 @@ function tokenizeCode(text: string): React.ReactNode {
     // 6. Numbers -> Orange
     if (/^\d+(\.\d+)?$/.test(token)) {
       return (
-        <span key={idx} className="text-orange-400 font-mono">
+        <span key={idx} className={`${isDark ? "text-orange-400" : "text-orange-600"} font-mono`}>
           {token}
         </span>
       );
     }
 
-    // 7. Identifiers (Property keys or method calls) -> Gray / Blue for functions
+    // 7. Identifiers -> Gray / Blue for functions
     if (/^[A-Za-z0-9_$]+$/.test(token)) {
       const remainingAfter = text.slice(searchPos).trimStart();
       if (remainingAfter.startsWith("(")) {
         return (
-          <span key={idx} className="text-blue-400 font-medium">
+          <span key={idx} className={`${isDark ? "text-blue-400" : "text-blue-600"} font-medium`}>
             {token}
           </span>
         );
       }
       return (
-        <span key={idx} className="text-zinc-300">
+        <span key={idx} className={isDark ? "text-zinc-300" : "text-zinc-800"}>
           {token}
         </span>
       );
@@ -277,7 +310,7 @@ function tokenizeCode(text: string): React.ReactNode {
 
     // 8. Punctuation / Operators / Whitespace -> Gray
     return (
-      <span key={idx} className="text-zinc-400">
+      <span key={idx} className={isDark ? "text-zinc-400" : "text-zinc-500"}>
         {token}
       </span>
     );
