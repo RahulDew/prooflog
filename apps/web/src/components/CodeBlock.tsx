@@ -59,7 +59,7 @@ export function CodeBlock({
 
   return (
     <div
-      className={`rounded-none border overflow-hidden transition-colors ${
+      className={`rounded-[4px] border overflow-hidden transition-colors ${
         isDark
           ? "bg-[#0a0a0c] border-zinc-800 text-zinc-100"
           : "bg-zinc-50 border-zinc-300 text-zinc-900 shadow-sm"
@@ -72,9 +72,9 @@ export function CodeBlock({
         }`}
       >
         <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-none bg-red-500" />
-          <div className="w-2.5 h-2.5 rounded-none bg-yellow-500" />
-          <div className="w-2.5 h-2.5 rounded-none bg-green-500" />
+          <div className="w-2.5 h-2.5 rounded-[2px] bg-red-500" />
+          <div className="w-2.5 h-2.5 rounded-[2px] bg-yellow-500" />
+          <div className="w-2.5 h-2.5 rounded-[2px] bg-green-500" />
           <span
             className={`ml-2 text-xs font-mono ${
               isDark ? "text-zinc-400" : "text-zinc-600 font-medium"

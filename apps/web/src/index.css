@@ -87,6 +87,11 @@
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 250ms;
   }
+
+  /* Universal 4px border-radius standard */
+  .rounded-none {
+    border-radius: 4px !important;
+  }
 }
 
 /* Monochrome Left-to-Right Travelling Border Shimmer Keyframes */
