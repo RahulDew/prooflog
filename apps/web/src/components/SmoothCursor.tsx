@@ -95,7 +95,7 @@ const PointerTargetSVG: FC<{ isDark: boolean }> = ({ isDark }) => {
     <div className="relative flex items-center justify-center">
       <DefaultCursorSVG isDark={isDark} />
       <motion.div
-        className="absolute w-8 h-8 rounded-none border pointer-events-none"
+        className="absolute w-8 h-8 rounded-[4px] border pointer-events-none"
         style={{
           borderColor: accentFill,
           backgroundColor: isDark ? "rgba(249, 115, 22, 0.12)" : "rgba(37, 99, 235, 0.12)",

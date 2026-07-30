@@ -124,7 +124,7 @@ export default function Home() {
       <div className="fixed bottom-6 right-6 z-[150]">
         <button
           onClick={toggleTheme}
-          className={`p-3.5 rounded-none border transition-all cursor-pointer flex items-center justify-center ${
+          className={`p-3.5 rounded-[4px] border transition-all cursor-pointer flex items-center justify-center ${
             isDark
               ? "bg-[#0a0a0c] border-zinc-800 text-orange-500 hover:border-orange-500"
               : "bg-white border-zinc-300 text-blue-600 hover:border-blue-600 shadow-md"
