@@ -1,12 +1,11 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Lock, Shield, ArrowRight, CheckCircle, Clock, Copy, Check } from "lucide-react";
+import { Lock, Shield, ArrowRight, CheckCircle, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
+import { CodeBlock } from "../components/CodeBlock";
 
 export default function Verification() {
   const { isDark } = useTheme();
-  const [copied, setCopied] = useState(false);
 
   const sdkSnippet = `import { ProofLog } from '@prooflog/node';
 
@@ -15,16 +14,6 @@ const client = new ProofLog({ apiKey: process.env.PROOFLOG_API_KEY });
 // Execute zero-trust cryptographic chain verification locally
 const result = await client.verifyChain('org_1234');
 console.log('Chain Intact:', result.valid);`;
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(sdkSnippet);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy:", err);
-    }
-  };
 
   return (
     <div
@@ -219,40 +208,18 @@ console.log('Chain Intact:', result.valid);`;
             isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-[#18181b] border-zinc-800 text-gray-100"
           }`}
         >
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <span className="text-xs font-mono uppercase tracking-widest text-emerald-400 font-bold block mb-1">
-                Active Alternative
-              </span>
-              <h3 className="text-xl font-bold font-mono text-white">Execute Verification via Node.js SDK</h3>
-            </div>
-            <button
-              onClick={handleCopy}
-              className="flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 border border-zinc-700 bg-black/60 hover:border-zinc-500 text-zinc-300 cursor-pointer"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-4 h-4 text-emerald-400" />
-                  <span className="text-emerald-400 font-bold">Copied</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4 text-zinc-400" />
-                  <span>Copy Code</span>
-                </>
-              )}
-            </button>
+          <div className="mb-4">
+            <span className="text-xs font-mono uppercase tracking-widest text-emerald-400 font-bold block mb-1">
+              Active Alternative
+            </span>
+            <h3 className="text-xl font-bold font-mono text-white">Execute Verification via Node.js SDK</h3>
           </div>
 
           <p className="text-xs font-mono text-zinc-400 mb-4 leading-relaxed">
             Run zero-trust cryptographic chain validation programmatically in your microservices or background health checks:
           </p>
 
-          <div className="p-4 rounded-none bg-black/80 border border-zinc-800 text-xs font-mono text-zinc-300 leading-relaxed overflow-x-auto">
-            <pre>
-              <code>{sdkSnippet}</code>
-            </pre>
-          </div>
+          <CodeBlock code={sdkSnippet} language="typescript" title="sdk-verify.ts" />
 
           <div className="mt-6 pt-4 border-t border-zinc-800 flex items-center justify-between text-xs font-mono">
             <span className="text-zinc-400">Need documentation on client.verifyChain()?</span>

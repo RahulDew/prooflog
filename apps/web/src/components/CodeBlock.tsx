@@ -1,0 +1,285 @@
+import React, { useState } from "react";
+import { Copy, Check } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
+
+interface CodeBlockProps {
+  code: string;
+  language?: string;
+  title?: string;
+  showLineNumbers?: boolean;
+  isDark?: boolean;
+  className?: string;
+}
+
+const KEYWORDS = new Set([
+  "import", "export", "from", "const", "let", "var", "await", "async",
+  "function", "class", "className", "interface", "type", "new", "if",
+  "else", "return", "try", "catch", "typeof", "public", "readonly",
+  "extends", "implements", "default"
+]);
+
+const BOOLEANS = new Set(["true", "false", "null", "undefined"]);
+
+const GLOBALS = new Set([
+  "ProofLog", "ProofLogModule", "ProofLogError", "TimeoutError", "NetworkError",
+  "AuthenticationError", "ValidationError", "RateLimitError", "ServerError",
+  "console", "process", "env", "Math", "JSON", "Error", "Object", "Array",
+  "Promise", "Record", "req", "res", "app"
+]);
+
+export function CodeBlock({
+  code,
+  language = "typescript",
+  title,
+  showLineNumbers,
+  isDark: propIsDark,
+  className = ""
+}: CodeBlockProps) {
+  const { isDark: themeIsDark } = useTheme();
+  const isDark = propIsDark ?? themeIsDark;
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy code:", err);
+    }
+  };
+
+  const lines = code.trim().split("\n");
+  const isTerminal =
+    language.toLowerCase() === "terminal" ||
+    language.toLowerCase() === "bash" ||
+    language.toLowerCase() === "sh";
+
+  const displayLineNumbers = showLineNumbers ?? (!isTerminal && lines.length > 1);
+
+  return (
+    <div
+      className={`rounded-none border overflow-hidden transition-colors ${
+        isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-[#18181b] border-zinc-800 text-gray-100"
+      } ${className}`}
+    >
+      {/* Header bar */}
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-black/40">
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+          <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+          <span className="ml-2 text-xs font-mono text-zinc-400">
+            {title || language}
+          </span>
+        </div>
+        <button
+          onClick={handleCopy}
+          type="button"
+          className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400 hover:text-white cursor-pointer transition-colors"
+        >
+          {copied ? (
+            <>
+              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-emerald-400 font-semibold">Copied</span>
+            </>
+          ) : (
+            <>
+              <Copy className="w-3.5 h-3.5" />
+              <span>Copy</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Code container */}
+      <div className="p-4 overflow-x-auto text-xs font-mono leading-relaxed text-zinc-300">
+        <pre className="font-mono">
+          {lines.map((line, idx) => (
+            <div key={idx} className="flex">
+              {displayLineNumbers && (
+                <span className="w-8 shrink-0 text-right pr-4 text-zinc-600 select-none border-r border-zinc-800/60 mr-4">
+                  {idx + 1}
+                </span>
+              )}
+              <span className="whitespace-pre flex-1">
+                {highlightLine(line, language)}
+              </span>
+            </div>
+          ))}
+        </pre>
+      </div>
+    </div>
+  );
+}
+
+function highlightLine(line: string, language: string): React.ReactNode {
+  const lang = language.toLowerCase();
+
+  // Terminal / Bash mode
+  if (lang === "terminal" || lang === "bash" || lang === "sh") {
+    if (line.trim().startsWith("#")) {
+      return <span className="text-zinc-500 italic">{line}</span>;
+    }
+
+    const tokens: React.ReactNode[] = [];
+    let remaining = line;
+
+    // Check leading prompt $
+    const promptMatch = remaining.match(/^(\s*)(\$)/);
+    if (promptMatch) {
+      if (promptMatch[1]) tokens.push(promptMatch[1]);
+      tokens.push(
+        <span key="prompt" className="text-orange-500 font-bold select-none">
+          $
+        </span>
+      );
+      remaining = remaining.slice(promptMatch[0].length);
+    }
+
+    const parts = remaining.split(
+      /(\b(?:pnpm|npm|yarn|bun|add|install|run|build)\b|@[a-zA-Z0-9_-]+(?:\/[a-zA-Z0-9_-]+)*)/g
+    );
+
+    parts.forEach((part, i) => {
+      if (
+        ["pnpm", "npm", "yarn", "bun", "add", "install", "run", "build"].includes(
+          part
+        )
+      ) {
+        tokens.push(
+          <span key={i} className="text-blue-400 font-medium">
+            {part}
+          </span>
+        );
+      } else if (part.startsWith("@")) {
+        tokens.push(
+          <span key={i} className="text-emerald-400 font-mono font-medium">
+            {part}
+          </span>
+        );
+      } else {
+        tokens.push(
+          <span key={i} className="text-zinc-300">
+            {part}
+          </span>
+        );
+      }
+    });
+
+    return <>{tokens}</>;
+  }
+
+  // Handle single-line comments //
+  const commentIndex = line.indexOf("//");
+  if (commentIndex !== -1) {
+    const codePart = line.slice(0, commentIndex);
+    const commentPart = line.slice(commentIndex);
+    return (
+      <>
+        {tokenizeCode(codePart)}
+        <span className="text-zinc-500 italic">{commentPart}</span>
+      </>
+    );
+  }
+
+  return tokenizeCode(line);
+}
+
+function tokenizeCode(text: string): React.ReactNode {
+  if (!text) return null;
+
+  const regex =
+    /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`|@[A-Za-z0-9_]+|\b\d+(?:\.\d+)?\b|[A-Za-z0-9_$]+|[^\s\w]+|\s+)/g;
+
+  const matches = text.match(regex);
+  if (!matches) return <span className="text-zinc-300">{text}</span>;
+
+  let searchPos = 0;
+  return matches.map((token, idx) => {
+    const tokenPos = text.indexOf(token, searchPos);
+    if (tokenPos !== -1) searchPos = tokenPos + token.length;
+
+    // 1. Strings ('...', "...", `...`) -> Green
+    if (
+      (token.startsWith("'") && token.endsWith("'")) ||
+      (token.startsWith('"') && token.endsWith('"')) ||
+      (token.startsWith("`") && token.endsWith("`"))
+    ) {
+      return (
+        <span key={idx} className="text-emerald-400">
+          {token}
+        </span>
+      );
+    }
+
+    // 2. Decorators (@Module) -> Green
+    if (token.startsWith("@")) {
+      return (
+        <span key={idx} className="text-emerald-400 font-medium">
+          {token}
+        </span>
+      );
+    }
+
+    // 3. Keywords (import, export, from, const, let, await, async, function, new, return, if, etc.) -> Blue
+    if (KEYWORDS.has(token)) {
+      return (
+        <span key={idx} className="text-blue-400 font-medium">
+          {token}
+        </span>
+      );
+    }
+
+    // 4. Globals / Classes (ProofLog, console, process) -> Blue
+    if (GLOBALS.has(token)) {
+      return (
+        <span key={idx} className="text-blue-400 font-medium">
+          {token}
+        </span>
+      );
+    }
+
+    // 5. Booleans / null -> Blue
+    if (BOOLEANS.has(token)) {
+      return (
+        <span key={idx} className="text-blue-400 font-medium">
+          {token}
+        </span>
+      );
+    }
+
+    // 6. Numbers -> Orange
+    if (/^\d+(\.\d+)?$/.test(token)) {
+      return (
+        <span key={idx} className="text-orange-400 font-mono">
+          {token}
+        </span>
+      );
+    }
+
+    // 7. Identifiers (Property keys or method calls) -> Gray / Blue for functions
+    if (/^[A-Za-z0-9_$]+$/.test(token)) {
+      const remainingAfter = text.slice(searchPos).trimStart();
+      if (remainingAfter.startsWith("(")) {
+        return (
+          <span key={idx} className="text-blue-400 font-medium">
+            {token}
+          </span>
+        );
+      }
+      return (
+        <span key={idx} className="text-zinc-300">
+          {token}
+        </span>
+      );
+    }
+
+    // 8. Punctuation / Operators / Whitespace -> Gray
+    return (
+      <span key={idx} className="text-zinc-400">
+        {token}
+      </span>
+    );
+  });
+}

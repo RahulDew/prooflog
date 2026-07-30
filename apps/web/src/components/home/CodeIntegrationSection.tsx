@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { CodeBlock } from "../CodeBlock";
 
 interface CodeIntegrationSectionProps {
   isDark: boolean;
@@ -32,48 +33,22 @@ export function CodeIntegrationSection({ isDark }: CodeIntegrationSectionProps) 
 
         {/* Code Editor Window */}
         <div className="lg:col-span-7">
-          <div
-            className={`rounded-none border transition-colors ${
-              isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-[#18181b] border-zinc-800 text-gray-100"
-            }`}
-          >
-            <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-black/40">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-red-500" />
-                <div className="w-3 h-3 bg-yellow-500" />
-                <div className="w-3 h-3 bg-green-500" />
-                <span className="ml-2 text-xs font-mono text-zinc-400">prooflog-server.ts</span>
-              </div>
-              <span className="text-xs font-mono text-zinc-500">TypeScript</span>
-            </div>
-            <div className="p-6 text-xs font-mono leading-relaxed text-left overflow-x-auto">
-              <pre>
-                <code className="text-blue-400">import</code> {"{ ProofLog }"}{" "}
-                <code className="text-blue-400">from</code>{" "}
-                <code className="text-emerald-400">'@prooflog/node'</code>;<br />
-                <br />
-                <code className="text-zinc-500">// Initialize client instance</code><br />
-                <code className="text-blue-400">const</code> client ={" "}
-                <code className="text-blue-400">new</code> ProofLog({"{"} apiKey:{" "}
-                <code className="text-emerald-400">process.env.PROOFLOG_API_KEY</code> {"}"});<br />
-                <br />
-                <code className="text-zinc-500">// Ingest immutable audit event block</code><br />
-                <code className="text-blue-400">await</code> client.ingest(
-                <code className="text-emerald-400">'org_1234'</code>, {"{"}<br />
-                {"  "}action: <code className="text-emerald-400">'billing.invoice_paid'</code>,<br />
-                {"  "}actor: {"{"} id: <code className="text-emerald-400">'usr_99'</code> {"}"},<br />
-                {"  "}idempotencyKey: <code className="text-emerald-400">'req_invoice_99'</code><br />
-                {"}"});
-              </pre>
-            </div>
-            <div className="px-6 py-3 border-t border-zinc-800 bg-black/60 text-[11px] font-mono text-zinc-400 flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-emerald-400" />
-                Info: Block #1042 successfully appended & verified
-              </span>
-              <span className="text-zinc-500">Latency: 8ms</span>
-            </div>
-          </div>
+          <CodeBlock
+            title="prooflog-server.ts"
+            language="typescript"
+            isDark={isDark}
+            code={`import { ProofLog } from '@prooflog/node';
+
+// Initialize client instance
+const client = new ProofLog({ apiKey: process.env.PROOFLOG_API_KEY });
+
+// Ingest immutable audit event block
+await client.ingest('org_1234', {
+  action: 'billing.invoice_paid',
+  actor: { id: 'usr_99' },
+  idempotencyKey: 'req_invoice_99'
+});`}
+          />
         </div>
       </div>
     </section>
