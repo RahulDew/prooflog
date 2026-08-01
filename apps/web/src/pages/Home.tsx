@@ -143,14 +143,14 @@ export default function Home() {
 
       {/* Main Page Content */}
       <div className="relative z-10 pt-24 pb-20 max-w-7xl mx-auto px-6">
-        <HeroHeader isDark={isDark} />
-        <AuditLifecycle isDark={isDark} />
-        <QuickStartIntegration isDark={isDark} />
-        <LiveIngestionStream isDark={isDark} logs={logs} />
-        <TelemetryPreview isDark={isDark} />
-        <DeveloperManual isDark={isDark} />
-        <SecurityWarranties isDark={isDark} />
-        <HeroCtaBanner isDark={isDark} />
+        <HeroHeader />
+        <AuditLifecycle />
+        <QuickStartIntegration />
+        <LiveIngestionStream logs={logs} />
+        <TelemetryPreview />
+        <DeveloperManual />
+        <SecurityWarranties />
+        <HeroCtaBanner />
       </div>
     </div>
   );

@@ -2,11 +2,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { REFERENCE_CONTENT } from "../../constants/home.constants";
 
-export interface DeveloperManualProps {
-  isDark: boolean;
-}
+import { useTheme } from "../../context/ThemeContext";
 
-export function DeveloperManual({ isDark }: DeveloperManualProps) {
+export function DeveloperManual() {
+  const { isDark } = useTheme();
   const [activeTab, setActiveTab] = useState<string>("auth");
 
   return (

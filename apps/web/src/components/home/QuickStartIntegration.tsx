@@ -2,11 +2,10 @@ import { Check } from "lucide-react";
 import { CodeBlock } from "../CodeBlock";
 import { CODE_INTEGRATION_CONTENT } from "../../constants/home.constants";
 
-export interface QuickStartIntegrationProps {
-  isDark: boolean;
-}
+import { useTheme } from "../../context/ThemeContext";
 
-export function QuickStartIntegration({ isDark }: QuickStartIntegrationProps) {
+export function QuickStartIntegration() {
+  const { isDark } = useTheme();
   return (
     <section className="py-20 gsap-reveal">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">

@@ -2,9 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { LIFECYCLE_CONTENT } from "../../constants/home.constants";
 
-export interface AuditLifecycleProps {
-  isDark: boolean;
-}
+import { useTheme } from "../../context/ThemeContext";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -26,7 +24,8 @@ const cardVariants: Variants = {
   }
 };
 
-export function AuditLifecycle({ isDark }: AuditLifecycleProps) {
+export function AuditLifecycle() {
+  const { isDark } = useTheme();
   return (
     <section className="py-20">
       <div className="text-left mb-12">

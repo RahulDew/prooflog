@@ -2,11 +2,10 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { CTA_FOOTER_CONTENT } from "../../constants/home.constants";
 
-export interface HeroCtaBannerProps {
-  isDark: boolean;
-}
+import { useTheme } from "../../context/ThemeContext";
 
-export function HeroCtaBanner({ isDark }: HeroCtaBannerProps) {
+export function HeroCtaBanner() {
+  const { isDark } = useTheme();
   return (
     <section className="py-24 text-center gsap-reveal">
       <div

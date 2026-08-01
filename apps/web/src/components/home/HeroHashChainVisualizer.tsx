@@ -2,9 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, Play } from "lucide-react";
 
-interface HeroHashChainVisualizerProps {
-  isDark: boolean;
-}
+import { useTheme } from "../../context/ThemeContext";
 
 interface BlockItem {
   id: number;
@@ -23,7 +21,8 @@ const SAMPLE_ACTIONS = [
   "user.password_reset"
 ];
 
-export function HeroHashChainVisualizer({ isDark }: HeroHashChainVisualizerProps) {
+export function HeroHashChainVisualizer() {
+  const { isDark } = useTheme();
   const [blocks, setBlocks] = useState<BlockItem[]>([
     {
       id: 1041,

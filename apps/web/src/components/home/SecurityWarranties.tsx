@@ -1,11 +1,10 @@
 import { Check } from "lucide-react";
 import { QUOTE_CONTENT } from "../../constants/home.constants";
 
-export interface SecurityWarrantiesProps {
-  isDark: boolean;
-}
+import { useTheme } from "../../context/ThemeContext";
 
-export function SecurityWarranties({ isDark }: SecurityWarrantiesProps) {
+export function SecurityWarranties() {
+  const { isDark } = useTheme();
   return (
     <section className="py-20 gsap-reveal">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">

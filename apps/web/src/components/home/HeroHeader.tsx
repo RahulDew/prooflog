@@ -4,10 +4,7 @@ import { ArrowRight, Terminal, Check, Copy } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { HeroHashChainVisualizer } from "./HeroHashChainVisualizer";
 import { HERO_CONTENT } from "../../constants/home.constants";
-
-export interface HeroHeaderProps {
-  isDark: boolean;
-}
+import { useTheme } from "../../context/ThemeContext";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -29,7 +26,8 @@ const itemVariants: Variants = {
   }
 };
 
-export function HeroHeader({ isDark }: HeroHeaderProps) {
+export function HeroHeader() {
+  const { isDark } = useTheme();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -102,7 +100,7 @@ export function HeroHeader({ isDark }: HeroHeaderProps) {
         </motion.div>
       </motion.div>
 
-      <HeroHashChainVisualizer isDark={isDark} />
+      <HeroHashChainVisualizer />
     </header>
   );
 }
