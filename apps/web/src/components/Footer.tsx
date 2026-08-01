@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { FOOTER_CONTENT } from "../constants/footer.constants";
 
-export function Footer() {
+export interface FooterProps {
+  className?: string;
+}
+
+export function Footer({ className = "" }: FooterProps) {
   const { isDark } = useTheme();
 
   return (
@@ -11,22 +15,14 @@ export function Footer() {
         isDark
           ? "border-zinc-800 bg-[#050505] text-zinc-100"
           : "border-zinc-200 bg-white text-zinc-900"
-      }`}
+      } ${className}`}
     >
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-2.5 no-underline shrink-0">
-              <span
-                className={`grid place-items-center w-7 h-7 rounded-[4px] border font-mono font-bold text-xs ${
-                  isDark
-                    ? "bg-zinc-900 border-zinc-700 text-orange-500"
-                    : "bg-zinc-100 border-zinc-300 text-blue-600"
-                }`}
-              >
-                {FOOTER_CONTENT.brandBadge}
-              </span>
+            <Link to="/" className="flex items-center gap-3 no-underline shrink-0">
+              <img src="/svg/logo.svg" alt="ProofLog Logo" className="w-8 h-8" />
               <span className="font-bold text-base tracking-tight">{FOOTER_CONTENT.brandName}</span>
             </Link>
             <p className={`text-xs max-w-sm leading-relaxed ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>

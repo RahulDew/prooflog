@@ -4,7 +4,11 @@ import { Menu, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { NAVBAR_CONTENT } from "../constants/navbar.constants";
 
-export function Navbar() {
+export interface NavbarProps {
+  className?: string;
+}
+
+export function Navbar({ className = "" }: NavbarProps) {
   const location = useLocation();
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
@@ -22,20 +26,12 @@ export function Navbar() {
         isDark
           ? "bg-[#050505]/90 border-zinc-800/80 text-zinc-100"
           : "bg-white/90 border-zinc-200 text-zinc-900"
-      }`}
+      } ${className}`}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Brand Logo & Name */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div
-            className={`w-8 h-8 rounded-[4px] flex items-center justify-center font-mono font-bold text-xs border transition-all ${
-              isDark
-                ? "bg-zinc-900 border-zinc-700 text-orange-500 group-hover:border-orange-500"
-                : "bg-blue-50 border-blue-200 text-blue-600 group-hover:border-blue-600"
-            }`}
-          >
-            {NAVBAR_CONTENT.logoBadge}
-          </div>
+          <img src="/svg/logo.svg" alt="ProofLog Logo" className="w-8 h-8" />
           <span className="font-extrabold text-lg tracking-tight group-hover:opacity-90">
             {NAVBAR_CONTENT.logoText}
           </span>
@@ -47,11 +43,12 @@ export function Navbar() {
             const isActive =
               location.pathname === link.path ||
               (link.path !== "/" && location.pathname.startsWith(link.path));
+
             return (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-xs font-mono uppercase tracking-wider px-3 py-1.5 rounded-[4px] transition-colors ${
+                className={`text-xs font-mono uppercase tracking-wider px-3 py-2 rounded-[4px] transition-colors ${
                   isActive
                     ? isDark
                       ? "text-white bg-zinc-800 border border-zinc-700 font-bold"
@@ -74,7 +71,7 @@ export function Navbar() {
             href={NAVBAR_CONTENT.githubUrl}
             target="_blank"
             rel="noreferrer"
-            className={`hidden sm:flex items-center gap-2 text-xs font-mono uppercase tracking-wider px-3 py-1.5 rounded-[4px] border transition-colors ${
+            className={`hidden sm:flex items-center gap-2 text-xs font-mono uppercase tracking-wider px-3 py-2 rounded-[4px] border transition-colors ${
               isDark
                 ? "border-zinc-800 bg-zinc-900 hover:border-zinc-700 text-zinc-300"
                 : "border-zinc-300 bg-zinc-100 hover:border-zinc-400 text-zinc-800"
@@ -100,7 +97,7 @@ export function Navbar() {
           <button
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle navigation menu"
-            className={`md:hidden flex items-center justify-center w-9 h-9 rounded-none border cursor-pointer transition-colors ${
+            className={`md:hidden flex items-center justify-center w-9 h-9 rounded-[4px] border cursor-pointer transition-colors ${
               isDark
                 ? "border-zinc-800 bg-zinc-900 text-zinc-200 hover:border-zinc-700"
                 : "border-zinc-300 bg-zinc-100 text-zinc-800 hover:border-zinc-400"
@@ -124,12 +121,13 @@ export function Navbar() {
             const isActive =
               location.pathname === link.path ||
               (link.path !== "/" && location.pathname.startsWith(link.path));
+
             return (
               <Link
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsOpen(false)}
-                className={`block text-xs font-mono uppercase tracking-wider px-4 py-2.5 rounded-none border transition-colors ${
+                className={`block text-xs font-mono uppercase tracking-wider px-4 py-3 rounded-[4px] border transition-colors ${
                   isActive
                     ? isDark
                       ? "text-white bg-orange-500/10 border-orange-500/40 font-bold"
@@ -142,7 +140,7 @@ export function Navbar() {
                 <div className="flex items-center justify-between">
                   <span>{link.name}</span>
                   {isActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                    <span className="w-2 h-2 rounded-full bg-orange-500" />
                   )}
                 </div>
               </Link>
@@ -155,7 +153,7 @@ export function Navbar() {
               target="_blank"
               rel="noreferrer"
               onClick={() => setIsOpen(false)}
-              className={`flex items-center justify-center gap-2 text-xs font-mono uppercase tracking-wider w-full py-2.5 rounded-none border transition-colors ${
+              className={`flex items-center justify-center gap-2 text-xs font-mono uppercase tracking-wider w-full py-3 rounded-[4px] border transition-colors ${
                 isDark
                   ? "border-zinc-800 bg-zinc-900 hover:border-zinc-700 text-zinc-300"
                   : "border-zinc-300 bg-zinc-100 hover:border-zinc-400 text-zinc-800"

@@ -7,7 +7,7 @@ export const FOOTER_CONTENT = {
   productLinks: [
     { name: "Documentation", path: "/docs" },
     { name: "Verify Ledger", path: "/verification" },
-    { name: "SDK Install", path: "/docs" }
+    { name: "About ProofLog", path: "/about" }
   ],
   developerTitle: "Developers",
   developerLinks: [

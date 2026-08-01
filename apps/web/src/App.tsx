@@ -11,11 +11,12 @@ const Home = lazy(() => import("./pages/Home"));
 const Docs = lazy(() => import("./pages/Docs"));
 const Verification = lazy(() => import("./pages/Verification"));
 const Changelog = lazy(() => import("./pages/Changelog"));
+const About = lazy(() => import("./pages/About"));
 
 // A lightweight fallback while pages load
 const PageLoader = () => (
   <div className="pt-24 min-h-screen flex items-center justify-center">
-    <div className="w-6 h-6 border-2 border-orange-500/20 border-t-orange-500 rounded-none animate-spin"></div>
+    <div className="w-6 h-6 border-2 border-orange-500/20 border-t-orange-500 rounded-[4px] animate-spin"></div>
   </div>
 );
 
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/docs/*" element={<Docs />} />
                 <Route path="/verification" element={<Verification />} />
                 <Route path="/changelog" element={<Changelog />} />
+                <Route path="/about" element={<About />} />
               </Routes>
             </Suspense>
             <Footer />

@@ -1,24 +1,7 @@
-export interface SidebarCategory {
-  title: string;
-  links: { name: string; id: string }[];
-}
+import type { DocCategory, DocSection } from "../types/docs.types";
 
-export interface DocSection {
-  id: string;
-  category: string;
-  title: string;
-  description: string;
-  callout?: {
-    type: "note" | "important" | "tip";
-    text: string;
-  };
-  codeBlock?: string;
-  codeLanguage?: string;
-  table?: {
-    headers: string[];
-    rows: string[][];
-  };
-}
+export type SidebarCategory = DocCategory;
+export type { DocSection };
 
 export const DOC_CATEGORIES: SidebarCategory[] = [
   {

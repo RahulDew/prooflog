@@ -1,12 +1,6 @@
-export interface ReleaseInfo {
-  version: string;
-  date: string;
-  title: string;
-  type: "major" | "minor" | "patch";
-  commitSha: string;
-  description: string;
-  changes: string[];
-}
+import type { ReleaseInfo } from "../types/changelog.types";
+
+export type { ReleaseInfo };
 
 export const CHANGELOG_CONTENT = {
   badge: "Engine Changelog & Roadmap",

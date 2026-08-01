@@ -29,7 +29,13 @@ export default function Home() {
   // Simulate streaming live audit logs
   useEffect(() => {
     const interval = setInterval(() => {
-      const actions = ["auth.mfa_enabled", "apiKey.created", "tenant.config_updated", "billing.plan_upgraded", "user.logout"];
+      const actions = [
+        "auth.mfa_enabled",
+        "apiKey.created",
+        "tenant.config_updated",
+        "billing.plan_upgraded",
+        "user.logout",
+      ];
       const randomAction = actions[Math.floor(Math.random() * actions.length)];
 
       setLogs((prev) => {
@@ -40,7 +46,7 @@ export default function Home() {
           idempotencyKey: `req_${Math.random().toString(36).substring(2, 7)}`,
           hash: `sha256_${Math.random().toString(36).substring(2, 10)}...${Math.random().toString(36).substring(2, 5)}`,
           status: "Verified",
-          timestamp: "Just now"
+          timestamp: "Just now",
         };
         return [newLog, ...prev.slice(0, 4)];
       });
@@ -65,9 +71,9 @@ export default function Home() {
             scrollTrigger: {
               trigger: el,
               start: "top 85%",
-              toggleActions: "play none none reverse"
-            }
-          }
+              toggleActions: "play none none reverse",
+            },
+          },
         );
       });
 
@@ -83,12 +89,12 @@ export default function Home() {
           ease: "power2.out",
           scrollTrigger: {
             trigger: ".gsap-lifecycle-grid",
-            start: "top 80%"
-          }
-        }
+            start: "top 80%",
+          },
+        },
       );
     },
-    { scope: containerRef, dependencies: [isDark] }
+    { scope: containerRef, dependencies: [isDark] },
   );
 
   return (
@@ -108,8 +114,10 @@ export default function Home() {
               ? "linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)"
               : "linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px)",
             backgroundSize: "40px 40px",
-            WebkitMaskImage: "radial-gradient(circle at 50% 35%, black 30%, rgba(0, 0, 0, 0.4) 65%, transparent 90%)",
-            maskImage: "radial-gradient(circle at 50% 35%, black 30%, rgba(0, 0, 0, 0.4) 65%, transparent 90%)"
+            WebkitMaskImage:
+              "radial-gradient(circle at 50% 35%, black 30%, rgba(0, 0, 0, 0.4) 65%, transparent 90%)",
+            maskImage:
+              "radial-gradient(circle at 50% 35%, black 30%, rgba(0, 0, 0, 0.4) 65%, transparent 90%)",
           }}
         />
         {/* Vintage CRT Warm Sepia Center Ambient Glow */}
