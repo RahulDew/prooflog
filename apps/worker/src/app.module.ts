@@ -24,6 +24,7 @@ import { ConfigService } from '@nestjs/config';
         if (!redisUrl) {
           throw new Error('REDIS_URL is missing in environment configuration.');
         }
+
         return {
           connection: {
             url: redisUrl,

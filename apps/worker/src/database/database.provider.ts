@@ -1,5 +1,6 @@
 import { neon } from '@neondatabase/serverless';
-import { drizzle, NeonHttpDatabase } from 'drizzle-orm/neon-http';
+import type { NeonHttpDatabase } from 'drizzle-orm/neon-http';
+import { drizzle } from 'drizzle-orm/neon-http';
 import { ConfigService } from '@nestjs/config';
 
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */

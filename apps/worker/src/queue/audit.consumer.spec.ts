@@ -1,7 +1,7 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 import { AuditConsumer } from './audit.consumer';
 import { LedgerService } from '../ledger/ledger.service';
-import { Job } from 'bullmq';
+import type { Job } from 'bullmq';
 
 // Mock cryptographic operations to prevent loading ESM dependencies in Jest
 jest.mock('@prooflog/crypto', () => ({

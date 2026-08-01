@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { DrizzleConnection } from '../database/database.provider';
+import type { DrizzleConnection } from '../database/database.provider';
 import { eq, desc, and } from 'drizzle-orm';
 import { auditLogs } from '@prooflog/db';
 import { computeHash, GENESIS_HASH } from '@prooflog/crypto';
@@ -110,8 +110,10 @@ export class LedgerService {
               'Failed to process audit log due to high concurrency lock conflicts.',
             );
           }
+
           continue;
         }
+
         throw error;
       }
     }

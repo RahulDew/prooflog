@@ -2,8 +2,7 @@ module.exports = {
   extends: ['../../.eslintrc.base.js'],
   env: {
     node: true,
-    jest: true,
+    es2022: true,
   },
-  root: true,
   ignorePatterns: ['.eslintrc.js'],
 };
