@@ -37,6 +37,18 @@
   @apply inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30;
 }
 
+.badge-amber {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] text-xs font-mono uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/30;
+}
+
+.badge-purple {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] text-xs font-mono uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/30;
+}
+
+.badge-cyan {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] text-xs font-mono uppercase tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/30;
+}
+
 /* Section Tag Headings */
 .section-tag-orange {
   @apply text-xs font-mono uppercase tracking-widest text-orange-500 font-bold;
@@ -48,6 +60,14 @@
 
 .section-tag-emerald {
   @apply text-xs font-mono uppercase tracking-widest text-emerald-500 font-bold;
+}
+
+.section-tag-purple {
+  @apply text-xs font-mono uppercase tracking-widest text-purple-500 font-bold;
+}
+
+.section-tag-amber {
+  @apply text-xs font-mono uppercase tracking-widest text-amber-500 font-bold;
 }
 
 /* Primary & Secondary Buttons */
