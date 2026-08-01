@@ -11,9 +11,13 @@
   @apply flex items-center justify-start;
 }
 
-/* Common Card Base Rules */
+/* Common Card Surface & Adaptive Rules */
 .card-base {
   @apply p-6 rounded-[4px] border transition-all;
+}
+
+.card-surface {
+  @apply p-6 rounded-[4px] border transition-all bg-white border-zinc-300 text-zinc-900 shadow-sm dark:bg-[#0a0a0c] dark:border-zinc-800 dark:text-zinc-100 dark:shadow-none;
 }
 
 .card-dark {
@@ -24,7 +28,20 @@
   @apply bg-white border-zinc-300 text-zinc-900 shadow-sm;
 }
 
+/* Typography Adaptive Utilities */
+.text-muted-adaptive {
+  @apply text-zinc-600 dark:text-zinc-400;
+}
+
+.text-subtle-adaptive {
+  @apply text-zinc-700 dark:text-zinc-300;
+}
+
 /* Badge Utilities */
+.badge-header {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-[4px] border text-xs font-mono uppercase tracking-wider border-blue-600/40 bg-blue-50 text-blue-600 font-bold dark:border-orange-500/40 dark:bg-orange-500/10 dark:text-orange-400;
+}
+
 .badge-orange {
   @apply inline-flex items-center gap-2 px-3 py-1 rounded-[4px] border text-xs font-mono uppercase tracking-wider border-orange-500/40 bg-orange-500/10 text-orange-400;
 }
@@ -70,9 +87,13 @@
   @apply text-xs font-mono uppercase tracking-widest text-amber-500 font-bold;
 }
 
-/* Primary & Secondary Buttons */
+/* Primary & Adaptive Secondary Buttons */
 .btn-primary {
   @apply h-12 px-6 rounded-[4px] bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer;
+}
+
+.btn-secondary {
+  @apply h-12 px-5 rounded-[4px] border font-mono text-xs transition-all flex items-center justify-center gap-3 cursor-pointer bg-white border-zinc-300 hover:border-zinc-400 text-zinc-800 shadow-sm dark:bg-[#0a0a0c] dark:border-zinc-800 dark:hover:border-zinc-700 dark:text-zinc-300;
 }
 
 .btn-secondary-dark {
@@ -85,13 +106,5 @@
 
 /* Form Inputs */
 .input-base {
-  @apply w-full px-4 py-3 text-xs font-mono rounded-[4px] border transition-colors;
-}
-
-.input-dark {
-  @apply bg-black/60 border-zinc-800 text-zinc-300 placeholder:text-zinc-600;
-}
-
-.input-light {
-  @apply bg-white border-zinc-300 text-zinc-900 placeholder:text-zinc-400;
+  @apply w-full px-4 py-3 text-xs font-mono rounded-[4px] border transition-colors bg-white border-zinc-300 text-zinc-900 placeholder:text-zinc-400 dark:bg-black/60 dark:border-zinc-800 dark:text-zinc-300 dark:placeholder:text-zinc-600;
 }
