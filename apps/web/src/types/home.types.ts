@@ -16,12 +16,6 @@ export interface LifecycleCard {
   icon: ComponentType<{ className?: string }>;
 }
 
-export interface ArchitectureStep {
-  step: string;
-  title: string;
-  desc: string;
-}
-
 export interface ReferenceTab {
   id: string;
   label: string;
@@ -32,11 +26,4 @@ export interface MetricItem {
   label: string;
   value: string;
   detail: string;
-}
-
-export interface PricingRow {
-  feature: string;
-  self: string;
-  cloud: string;
-  ent: string;
 }

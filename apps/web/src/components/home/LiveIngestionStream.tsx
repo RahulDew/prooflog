@@ -2,12 +2,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { LIVE_FEED_CONTENT, type LiveLog } from "../../constants/home.constants";
 
-export interface LiveIngestionFeedProps {
+export interface LiveIngestionStreamProps {
   isDark: boolean;
   logs: LiveLog[];
 }
 
-export function LiveIngestionFeed({ isDark, logs }: LiveIngestionFeedProps) {
+export function LiveIngestionStream({ isDark, logs }: LiveIngestionStreamProps) {
   return (
     <section className="py-20 gsap-reveal">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">

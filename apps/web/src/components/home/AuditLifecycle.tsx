@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { LIFECYCLE_CONTENT } from "../../constants/home.constants";
 
-export interface LifecycleGridProps {
+export interface AuditLifecycleProps {
   isDark: boolean;
 }
 
@@ -26,7 +26,7 @@ const cardVariants: Variants = {
   }
 };
 
-export function LifecycleGrid({ isDark }: LifecycleGridProps) {
+export function AuditLifecycle({ isDark }: AuditLifecycleProps) {
   return (
     <section className="py-20">
       <div className="text-left mb-12">

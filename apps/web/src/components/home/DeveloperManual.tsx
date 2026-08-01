@@ -2,17 +2,17 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { REFERENCE_CONTENT } from "../../constants/home.constants";
 
-interface ReferenceManualProps {
+export interface DeveloperManualProps {
   isDark: boolean;
 }
 
-export function ReferenceManual({ isDark }: ReferenceManualProps) {
+export function DeveloperManual({ isDark }: DeveloperManualProps) {
   const [activeTab, setActiveTab] = useState<string>("auth");
 
   return (
     <section className="py-20 gsap-reveal">
       <div className="text-left mb-12">
-        <span className="text-xs font-mono uppercase tracking-widest text-blue-500 font-bold">
+        <span className="section-tag-blue">
           {REFERENCE_CONTENT.tag}
         </span>
         <h2 className="text-3xl font-extrabold mt-1">{REFERENCE_CONTENT.title}</h2>

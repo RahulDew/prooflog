@@ -5,7 +5,7 @@ import { motion, type Variants } from "framer-motion";
 import { HeroHashChainVisualizer } from "./HeroHashChainVisualizer";
 import { HERO_CONTENT } from "../../constants/home.constants";
 
-export interface HeroSectionProps {
+export interface HeroHeaderProps {
   isDark: boolean;
 }
 
@@ -29,7 +29,7 @@ const itemVariants: Variants = {
   }
 };
 
-export function HeroSection({ isDark }: HeroSectionProps) {
+export function HeroHeader({ isDark }: HeroHeaderProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {

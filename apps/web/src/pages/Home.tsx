@@ -6,16 +6,14 @@ import { useGSAP } from "@gsap/react";
 import { useTheme } from "../context/ThemeContext";
 import { INITIAL_LIVE_LOGS, type LiveLog } from "../constants/home.constants";
 
-import { HeroSection } from "../components/home/HeroSection";
-import { LifecycleGrid } from "../components/home/LifecycleGrid";
-import { CodeIntegrationSection } from "../components/home/CodeIntegrationSection";
-import { ArchitectureFlow } from "../components/home/ArchitectureFlow";
-import { LiveIngestionFeed } from "../components/home/LiveIngestionFeed";
-import { MetricsDashboard } from "../components/home/MetricsDashboard";
-import { ReferenceManual } from "../components/home/ReferenceManual";
-import { QuoteSection } from "../components/home/QuoteSection";
-import { PricingTable } from "../components/home/PricingTable";
-import { CtaFooterSection } from "../components/home/CtaFooterSection";
+import { HeroHeader } from "../components/home/HeroHeader";
+import { AuditLifecycle } from "../components/home/AuditLifecycle";
+import { QuickStartIntegration } from "../components/home/QuickStartIntegration";
+import { LiveIngestionStream } from "../components/home/LiveIngestionStream";
+import { TelemetryPreview } from "../components/home/TelemetryPreview";
+import { DeveloperManual } from "../components/home/DeveloperManual";
+import { SecurityWarranties } from "../components/home/SecurityWarranties";
+import { HeroCtaBanner } from "../components/home/HeroCtaBanner";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -145,16 +143,14 @@ export default function Home() {
 
       {/* Main Page Content */}
       <div className="relative z-10 pt-24 pb-20 max-w-7xl mx-auto px-6">
-        <HeroSection isDark={isDark} />
-        <LifecycleGrid isDark={isDark} />
-        <CodeIntegrationSection isDark={isDark} />
-        <ArchitectureFlow isDark={isDark} />
-        <LiveIngestionFeed isDark={isDark} logs={logs} />
-        <MetricsDashboard isDark={isDark} />
-        <ReferenceManual isDark={isDark} />
-        <QuoteSection isDark={isDark} />
-        <PricingTable isDark={isDark} />
-        <CtaFooterSection isDark={isDark} />
+        <HeroHeader isDark={isDark} />
+        <AuditLifecycle isDark={isDark} />
+        <QuickStartIntegration isDark={isDark} />
+        <LiveIngestionStream isDark={isDark} logs={logs} />
+        <TelemetryPreview isDark={isDark} />
+        <DeveloperManual isDark={isDark} />
+        <SecurityWarranties isDark={isDark} />
+        <HeroCtaBanner isDark={isDark} />
       </div>
     </div>
   );

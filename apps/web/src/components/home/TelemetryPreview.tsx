@@ -1,11 +1,11 @@
 import { Clock } from "lucide-react";
 import { METRICS_CONTENT } from "../../constants/home.constants";
 
-export interface MetricsDashboardProps {
+export interface TelemetryPreviewProps {
   isDark: boolean;
 }
 
-export function MetricsDashboard({ isDark }: MetricsDashboardProps) {
+export function TelemetryPreview({ isDark }: TelemetryPreviewProps) {
   return (
     <section className="py-20 gsap-reveal">
       <div className="flex items-start justify-between mb-8">

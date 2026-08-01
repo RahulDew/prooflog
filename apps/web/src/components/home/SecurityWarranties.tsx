@@ -1,11 +1,11 @@
 import { Check } from "lucide-react";
 import { QUOTE_CONTENT } from "../../constants/home.constants";
 
-interface QuoteSectionProps {
+export interface SecurityWarrantiesProps {
   isDark: boolean;
 }
 
-export function QuoteSection({ isDark }: QuoteSectionProps) {
+export function SecurityWarranties({ isDark }: SecurityWarrantiesProps) {
   return (
     <section className="py-20 gsap-reveal">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
