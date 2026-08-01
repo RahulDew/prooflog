@@ -4,7 +4,6 @@ import { ArrowRight, Terminal, Check, Copy } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { HeroHashChainVisualizer } from "./HeroHashChainVisualizer";
 import { HERO_CONTENT } from "../../constants/home.constants";
-import { useTheme } from "../../context/ThemeContext";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -27,7 +26,6 @@ const itemVariants: Variants = {
 };
 
 export function HeroHeader() {
-  const { isDark } = useTheme();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -48,10 +46,7 @@ export function HeroHeader() {
         animate="visible"
         className="lg:col-span-7 text-left space-y-6"
       >
-        <motion.div
-          variants={itemVariants}
-          className={isDark ? "badge-orange" : "badge-blue"}
-        >
+        <motion.div variants={itemVariants} className="badge-header">
           <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
           {HERO_CONTENT.badge}
         </motion.div>
@@ -62,24 +57,18 @@ export function HeroHeader() {
         >
           {HERO_CONTENT.headlineFirst}
           <br />
-          <span className={isDark ? "text-orange-500" : "text-blue-600"}>
+          <span className="text-blue-600 dark:text-orange-500">
             {HERO_CONTENT.headlineSecond}
           </span>
         </motion.h1>
 
-        <motion.p
-          variants={itemVariants}
-          className={`text-base leading-relaxed max-w-xl ${isDark ? "text-zinc-400" : "text-zinc-600"}`}
-        >
+        <motion.p variants={itemVariants} className="text-base leading-relaxed max-w-xl text-muted-adaptive">
           {HERO_CONTENT.description}
         </motion.p>
 
         <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 pt-2">
           <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
-            <Link
-              to={HERO_CONTENT.primaryCtaLink}
-              className="btn-primary dark-hover-shimmer"
-            >
+            <Link to={HERO_CONTENT.primaryCtaLink} className="btn-primary dark-hover-shimmer">
               <span>{HERO_CONTENT.primaryCtaText}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
@@ -89,9 +78,7 @@ export function HeroHeader() {
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.97 }}
             onClick={handleCopy}
-            className={`dark-hover-shimmer ${
-              isDark ? "btn-secondary-dark" : "btn-secondary-light"
-            }`}
+            className="btn-secondary dark-hover-shimmer"
           >
             <Terminal className="w-4 h-4 text-orange-500" />
             <span>{HERO_CONTENT.installCommand}</span>

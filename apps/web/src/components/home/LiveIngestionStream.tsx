@@ -2,14 +2,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { LIVE_FEED_CONTENT, type LiveLog } from "../../constants/home.constants";
 
-import { useTheme } from "../../context/ThemeContext";
-
 export interface LiveIngestionStreamProps {
   logs: LiveLog[];
 }
 
 export function LiveIngestionStream({ logs }: LiveIngestionStreamProps) {
-  const { isDark } = useTheme();
   return (
     <section className="py-20 gsap-reveal">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
@@ -18,7 +15,7 @@ export function LiveIngestionStream({ logs }: LiveIngestionStreamProps) {
             {LIVE_FEED_CONTENT.tag}
           </span>
           <h2 className="text-3xl font-extrabold">{LIVE_FEED_CONTENT.title}</h2>
-          <p className={`text-sm mt-1 max-w-xl ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
+          <p className="text-sm mt-1 max-w-xl text-muted-adaptive">
             {LIVE_FEED_CONTENT.description}
           </p>
         </div>
@@ -28,15 +25,11 @@ export function LiveIngestionStream({ logs }: LiveIngestionStreamProps) {
         </div>
       </div>
 
-      <div
-        className={`rounded-[4px] border overflow-hidden min-h-[280px] ${
-          isDark ? "card-dark" : "card-light"
-        }`}
-      >
+      <div className="card-surface p-0 overflow-hidden min-h-[280px]">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-mono table-fixed">
             <thead>
-              <tr className={`border-b ${isDark ? "border-zinc-800 bg-black/40 text-zinc-400" : "border-zinc-200 bg-zinc-50 text-zinc-600"}`}>
+              <tr className="border-b border-zinc-200 bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:bg-black/40 dark:text-zinc-400">
                 <th className="py-3.5 px-4 font-semibold w-24">{LIVE_FEED_CONTENT.headers[0]}</th>
                 <th className="py-3.5 px-4 font-semibold w-48">{LIVE_FEED_CONTENT.headers[1]}</th>
                 <th className="py-3.5 px-4 font-semibold w-36">{LIVE_FEED_CONTENT.headers[2]}</th>
@@ -50,18 +43,16 @@ export function LiveIngestionStream({ logs }: LiveIngestionStreamProps) {
                   <motion.tr
                     key={log.sequence}
                     layout
-                    initial={{ opacity: 0, backgroundColor: isDark ? "rgba(249, 115, 22, 0.15)" : "rgba(37, 99, 235, 0.15)" }}
-                    animate={{ opacity: 1, backgroundColor: "transparent" }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className={`border-b h-12 transition-colors ${
-                      isDark ? "border-zinc-800/60 hover:bg-white/[0.02]" : "border-zinc-100 hover:bg-zinc-50"
-                    }`}
+                    className="border-b border-zinc-100 hover:bg-zinc-50 dark:border-zinc-800/60 dark:hover:bg-white/[0.02] h-12 transition-colors"
                   >
                     <td className="py-3.5 px-4 font-bold text-orange-500">#{log.sequence}</td>
                     <td className="py-3.5 px-4 font-medium truncate">{log.action}</td>
-                    <td className={`py-3.5 px-4 truncate ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>{log.idempotencyKey}</td>
-                    <td className={`py-3.5 px-4 truncate ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>{log.hash}</td>
+                    <td className="py-3.5 px-4 truncate text-muted-adaptive">{log.idempotencyKey}</td>
+                    <td className="py-3.5 px-4 truncate text-muted-adaptive">{log.hash}</td>
                     <td className="py-3.5 px-4">
                       <span className="badge-emerald">
                         <CheckCircle className="w-4 h-4" />

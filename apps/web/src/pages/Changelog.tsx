@@ -5,7 +5,6 @@ import {
   CHANGELOG_CONTENT,
   type ReleaseInfo,
 } from "../constants/changelog.constants";
-import { useTheme } from "../context/ThemeContext";
 
 type FilterType = "all" | "major" | "minor" | "patch";
 
@@ -14,7 +13,6 @@ export interface ChangelogProps {
 }
 
 export default function Changelog() {
-  const { isDark } = useTheme();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
   const filteredReleases = RELEASES.filter((release) => {
@@ -22,26 +20,10 @@ export default function Changelog() {
   });
 
   return (
-    <div
-      className={`pt-24 min-h-screen relative pb-28 transition-colors ${
-        isDark ? "bg-[#050505] text-zinc-100" : "bg-white text-zinc-900"
-      }`}
-    >
+    <div className="pt-24 min-h-screen relative pb-28 transition-colors bg-[#ffffff] text-zinc-900 dark:bg-[#050505] dark:text-zinc-100">
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: isDark
-              ? "linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)"
-              : "linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-            WebkitMaskImage:
-              "radial-gradient(circle at 50% 35%, black 30%, rgba(0, 0, 0, 0.4) 65%, transparent 90%)",
-            maskImage:
-              "radial-gradient(circle at 50% 35%, black 30%, rgba(0, 0, 0, 0.4) 65%, transparent 90%)",
-          }}
-        />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.04)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(circle_at_50%_35%,black_30%,rgba(0,0,0,0.4)_65%,transparent_90%)]" />
       </div>
 
       <main className="relative z-10 max-w-4xl mx-auto px-6 text-left space-y-12">
@@ -54,9 +36,7 @@ export default function Changelog() {
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">
             {CHANGELOG_CONTENT.title}
           </h1>
-          <p
-            className={`text-base max-w-xl leading-relaxed ${isDark ? "text-zinc-400" : "text-zinc-600"}`}
-          >
+          <p className="text-base max-w-xl leading-relaxed text-muted-adaptive">
             {CHANGELOG_CONTENT.description}
           </p>
         </div>
@@ -71,9 +51,7 @@ export default function Changelog() {
                 className={`px-3 py-1.5 text-xs font-mono font-bold uppercase tracking-wider border rounded-[4px] transition-all cursor-pointer ${
                   activeFilter === filter
                     ? "bg-orange-600 text-white border-orange-600"
-                    : isDark
-                      ? "bg-[#0a0a0c] border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700"
-                      : "bg-zinc-100 border-zinc-300 text-zinc-700 hover:bg-zinc-200"
+                    : "bg-zinc-100 border-zinc-300 text-zinc-700 hover:bg-zinc-200 dark:bg-[#0a0a0c] dark:border-zinc-800 dark:text-zinc-400 dark:hover:text-white dark:hover:border-zinc-700"
                 }`}
               >
                 {filter}
@@ -88,11 +66,7 @@ export default function Changelog() {
             <div key={i} className="relative pl-8 md:pl-0">
               {/* Continuous Vertical Timeline Connector Line */}
               {i !== filteredReleases.length - 1 && (
-                <div
-                  className={`absolute left-[11px] md:left-[156px] top-4 bottom-[-32px] w-px ${
-                    isDark ? "bg-zinc-800" : "bg-zinc-200"
-                  }`}
-                />
+                <div className="absolute left-[11px] md:left-[156px] top-4 bottom-[-32px] w-px bg-zinc-200 dark:bg-zinc-800" />
               )}
 
               <div className="flex flex-col md:flex-row gap-4 md:gap-10 items-start">
@@ -105,15 +79,9 @@ export default function Changelog() {
                 </div>
 
                 {/* Compact Release Card */}
-                <div
-                  className={`flex-1 p-4 sm:p-5 rounded-[4px] border dark-hover-shimmer ${
-                    isDark
-                      ? "bg-[#0a0a0c] border-zinc-800"
-                      : "bg-white border-zinc-300 shadow-sm"
-                  }`}
-                >
+                <div className="flex-1 card-surface p-4 sm:p-5 dark-hover-shimmer">
                   {/* Header Row */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 mb-2.5 pb-2.5 border-b border-zinc-800/80">
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-2.5 pb-2.5 border-b border-zinc-200 dark:border-zinc-800/80">
                     <div className="flex items-center gap-2.5">
                       <h2 className="text-lg font-bold font-mono text-orange-500">
                         {release.version}
@@ -131,29 +99,24 @@ export default function Changelog() {
                       </span>
                     </div>
 
-                    <span className="px-1.5 py-0.5 bg-black/40 border border-zinc-800 text-[10px] font-mono text-zinc-400 rounded-[2px]">
+                    <span className="px-1.5 py-0.5 border text-[10px] font-mono rounded-[2px] bg-zinc-100 border-zinc-300 text-zinc-600 dark:bg-black/40 dark:border-zinc-800 dark:text-zinc-400">
                       commit {release.commitSha}
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-white mb-2 font-mono">
+                  <h3 className="text-sm font-bold mb-2 font-mono">
                     {release.title}
                   </h3>
 
-                  <p
-                    className={`text-[11px] leading-relaxed mb-3 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}
-                  >
+                  <p className="text-[11px] leading-relaxed mb-3 text-muted-adaptive">
                     {release.description}
                   </p>
 
                   {/* Changes List */}
-                  <div className="space-y-1.5 pt-2 border-t border-zinc-800/50">
+                  <div className="space-y-1.5 pt-2 border-t border-zinc-200 dark:border-zinc-800/50">
                     <ul className="space-y-1.5 font-mono text-[11px]">
                       {release.changes.map((change, j) => (
-                        <li
-                          key={j}
-                          className={`flex items-start gap-2 ${isDark ? "text-zinc-300" : "text-zinc-700"}`}
-                        >
+                        <li key={j} className="flex items-start gap-2 text-subtle-adaptive">
                           <GitCommit className="w-3.5 h-3.5 text-orange-500 mt-0.5 shrink-0" />
                           <span>{change}</span>
                         </li>
@@ -166,28 +129,18 @@ export default function Changelog() {
           ))}
 
           {filteredReleases.length === 0 && (
-            <div
-              className={`p-8 text-center rounded-[4px] border font-mono text-xs ${isDark ? "bg-[#0a0a0c] border-zinc-800 text-zinc-400" : "bg-zinc-50 border-zinc-300 text-zinc-600"}`}
-            >
+            <div className="card-surface p-8 text-center font-mono text-xs text-muted-adaptive">
               No releases match the selected tag filter.
             </div>
           )}
         </div>
 
         {/* GitHub Release Subscription CTA */}
-        <div
-          className={`p-8 rounded-[4px] border text-center relative overflow-hidden dark-hover-shimmer ${
-            isDark
-              ? "bg-[#0a0a0c] border-zinc-800"
-              : "bg-zinc-50 border-zinc-300"
-          }`}
-        >
+        <div className="card-surface p-8 text-center relative overflow-hidden dark-hover-shimmer">
           <h3 className="text-xl font-extrabold font-mono mb-2">
             {CHANGELOG_CONTENT.ctaTitle}
           </h3>
-          <p
-            className={`text-xs max-w-md mx-auto mb-6 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}
-          >
+          <p className="text-xs max-w-md mx-auto mb-6 text-muted-adaptive">
             {CHANGELOG_CONTENT.ctaDescription}
           </p>
           <div className="flex justify-center">

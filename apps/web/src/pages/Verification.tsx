@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Lock, Shield, ArrowRight, CheckCircle, Clock } from "lucide-react";
 import { motion } from "framer-motion";
-import { useTheme } from "../context/ThemeContext";
 import { CodeBlock } from "../components/CodeBlock";
 import { VERIFICATION_CONTENT } from "../constants/verification.constants";
 
@@ -10,27 +9,11 @@ export interface VerificationProps {
 }
 
 export default function Verification() {
-  const { isDark } = useTheme();
-
   return (
-    <div
-      className={`pt-24 min-h-screen relative pb-28 transition-colors ${
-        isDark ? "bg-[#050505] text-zinc-100" : "bg-white text-zinc-900"
-      }`}
-    >
+    <div className="pt-24 min-h-screen relative pb-28 transition-colors bg-[#ffffff] text-zinc-900 dark:bg-[#050505] dark:text-zinc-100">
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: isDark
-              ? "linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)"
-              : "linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-            WebkitMaskImage: "radial-gradient(circle at 50% 35%, black 30%, rgba(0, 0, 0, 0.4) 65%, transparent 90%)",
-            maskImage: "radial-gradient(circle at 50% 35%, black 30%, rgba(0, 0, 0, 0.4) 65%, transparent 90%)"
-          }}
-        />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.04)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(circle_at_50%_35%,black_30%,rgba(0,0,0,0.4)_65%,transparent_90%)]" />
       </div>
 
       <main className="relative z-10 max-w-5xl mx-auto px-6 text-center space-y-16">
@@ -45,17 +28,13 @@ export default function Verification() {
             {VERIFICATION_CONTENT.title}
           </h1>
 
-          <p className={`text-base max-w-2xl mx-auto leading-relaxed ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
+          <p className="text-base max-w-2xl mx-auto leading-relaxed text-muted-adaptive">
             {VERIFICATION_CONTENT.description}
           </p>
         </div>
 
         {/* High-Tech Cryptographic SVG Diagram */}
-        <div
-          className={`p-8 rounded-[4px] border relative overflow-hidden dark-hover-shimmer ${
-            isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-zinc-50 border-zinc-300 shadow-md"
-          }`}
-        >
+        <div className="card-surface p-8 relative overflow-hidden dark-hover-shimmer">
           <div className="text-xs font-mono font-bold uppercase tracking-widest text-orange-500 mb-6 text-left flex items-center justify-between">
             <span>{VERIFICATION_CONTENT.pipelineTag}</span>
             <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5">
@@ -68,8 +47,8 @@ export default function Verification() {
             <div className="lg:col-span-7 flex justify-center">
               <svg className="w-full max-w-md h-52" viewBox="0 0 400 200" fill="none">
                 {/* Background Grid Lines */}
-                <path d="M20 100H380" stroke={isDark ? "#27272a" : "#cbd5e1"} strokeWidth="1" strokeDasharray="4 4" />
-                <path d="M200 20V180" stroke={isDark ? "#27272a" : "#cbd5e1"} strokeWidth="1" strokeDasharray="4 4" />
+                <path d="M20 100H380" className="stroke-zinc-300 dark:stroke-zinc-800" strokeWidth="1" strokeDasharray="4 4" />
+                <path d="M200 20V180" className="stroke-zinc-300 dark:stroke-zinc-800" strokeWidth="1" strokeDasharray="4 4" />
 
                 {/* Outer Pulse Shield Ring */}
                 <motion.circle
@@ -96,21 +75,21 @@ export default function Verification() {
 
                 {/* Node 1 (Genesis Block) */}
                 <g transform="translate(60, 100)">
-                  <rect x="-25" y="-25" width="50" height="50" rx="4" fill={isDark ? "#18181b" : "#ffffff"} stroke="#f97316" strokeWidth="2" />
-                  <text x="0" y="-35" textAnchor="middle" fill={isDark ? "#a1a1aa" : "#475569"} fontSize="9" fontFamily="monospace" fontWeight="bold">BLOCK #1</text>
+                  <rect x="-25" y="-25" width="50" height="50" rx="4" className="fill-white dark:fill-zinc-900" stroke="#f97316" strokeWidth="2" />
+                  <text x="0" y="-35" textAnchor="middle" className="fill-zinc-600 dark:fill-zinc-400" fontSize="9" fontFamily="monospace" fontWeight="bold">BLOCK #1</text>
                   <text x="0" y="4" textAnchor="middle" fill="#f97316" fontSize="10" fontFamily="monospace" fontWeight="bold">SHA-256</text>
                 </g>
 
                 {/* Node 2 (Central Lock Node) */}
                 <g transform="translate(200, 100)">
-                  <rect x="-30" y="-30" width="60" height="60" rx="4" fill={isDark ? "#09090b" : "#ffffff"} stroke="#3b82f6" strokeWidth="2.5" />
+                  <rect x="-30" y="-30" width="60" height="60" rx="4" className="fill-white dark:fill-zinc-950" stroke="#3b82f6" strokeWidth="2.5" />
                   <path d="M-10 -5V-12A10 10 0 0 1 10 -12V-5H12V15H-12V-5H-10ZM-5 -5H5V-12A5 5 0 0 0 -5 -12V-5Z" fill="#3b82f6" />
                 </g>
 
                 {/* Node 3 (Next Block) */}
                 <g transform="translate(340, 100)">
-                  <rect x="-25" y="-25" width="50" height="50" rx="4" fill={isDark ? "#18181b" : "#ffffff"} stroke="#10b981" strokeWidth="2" />
-                  <text x="0" y="-35" textAnchor="middle" fill={isDark ? "#a1a1aa" : "#475569"} fontSize="9" fontFamily="monospace" fontWeight="bold">BLOCK #N</text>
+                  <rect x="-25" y="-25" width="50" height="50" rx="4" className="fill-white dark:fill-zinc-900" stroke="#10b981" strokeWidth="2" />
+                  <text x="0" y="-35" textAnchor="middle" className="fill-zinc-600 dark:fill-zinc-400" fontSize="9" fontFamily="monospace" fontWeight="bold">BLOCK #N</text>
                   <text x="0" y="4" textAnchor="middle" fill="#10b981" fontSize="10" fontFamily="monospace" fontWeight="bold">VERIFIED</text>
                 </g>
 
@@ -131,34 +110,22 @@ export default function Verification() {
 
             {/* Feature Callout Details */}
             <div className="lg:col-span-5 text-left space-y-4 font-mono text-xs">
-              <div
-                className={`p-3 border rounded-[4px] ${
-                  isDark
-                    ? "border-zinc-800/80 bg-black/40 text-zinc-400"
-                    : "border-zinc-300 bg-white text-zinc-600 shadow-sm"
-                }`}
-              >
+              <div className="p-3 border rounded-[4px] bg-white border-zinc-300 text-zinc-600 shadow-sm dark:border-zinc-800/80 dark:bg-black/40 dark:text-zinc-400">
                 <div className="flex items-center gap-2 text-orange-500 font-bold mb-1">
                   <Shield className="w-4 h-4" />
                   <span>{VERIFICATION_CONTENT.featureCards[0].title}</span>
                 </div>
-                <p className={`text-[11px] ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
+                <p className="text-[11px] text-muted-adaptive">
                   {VERIFICATION_CONTENT.featureCards[0].desc}
                 </p>
               </div>
 
-              <div
-                className={`p-3 border rounded-[4px] ${
-                  isDark
-                    ? "border-zinc-800/80 bg-black/40 text-zinc-400"
-                    : "border-zinc-300 bg-white text-zinc-600 shadow-sm"
-                }`}
-              >
+              <div className="p-3 border rounded-[4px] bg-white border-zinc-300 text-zinc-600 shadow-sm dark:border-zinc-800/80 dark:bg-black/40 dark:text-zinc-400">
                 <div className="flex items-center gap-2 text-blue-500 font-bold mb-1">
                   <CheckCircle className="w-4 h-4 text-emerald-500" />
                   <span>{VERIFICATION_CONTENT.featureCards[1].title}</span>
                 </div>
-                <p className={`text-[11px] ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
+                <p className="text-[11px] text-muted-adaptive">
                   {VERIFICATION_CONTENT.featureCards[1].desc}
                 </p>
               </div>
@@ -167,17 +134,9 @@ export default function Verification() {
         </div>
 
         {/* Disabled Form Section */}
-        <div
-          className={`p-8 rounded-[4px] border text-left relative overflow-hidden ${
-            isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-zinc-50 border-zinc-300 shadow-sm"
-          }`}
-        >
+        <div className="card-surface p-8 text-left relative overflow-hidden">
           {/* Overlay Coming Soon Ribbon */}
-          <div
-            className={`flex items-center justify-between pb-4 border-b mb-6 ${
-              isDark ? "border-zinc-800/80" : "border-zinc-200"
-            }`}
-          >
+          <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800/80 mb-6">
             <div className="flex items-center gap-2">
               <Lock className="w-4 h-4 text-orange-500" />
               <span className="font-bold uppercase tracking-wider text-xs font-mono">
@@ -191,11 +150,7 @@ export default function Verification() {
 
           <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
             <div>
-              <label
-                className={`block text-xs font-mono font-bold uppercase tracking-wider mb-2 ${
-                  isDark ? "text-zinc-400" : "text-zinc-600"
-                }`}
-              >
+              <label className="block text-xs font-mono font-bold uppercase tracking-wider mb-2 text-muted-adaptive">
                 {VERIFICATION_CONTENT.formSection.label}
               </label>
               <div className="relative">
@@ -204,11 +159,7 @@ export default function Verification() {
                   disabled
                   value=""
                   placeholder={VERIFICATION_CONTENT.formSection.placeholder}
-                  className={`w-full px-4 py-3 text-xs font-mono rounded-[4px] border cursor-not-allowed opacity-60 ${
-                    isDark
-                      ? "bg-black/60 border-zinc-800 text-zinc-500"
-                      : "bg-white border-zinc-300 text-zinc-400"
-                  }`}
+                  className="input-base cursor-not-allowed opacity-60"
                 />
                 <Lock className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400" />
               </div>
@@ -217,11 +168,7 @@ export default function Verification() {
             <button
               type="button"
               disabled
-              className={`w-full py-3.5 px-6 rounded-[4px] font-mono font-bold text-xs uppercase tracking-wider cursor-not-allowed border flex items-center justify-center gap-2 ${
-                isDark
-                  ? "bg-zinc-800 text-zinc-500 border-zinc-700"
-                  : "bg-zinc-200 text-zinc-500 border-zinc-300"
-              }`}
+              className="w-full py-3.5 px-6 rounded-[4px] font-mono font-bold text-xs uppercase tracking-wider cursor-not-allowed border flex items-center justify-center gap-2 bg-zinc-200 text-zinc-500 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-500 dark:border-zinc-700"
             >
               <Lock className="w-4 h-4" />
               <span>{VERIFICATION_CONTENT.formSection.buttonText}</span>
@@ -230,41 +177,23 @@ export default function Verification() {
         </div>
 
         {/* SDK Verification Alternative Guide */}
-        <div
-          className={`p-8 rounded-[4px] border text-left ${
-            isDark
-              ? "bg-[#0a0a0c] border-zinc-800 text-zinc-100"
-              : "bg-zinc-50 border-zinc-300 text-zinc-900 shadow-sm"
-          }`}
-        >
+        <div className="card-surface p-8 text-left">
           <div className="mb-4">
             <span className="text-xs font-mono uppercase tracking-widest text-emerald-500 font-bold block mb-1">
               {VERIFICATION_CONTENT.sdkSection.tag}
             </span>
-            <h3
-              className={`text-xl font-bold font-mono ${
-                isDark ? "text-white" : "text-zinc-900"
-              }`}
-            >
+            <h3 className="text-xl font-bold font-mono">
               {VERIFICATION_CONTENT.sdkSection.title}
             </h3>
           </div>
 
-          <p
-            className={`text-xs font-mono mb-4 leading-relaxed ${
-              isDark ? "text-zinc-400" : "text-zinc-600"
-            }`}
-          >
+          <p className="text-xs font-mono mb-4 leading-relaxed text-muted-adaptive">
             {VERIFICATION_CONTENT.sdkSection.description}
           </p>
 
-          <CodeBlock code={VERIFICATION_CONTENT.sdkSection.codeSnippet} language="typescript" title="sdk-verify.ts" isDark={isDark} />
+          <CodeBlock code={VERIFICATION_CONTENT.sdkSection.codeSnippet} language="typescript" title="sdk-verify.ts" />
 
-          <div
-            className={`mt-6 pt-4 border-t flex items-center justify-between text-xs font-mono ${
-              isDark ? "border-zinc-800 text-zinc-400" : "border-zinc-200 text-zinc-600"
-            }`}
-          >
+          <div className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 flex items-center justify-between text-xs font-mono">
             <span>{VERIFICATION_CONTENT.sdkSection.linkPrompt}</span>
             <Link
               to={VERIFICATION_CONTENT.sdkSection.linkUrl}
