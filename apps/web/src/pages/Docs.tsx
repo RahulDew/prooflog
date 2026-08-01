@@ -140,7 +140,7 @@ export default function Docs() {
                 key={cat.title}
                 data-cat={cat.title}
                 onClick={() => scrollToSection(CATEGORY_ANCHORS[cat.title])}
-                className={`shrink-0 text-[11px] font-mono px-3 py-1.5 rounded-none border transition-all whitespace-nowrap cursor-pointer ${
+                className={`shrink-0 text-[11px] font-mono px-3 py-1.5 rounded-[4px] border transition-all whitespace-nowrap cursor-pointer ${
                   isActive
                     ? "border-orange-500 text-orange-500 bg-orange-500/10"
                     : isDark
@@ -196,7 +196,7 @@ export default function Docs() {
                       <li key={link.id}>
                         <button
                           onClick={() => scrollToSection(link.id)}
-                          className={`w-full text-left text-xs font-mono px-3 py-1.5 rounded-none transition-all border cursor-pointer ${
+                          className={`w-full text-left text-xs font-mono px-3 py-1.5 rounded-[4px] transition-all border cursor-pointer ${
                             isActive
                               ? isDark
                                 ? "border-orange-500/40 text-white bg-orange-500/10"
@@ -229,7 +229,7 @@ export default function Docs() {
               className="scroll-mt-40 md:scroll-mt-28"
             >
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-orange-500 bg-orange-500/10 px-2 py-0.5 border border-orange-500/30">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-orange-500 bg-orange-500/10 px-2 py-0.5 border border-orange-500/30 rounded-[4px]">
                   {section.category}
                 </span>
               </div>
@@ -249,7 +249,7 @@ export default function Docs() {
 
               {section.callout && (
                 <div
-                  className={`p-4 mb-6 rounded-none border flex items-start gap-3 text-xs leading-relaxed ${
+                  className={`p-4 mb-6 rounded-[4px] border flex items-start gap-3 text-xs leading-relaxed ${
                     section.callout.type === "important"
                       ? isDark
                         ? "bg-red-500/10 border-red-500/30 text-red-300"
@@ -281,7 +281,7 @@ export default function Docs() {
 
               {section.table && (
                 <div
-                  className={`mb-6 rounded-none border overflow-hidden ${
+                  className={`mb-6 rounded-[4px] border overflow-hidden ${
                     isDark
                       ? "bg-[#0a0a0c] border-zinc-800"
                       : "bg-white border-zinc-300 shadow-sm"

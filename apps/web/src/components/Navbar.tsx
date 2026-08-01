@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { NAVBAR_CONTENT } from "../constants/navbar.constants";
 
 export function Navbar() {
   const location = useLocation();
@@ -13,12 +14,7 @@ export function Navbar() {
     setIsOpen(false);
   }, [location.pathname]);
 
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Docs", path: "/docs" },
-    { name: "Verification", path: "/verification" },
-    { name: "Changelog", path: "/changelog" },
-  ];
+  const navLinks = NAVBAR_CONTENT.navLinks;
 
   return (
     <nav
@@ -32,16 +28,16 @@ export function Navbar() {
         {/* Brand Logo & Name */}
         <Link to="/" className="flex items-center gap-3 group">
           <div
-            className={`w-8 h-8 rounded-none flex items-center justify-center font-mono font-bold text-xs border transition-all ${
+            className={`w-8 h-8 rounded-[4px] flex items-center justify-center font-mono font-bold text-xs border transition-all ${
               isDark
                 ? "bg-zinc-900 border-zinc-700 text-orange-500 group-hover:border-orange-500"
                 : "bg-blue-50 border-blue-200 text-blue-600 group-hover:border-blue-600"
             }`}
           >
-            PL
+            {NAVBAR_CONTENT.logoBadge}
           </div>
           <span className="font-extrabold text-lg tracking-tight group-hover:opacity-90">
-            ProofLog
+            {NAVBAR_CONTENT.logoText}
           </span>
         </Link>
 
@@ -55,7 +51,7 @@ export function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-xs font-mono uppercase tracking-wider px-3 py-1.5 rounded-none transition-colors ${
+                className={`text-xs font-mono uppercase tracking-wider px-3 py-1.5 rounded-[4px] transition-colors ${
                   isActive
                     ? isDark
                       ? "text-white bg-zinc-800 border border-zinc-700 font-bold"
@@ -75,10 +71,10 @@ export function Navbar() {
         <div className="flex items-center gap-3 shrink-0">
           {/* GitHub Button (Desktop) */}
           <a
-            href="https://github.com/RahulDew/prooflog"
+            href={NAVBAR_CONTENT.githubUrl}
             target="_blank"
             rel="noreferrer"
-            className={`hidden sm:flex items-center gap-2 text-xs font-mono uppercase tracking-wider px-3 py-1.5 rounded-none border transition-colors ${
+            className={`hidden sm:flex items-center gap-2 text-xs font-mono uppercase tracking-wider px-3 py-1.5 rounded-[4px] border transition-colors ${
               isDark
                 ? "border-zinc-800 bg-zinc-900 hover:border-zinc-700 text-zinc-300"
                 : "border-zinc-300 bg-zinc-100 hover:border-zinc-400 text-zinc-800"
@@ -97,7 +93,7 @@ export function Navbar() {
               <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
               <path d="M9 18c-4.51 2-5-2-7-2" />
             </svg>
-            GitHub
+            {NAVBAR_CONTENT.githubText}
           </a>
 
           {/* Mobile Menu Toggle Button */}

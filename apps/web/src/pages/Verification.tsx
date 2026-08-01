@@ -3,17 +3,10 @@ import { Lock, Shield, ArrowRight, CheckCircle, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import { CodeBlock } from "../components/CodeBlock";
+import { VERIFICATION_CONTENT } from "../constants/verification.constants";
 
 export default function Verification() {
   const { isDark } = useTheme();
-
-  const sdkSnippet = `import { ProofLog } from '@prooflog/node';
-
-const client = new ProofLog({ apiKey: process.env.PROOFLOG_API_KEY });
-
-// Execute zero-trust cryptographic chain verification locally
-const result = await client.verifyChain('org_1234');
-console.log('Chain Intact:', result.valid);`;
 
   return (
     <div
@@ -39,30 +32,30 @@ console.log('Chain Intact:', result.valid);`;
       <main className="relative z-10 max-w-5xl mx-auto px-6 text-center space-y-16">
         {/* Header Badge */}
         <div className="space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none border text-xs font-mono uppercase tracking-wider border-orange-500/40 bg-orange-500/10 text-orange-400">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] border text-xs font-mono uppercase tracking-wider border-orange-500/40 bg-orange-500/10 text-orange-400">
             <Clock className="w-3.5 h-3.5" />
-            <span>Live Portal — Coming Soon</span>
+            <span>{VERIFICATION_CONTENT.badge}</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
-            Cryptographic Chain Verification
+            {VERIFICATION_CONTENT.title}
           </h1>
 
           <p className={`text-base max-w-2xl mx-auto leading-relaxed ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
-            The web-based hosted verification dashboard is currently under deployment. Zero-trust chain verification is fully operational via the Node.js SDK primitive.
+            {VERIFICATION_CONTENT.description}
           </p>
         </div>
 
         {/* High-Tech Cryptographic SVG Diagram */}
         <div
-          className={`p-8 rounded-none border relative overflow-hidden dark-hover-shimmer ${
+          className={`p-8 rounded-[4px] border relative overflow-hidden dark-hover-shimmer ${
             isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-zinc-50 border-zinc-300 shadow-md"
           }`}
         >
           <div className="text-xs font-mono font-bold uppercase tracking-widest text-orange-500 mb-6 text-left flex items-center justify-between">
-            <span>Cryptographic Verification Pipeline (SHA-256)</span>
+            <span>{VERIFICATION_CONTENT.pipelineTag}</span>
             <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5">
-              SDK PRIMITIVE ACTIVE
+              {VERIFICATION_CONTENT.pipelineBadge}
             </span>
           </div>
 
@@ -99,20 +92,20 @@ console.log('Chain Intact:', result.valid);`;
 
                 {/* Node 1 (Genesis Block) */}
                 <g transform="translate(60, 100)">
-                  <rect x="-25" y="-25" width="50" height="50" fill={isDark ? "#18181b" : "#ffffff"} stroke="#f97316" strokeWidth="2" />
+                  <rect x="-25" y="-25" width="50" height="50" rx="4" fill={isDark ? "#18181b" : "#ffffff"} stroke="#f97316" strokeWidth="2" />
                   <text x="0" y="-35" textAnchor="middle" fill={isDark ? "#a1a1aa" : "#475569"} fontSize="9" fontFamily="monospace" fontWeight="bold">BLOCK #1</text>
                   <text x="0" y="4" textAnchor="middle" fill="#f97316" fontSize="10" fontFamily="monospace" fontWeight="bold">SHA-256</text>
                 </g>
 
                 {/* Node 2 (Central Lock Node) */}
                 <g transform="translate(200, 100)">
-                  <rect x="-30" y="-30" width="60" height="60" fill={isDark ? "#09090b" : "#ffffff"} stroke="#3b82f6" strokeWidth="2.5" />
+                  <rect x="-30" y="-30" width="60" height="60" rx="4" fill={isDark ? "#09090b" : "#ffffff"} stroke="#3b82f6" strokeWidth="2.5" />
                   <path d="M-10 -5V-12A10 10 0 0 1 10 -12V-5H12V15H-12V-5H-10ZM-5 -5H5V-12A5 5 0 0 0 -5 -12V-5Z" fill="#3b82f6" />
                 </g>
 
                 {/* Node 3 (Next Block) */}
                 <g transform="translate(340, 100)">
-                  <rect x="-25" y="-25" width="50" height="50" fill={isDark ? "#18181b" : "#ffffff"} stroke="#10b981" strokeWidth="2" />
+                  <rect x="-25" y="-25" width="50" height="50" rx="4" fill={isDark ? "#18181b" : "#ffffff"} stroke="#10b981" strokeWidth="2" />
                   <text x="0" y="-35" textAnchor="middle" fill={isDark ? "#a1a1aa" : "#475569"} fontSize="9" fontFamily="monospace" fontWeight="bold">BLOCK #N</text>
                   <text x="0" y="4" textAnchor="middle" fill="#10b981" fontSize="10" fontFamily="monospace" fontWeight="bold">VERIFIED</text>
                 </g>
@@ -135,7 +128,7 @@ console.log('Chain Intact:', result.valid);`;
             {/* Feature Callout Details */}
             <div className="lg:col-span-5 text-left space-y-4 font-mono text-xs">
               <div
-                className={`p-3 border rounded-none ${
+                className={`p-3 border rounded-[4px] ${
                   isDark
                     ? "border-zinc-800/80 bg-black/40 text-zinc-400"
                     : "border-zinc-300 bg-white text-zinc-600 shadow-sm"
@@ -143,15 +136,15 @@ console.log('Chain Intact:', result.valid);`;
               >
                 <div className="flex items-center gap-2 text-orange-500 font-bold mb-1">
                   <Shield className="w-4 h-4" />
-                  <span>Sequential Hash Linking</span>
+                  <span>{VERIFICATION_CONTENT.featureCards[0].title}</span>
                 </div>
                 <p className={`text-[11px] ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
-                  Re-computes SHA-256 digests across historical event payloads.
+                  {VERIFICATION_CONTENT.featureCards[0].desc}
                 </p>
               </div>
 
               <div
-                className={`p-3 border rounded-none ${
+                className={`p-3 border rounded-[4px] ${
                   isDark
                     ? "border-zinc-800/80 bg-black/40 text-zinc-400"
                     : "border-zinc-300 bg-white text-zinc-600 shadow-sm"
@@ -159,10 +152,10 @@ console.log('Chain Intact:', result.valid);`;
               >
                 <div className="flex items-center gap-2 text-blue-500 font-bold mb-1">
                   <CheckCircle className="w-4 h-4 text-emerald-500" />
-                  <span>Zero-Trust Tamper Alert</span>
+                  <span>{VERIFICATION_CONTENT.featureCards[1].title}</span>
                 </div>
                 <p className={`text-[11px] ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
-                  Detects modified database bytes instantly with zero false positives.
+                  {VERIFICATION_CONTENT.featureCards[1].desc}
                 </p>
               </div>
             </div>
@@ -171,7 +164,7 @@ console.log('Chain Intact:', result.valid);`;
 
         {/* Disabled Form Section */}
         <div
-          className={`p-8 rounded-none border text-left relative overflow-hidden ${
+          className={`p-8 rounded-[4px] border text-left relative overflow-hidden ${
             isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-zinc-50 border-zinc-300 shadow-sm"
           }`}
         >
@@ -184,11 +177,11 @@ console.log('Chain Intact:', result.valid);`;
             <div className="flex items-center gap-2">
               <Lock className="w-4 h-4 text-orange-500" />
               <span className="font-bold uppercase tracking-wider text-xs font-mono">
-                Web Verification Portal
+                {VERIFICATION_CONTENT.formSection.title}
               </span>
             </div>
             <span className="text-xs font-mono font-bold text-orange-500 bg-orange-500/10 border border-orange-500/30 px-3 py-1">
-              COMING SOON
+              {VERIFICATION_CONTENT.formSection.ribbon}
             </span>
           </div>
 
@@ -199,15 +192,15 @@ console.log('Chain Intact:', result.valid);`;
                   isDark ? "text-zinc-400" : "text-zinc-600"
                 }`}
               >
-                API Key (Hosted Portal Disabled)
+                {VERIFICATION_CONTENT.formSection.label}
               </label>
               <div className="relative">
                 <input
                   type="password"
                   disabled
                   value=""
-                  placeholder="Web form verification will be live soon — Use SDK verification below"
-                  className={`w-full px-4 py-3 text-xs font-mono rounded-none border cursor-not-allowed opacity-60 ${
+                  placeholder={VERIFICATION_CONTENT.formSection.placeholder}
+                  className={`w-full px-4 py-3 text-xs font-mono rounded-[4px] border cursor-not-allowed opacity-60 ${
                     isDark
                       ? "bg-black/60 border-zinc-800 text-zinc-500"
                       : "bg-white border-zinc-300 text-zinc-400"
@@ -220,21 +213,21 @@ console.log('Chain Intact:', result.valid);`;
             <button
               type="button"
               disabled
-              className={`w-full py-3.5 px-6 rounded-none font-mono font-bold text-xs uppercase tracking-wider cursor-not-allowed border flex items-center justify-center gap-2 ${
+              className={`w-full py-3.5 px-6 rounded-[4px] font-mono font-bold text-xs uppercase tracking-wider cursor-not-allowed border flex items-center justify-center gap-2 ${
                 isDark
                   ? "bg-zinc-800 text-zinc-500 border-zinc-700"
                   : "bg-zinc-200 text-zinc-500 border-zinc-300"
               }`}
             >
               <Lock className="w-4 h-4" />
-              <span>Verify Chain (Web Form Disabled — Coming Soon)</span>
+              <span>{VERIFICATION_CONTENT.formSection.buttonText}</span>
             </button>
           </form>
         </div>
 
         {/* SDK Verification Alternative Guide */}
         <div
-          className={`p-8 rounded-none border text-left ${
+          className={`p-8 rounded-[4px] border text-left ${
             isDark
               ? "bg-[#0a0a0c] border-zinc-800 text-zinc-100"
               : "bg-zinc-50 border-zinc-300 text-zinc-900 shadow-sm"
@@ -242,14 +235,14 @@ console.log('Chain Intact:', result.valid);`;
         >
           <div className="mb-4">
             <span className="text-xs font-mono uppercase tracking-widest text-emerald-500 font-bold block mb-1">
-              Active Alternative
+              {VERIFICATION_CONTENT.sdkSection.tag}
             </span>
             <h3
               className={`text-xl font-bold font-mono ${
                 isDark ? "text-white" : "text-zinc-900"
               }`}
             >
-              Execute Verification via Node.js SDK
+              {VERIFICATION_CONTENT.sdkSection.title}
             </h3>
           </div>
 
@@ -258,22 +251,22 @@ console.log('Chain Intact:', result.valid);`;
               isDark ? "text-zinc-400" : "text-zinc-600"
             }`}
           >
-            Run zero-trust cryptographic chain validation programmatically in your microservices or background health checks:
+            {VERIFICATION_CONTENT.sdkSection.description}
           </p>
 
-          <CodeBlock code={sdkSnippet} language="typescript" title="sdk-verify.ts" isDark={isDark} />
+          <CodeBlock code={VERIFICATION_CONTENT.sdkSection.codeSnippet} language="typescript" title="sdk-verify.ts" isDark={isDark} />
 
           <div
             className={`mt-6 pt-4 border-t flex items-center justify-between text-xs font-mono ${
               isDark ? "border-zinc-800 text-zinc-400" : "border-zinc-200 text-zinc-600"
             }`}
           >
-            <span>Need documentation on client.verifyChain()?</span>
+            <span>{VERIFICATION_CONTENT.sdkSection.linkPrompt}</span>
             <Link
-              to="/docs"
+              to={VERIFICATION_CONTENT.sdkSection.linkUrl}
               className="text-orange-500 hover:text-orange-600 font-bold flex items-center gap-1"
             >
-              <span>Read Documentation</span>
+              <span>{VERIFICATION_CONTENT.sdkSection.linkText}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

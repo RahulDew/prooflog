@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Terminal, Check, Copy } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { HeroHashChainVisualizer } from "./HeroHashChainVisualizer";
+import { HERO_CONTENT } from "../../constants/home.constants";
 
 interface HeroSectionProps {
   isDark: boolean;
@@ -33,7 +34,7 @@ export function HeroSection({ isDark }: HeroSectionProps) {
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText("npm i @prooflog/node");
+      await navigator.clipboard.writeText(HERO_CONTENT.installCommand);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -51,24 +52,24 @@ export function HeroSection({ isDark }: HeroSectionProps) {
       >
         <motion.div
           variants={itemVariants}
-          className={`inline-flex items-center gap-2 px-3 py-1 rounded-none border text-xs font-mono uppercase tracking-wider ${
+          className={`inline-flex items-center gap-2 px-3 py-1 rounded-[4px] border text-xs font-mono uppercase tracking-wider ${
             isDark
               ? "border-orange-500/40 bg-orange-500/10 text-orange-400"
               : "border-blue-600/40 bg-blue-50 text-blue-600 font-bold"
           }`}
         >
-          <span className="w-1.5 h-1.5 bg-orange-500 animate-pulse" />
-          ProofLog Engine v0.1.2 Released
+          <span className="w-1.5 h-1.5 rounded-[2px] bg-orange-500 animate-pulse" />
+          {HERO_CONTENT.badge}
         </motion.div>
 
         <motion.h1
           variants={itemVariants}
           className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.08]"
         >
-          Immutable Audit Logs.
+          {HERO_CONTENT.headlineFirst}
           <br />
           <span className={isDark ? "text-orange-500" : "text-blue-600"}>
-            Zero Trust Required.
+            {HERO_CONTENT.headlineSecond}
           </span>
         </motion.h1>
 
@@ -76,16 +77,16 @@ export function HeroSection({ isDark }: HeroSectionProps) {
           variants={itemVariants}
           className={`text-base leading-relaxed max-w-xl ${isDark ? "text-zinc-400" : "text-zinc-600"}`}
         >
-          ProofLog is an open-source audit logging system using cryptographic hash chaining to guarantee log integrity. Each log entry is linked to its preceding event payload.
+          {HERO_CONTENT.description}
         </motion.p>
 
         <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 pt-2">
           <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
             <Link
-              to="/docs"
-              className="h-12 px-6 rounded-none bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer dark-hover-shimmer"
+              to={HERO_CONTENT.primaryCtaLink}
+              className="h-12 px-6 rounded-[4px] bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer dark-hover-shimmer"
             >
-              <span>Read Documentation</span>
+              <span>{HERO_CONTENT.primaryCtaText}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </motion.div>
@@ -94,14 +95,14 @@ export function HeroSection({ isDark }: HeroSectionProps) {
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.97 }}
             onClick={handleCopy}
-            className={`h-12 px-5 rounded-none border font-mono text-xs transition-all flex items-center gap-3 cursor-pointer dark-hover-shimmer ${
+            className={`h-12 px-5 rounded-[4px] border font-mono text-xs transition-all flex items-center gap-3 cursor-pointer dark-hover-shimmer ${
               isDark
                 ? "bg-[#0a0a0c] border-zinc-800 hover:border-zinc-700 text-zinc-300"
                 : "bg-white border-zinc-300 hover:border-zinc-400 text-zinc-800 shadow-sm"
             }`}
           >
             <Terminal className="w-4 h-4 text-orange-500" />
-            <span>npm install @prooflog/node</span>
+            <span>{HERO_CONTENT.installCommand}</span>
             {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-zinc-500" />}
           </motion.button>
         </motion.div>

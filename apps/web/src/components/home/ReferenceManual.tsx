@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { REFERENCE_TABS } from "../../constants/home.constants";
+import { REFERENCE_CONTENT } from "../../constants/home.constants";
 
 interface ReferenceManualProps {
   isDark: boolean;
@@ -12,21 +12,26 @@ export function ReferenceManual({ isDark }: ReferenceManualProps) {
   return (
     <section className="py-20 gsap-reveal">
       <div className="text-left mb-12">
-        <span className="text-xs font-mono uppercase tracking-widest text-blue-500 font-bold">Documentation</span>
-        <h2 className="text-3xl font-extrabold mt-1">Reference Manual</h2>
+        <span className="text-xs font-mono uppercase tracking-widest text-blue-500 font-bold">
+          {REFERENCE_CONTENT.tag}
+        </span>
+        <h2 className="text-3xl font-extrabold mt-1">{REFERENCE_CONTENT.title}</h2>
+        <p className={`text-sm mt-1 max-w-xl ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
+          {REFERENCE_CONTENT.description}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Tabs */}
         <div className="lg:col-span-4 space-y-2">
-          {REFERENCE_TABS.map((tab) => {
+          {REFERENCE_CONTENT.tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full p-4 rounded-none text-left font-mono text-xs uppercase tracking-wider flex items-center gap-3 transition-all cursor-pointer ${
+                className={`w-full p-4 rounded-[4px] text-left font-mono text-xs uppercase tracking-wider flex items-center gap-3 transition-all cursor-pointer ${
                   isActive
                     ? isDark
                       ? "bg-zinc-800 text-white border border-zinc-700 font-bold"
@@ -44,7 +49,7 @@ export function ReferenceManual({ isDark }: ReferenceManualProps) {
         </div>
 
         {/* Right Tab Content */}
-        <div className={`lg:col-span-8 p-8 rounded-none border text-left min-h-[220px] ${isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-white border-zinc-300 shadow-sm"}`}>
+        <div className={`lg:col-span-8 p-8 rounded-[4px] border text-left min-h-[220px] ${isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-white border-zinc-300 shadow-sm"}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -59,7 +64,7 @@ export function ReferenceManual({ isDark }: ReferenceManualProps) {
                   <p className={`text-sm leading-relaxed mb-4 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
                     Authenticate SDK requests using bearer token headers (`Authorization: Bearer pl_live_...`). Scopes isolate write, read, and verification privileges across tenant accounts.
                   </p>
-                  <div className={`p-4 rounded-none font-mono text-xs border ${isDark ? "bg-black/60 text-orange-500 border-zinc-800" : "bg-zinc-50 text-orange-600 border-zinc-200"}`}>
+                  <div className={`p-4 rounded-[4px] font-mono text-xs border ${isDark ? "bg-black/60 text-orange-500 border-zinc-800" : "bg-zinc-50 text-orange-600 border-zinc-200"}`}>
                     Authorization: Bearer pl_live_99f23a88c12b
                   </div>
                 </div>
@@ -70,7 +75,7 @@ export function ReferenceManual({ isDark }: ReferenceManualProps) {
                   <p className={`text-sm leading-relaxed mb-4 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
                     Pass arbitrary action tags and JSON payloads. ProofLog canonicalizes the JSON string representation deterministically before computing the cryptographic SHA hash chain.
                   </p>
-                  <div className={`p-4 rounded-none font-mono text-xs border ${isDark ? "bg-black/60 text-blue-400 border-zinc-800" : "bg-zinc-50 text-blue-600 border-zinc-200"}`}>
+                  <div className={`p-4 rounded-[4px] font-mono text-xs border ${isDark ? "bg-black/60 text-blue-400 border-zinc-800" : "bg-zinc-50 text-blue-600 border-zinc-200"}`}>
                     await client.ingest('org_123', &#123; action: 'user.login' &#125;);
                   </div>
                 </div>
