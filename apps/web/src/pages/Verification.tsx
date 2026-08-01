@@ -5,6 +5,10 @@ import { useTheme } from "../context/ThemeContext";
 import { CodeBlock } from "../components/CodeBlock";
 import { VERIFICATION_CONTENT } from "../constants/verification.constants";
 
+export interface VerificationProps {
+  className?: string;
+}
+
 export default function Verification() {
   const { isDark } = useTheme();
 
@@ -32,8 +36,8 @@ export default function Verification() {
       <main className="relative z-10 max-w-5xl mx-auto px-6 text-center space-y-16">
         {/* Header Badge */}
         <div className="space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] border text-xs font-mono uppercase tracking-wider border-orange-500/40 bg-orange-500/10 text-orange-400">
-            <Clock className="w-3.5 h-3.5" />
+          <div className="badge-orange">
+            <Clock className="w-4 h-4" />
             <span>{VERIFICATION_CONTENT.badge}</span>
           </div>
 

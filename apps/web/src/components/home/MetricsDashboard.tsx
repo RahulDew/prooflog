@@ -1,7 +1,7 @@
 import { Clock } from "lucide-react";
 import { METRICS_CONTENT } from "../../constants/home.constants";
 
-interface MetricsDashboardProps {
+export interface MetricsDashboardProps {
   isDark: boolean;
 }
 
@@ -10,7 +10,7 @@ export function MetricsDashboard({ isDark }: MetricsDashboardProps) {
     <section className="py-20 gsap-reveal">
       <div className="flex items-start justify-between mb-8">
         <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-orange-500 font-bold">
+          <span className="section-tag-orange">
             {METRICS_CONTENT.tag}
           </span>
           <h2 className="text-3xl font-extrabold mt-1">{METRICS_CONTENT.title}</h2>
@@ -18,8 +18,8 @@ export function MetricsDashboard({ isDark }: MetricsDashboardProps) {
             {METRICS_CONTENT.description}
           </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1 rounded-[4px] border text-xs font-mono uppercase tracking-wider border-orange-500/40 bg-orange-500/10 text-orange-400">
-          <Clock className="w-3.5 h-3.5" />
+        <div className="badge-orange">
+          <Clock className="w-4 h-4" />
           <span>Coming Soon</span>
         </div>
       </div>

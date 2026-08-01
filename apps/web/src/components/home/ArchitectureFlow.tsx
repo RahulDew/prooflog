@@ -1,6 +1,6 @@
 import { ARCHITECTURE_CONTENT } from "../../constants/home.constants";
 
-interface ArchitectureFlowProps {
+export interface ArchitectureFlowProps {
   isDark: boolean;
 }
 
@@ -8,7 +8,7 @@ export function ArchitectureFlow({ isDark }: ArchitectureFlowProps) {
   return (
     <section className="py-20 gsap-reveal">
       <div className="text-center max-w-2xl mx-auto mb-16">
-        <span className="text-xs font-mono uppercase tracking-widest text-orange-500 font-bold">
+        <span className="section-tag-orange">
           {ARCHITECTURE_CONTENT.tag}
         </span>
         <h2 className="text-3xl font-extrabold mt-1">
@@ -26,9 +26,7 @@ export function ArchitectureFlow({ isDark }: ArchitectureFlowProps) {
           <div
             key={i}
             className={`p-6 rounded-[4px] border text-center transition-all ${
-              isDark
-                ? "bg-[#0a0a0c] border-zinc-800"
-                : "bg-white border-zinc-300 shadow-sm"
+              isDark ? "card-dark" : "card-light"
             }`}
           >
             <div className="w-9 h-9 mx-auto mb-4 rounded-[4px] bg-orange-600 text-white font-mono font-bold flex items-center justify-center text-sm">

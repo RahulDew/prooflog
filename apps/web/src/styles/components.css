@@ -1,0 +1,77 @@
+/* Common Layout Helpers */
+.flex-center {
+  @apply flex items-center justify-center;
+}
+
+.flex-between {
+  @apply flex items-center justify-between;
+}
+
+.flex-start {
+  @apply flex items-center justify-start;
+}
+
+/* Common Card Base Rules */
+.card-base {
+  @apply p-6 rounded-[4px] border transition-all;
+}
+
+.card-dark {
+  @apply bg-[#0a0a0c] border-zinc-800 text-zinc-100;
+}
+
+.card-light {
+  @apply bg-white border-zinc-300 text-zinc-900 shadow-sm;
+}
+
+/* Badge Utilities */
+.badge-orange {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-[4px] border text-xs font-mono uppercase tracking-wider border-orange-500/40 bg-orange-500/10 text-orange-400;
+}
+
+.badge-blue {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-[4px] border text-xs font-mono uppercase tracking-wider border-blue-600/40 bg-blue-50 text-blue-600 font-bold;
+}
+
+.badge-emerald {
+  @apply inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30;
+}
+
+/* Section Tag Headings */
+.section-tag-orange {
+  @apply text-xs font-mono uppercase tracking-widest text-orange-500 font-bold;
+}
+
+.section-tag-blue {
+  @apply text-xs font-mono uppercase tracking-widest text-blue-500 font-bold;
+}
+
+.section-tag-emerald {
+  @apply text-xs font-mono uppercase tracking-widest text-emerald-500 font-bold;
+}
+
+/* Primary & Secondary Buttons */
+.btn-primary {
+  @apply h-12 px-6 rounded-[4px] bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer;
+}
+
+.btn-secondary-dark {
+  @apply h-12 px-5 rounded-[4px] border font-mono text-xs transition-all flex items-center justify-center gap-3 cursor-pointer bg-[#0a0a0c] border-zinc-800 hover:border-zinc-700 text-zinc-300;
+}
+
+.btn-secondary-light {
+  @apply h-12 px-5 rounded-[4px] border font-mono text-xs transition-all flex items-center justify-center gap-3 cursor-pointer bg-white border-zinc-300 hover:border-zinc-400 text-zinc-800 shadow-sm;
+}
+
+/* Form Inputs */
+.input-base {
+  @apply w-full px-4 py-3 text-xs font-mono rounded-[4px] border transition-colors;
+}
+
+.input-dark {
+  @apply bg-black/60 border-zinc-800 text-zinc-300 placeholder:text-zinc-600;
+}
+
+.input-light {
+  @apply bg-white border-zinc-300 text-zinc-900 placeholder:text-zinc-400;
+}

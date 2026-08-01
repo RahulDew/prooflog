@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import { CodeBlock } from "../CodeBlock";
 import { CODE_INTEGRATION_CONTENT } from "../../constants/home.constants";
 
-interface CodeIntegrationSectionProps {
+export interface CodeIntegrationSectionProps {
   isDark: boolean;
 }
 
@@ -11,7 +11,7 @@ export function CodeIntegrationSection({ isDark }: CodeIntegrationSectionProps) 
     <section className="py-20 gsap-reveal">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-5 text-left space-y-6">
-          <span className="text-xs font-mono uppercase tracking-widest text-blue-500 font-bold">
+          <span className="section-tag-blue">
             {CODE_INTEGRATION_CONTENT.tag}
           </span>
           <h2 className="text-3xl font-extrabold">{CODE_INTEGRATION_CONTENT.title}</h2>

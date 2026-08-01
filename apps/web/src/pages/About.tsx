@@ -34,7 +34,7 @@ export default function About() {
       <main className="relative z-10 max-w-5xl mx-auto px-6 text-left space-y-16">
         {/* Header Hero */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] border text-xs font-mono uppercase tracking-wider border-orange-500/40 bg-orange-500/10 text-orange-400">
+          <div className="badge-orange">
             <ShieldCheck className="w-4 h-4" />
             <span>{ABOUT_CONTENT.badge}</span>
           </div>
@@ -51,10 +51,10 @@ export default function About() {
         {/* Mission Statement Card */}
         <div
           className={`p-8 rounded-[4px] border relative overflow-hidden dark-hover-shimmer ${
-            isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-zinc-50 border-zinc-300 shadow-md"
+            isDark ? "card-dark" : "card-light"
           }`}
         >
-          <span className="text-xs font-mono font-bold uppercase tracking-widest text-orange-500 mb-2 block">
+          <span className="section-tag-orange mb-2 block">
             {ABOUT_CONTENT.missionTag}
           </span>
           <h2 className="text-2xl font-bold font-mono mb-4">
@@ -68,7 +68,7 @@ export default function About() {
         {/* Core Pillars Grid */}
         <div className="space-y-6">
           <div className="text-left">
-            <span className="text-xs font-mono font-bold uppercase tracking-widest text-blue-500 block">
+            <span className="section-tag-blue block">
               Core Principles
             </span>
             <h2 className="text-2xl font-bold font-mono mt-1">Engine Architectural Pillars</h2>

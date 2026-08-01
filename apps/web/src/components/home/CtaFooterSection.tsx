@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { CTA_FOOTER_CONTENT } from "../../constants/home.constants";
 
-interface CtaFooterSectionProps {
+export interface CtaFooterSectionProps {
   isDark: boolean;
 }
 
@@ -25,7 +25,7 @@ export function CtaFooterSection({ isDark }: CtaFooterSectionProps) {
         <div className="flex justify-center">
           <Link
             to={CTA_FOOTER_CONTENT.primaryCtaLink}
-            className="h-12 px-8 rounded-[4px] bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer"
+            className="btn-primary"
           >
             <span>{CTA_FOOTER_CONTENT.primaryCtaText}</span>
             <ArrowRight className="w-4 h-4" />

@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { LIVE_FEED_CONTENT, type LiveLog } from "../../constants/home.constants";
 
-interface LiveIngestionFeedProps {
+export interface LiveIngestionFeedProps {
   isDark: boolean;
   logs: LiveLog[];
 }
@@ -12,7 +12,7 @@ export function LiveIngestionFeed({ isDark, logs }: LiveIngestionFeedProps) {
     <section className="py-20 gsap-reveal">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-blue-500 font-bold">
+          <span className="section-tag-blue">
             {LIVE_FEED_CONTENT.tag}
           </span>
           <h2 className="text-3xl font-extrabold">{LIVE_FEED_CONTENT.title}</h2>
@@ -20,15 +20,15 @@ export function LiveIngestionFeed({ isDark, logs }: LiveIngestionFeedProps) {
             {LIVE_FEED_CONTENT.description}
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-[4px] border border-emerald-500/30">
-          <span className="w-2 h-2 rounded-[2px] bg-emerald-400 animate-pulse" />
+        <div className="badge-emerald">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span>{LIVE_FEED_CONTENT.statusBadge}</span>
         </div>
       </div>
 
       <div
         className={`rounded-[4px] border overflow-hidden min-h-[280px] ${
-          isDark ? "bg-[#0a0a0c] border-zinc-800" : "bg-white border-zinc-300 shadow-sm"
+          isDark ? "card-dark" : "card-light"
         }`}
       >
         <div className="overflow-x-auto">
@@ -61,8 +61,8 @@ export function LiveIngestionFeed({ isDark, logs }: LiveIngestionFeedProps) {
                     <td className={`py-3.5 px-4 truncate ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>{log.idempotencyKey}</td>
                     <td className={`py-3.5 px-4 truncate ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>{log.hash}</td>
                     <td className="py-3.5 px-4">
-                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                        <CheckCircle className="w-3.5 h-3.5" />
+                      <span className="badge-emerald">
+                        <CheckCircle className="w-4 h-4" />
                         {log.status}
                       </span>
                     </td>

@@ -9,6 +9,10 @@ import { useTheme } from "../context/ThemeContext";
 
 type FilterType = "all" | "major" | "minor" | "patch";
 
+export interface ChangelogProps {
+  className?: string;
+}
+
 export default function Changelog() {
   const { isDark } = useTheme();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
@@ -43,8 +47,8 @@ export default function Changelog() {
       <main className="relative z-10 max-w-4xl mx-auto px-6 text-left space-y-12">
         {/* Header */}
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] border text-xs font-mono uppercase tracking-wider border-orange-500/40 bg-orange-500/10 text-orange-400 mb-4">
-            <Tag className="w-3.5 h-3.5" />
+          <div className="badge-orange mb-4">
+            <Tag className="w-4 h-4" />
             <span>{CHANGELOG_CONTENT.badge}</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">
