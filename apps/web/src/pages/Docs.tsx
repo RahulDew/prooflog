@@ -339,7 +339,7 @@ export default function Docs() {
               )}
 
               {section.id === "installation" ? (
-                <PackageManagerInstall isDark={isDark} />
+                <PackageManagerInstall />
               ) : (
                 section.codeBlock && (
                   <CodeBlock

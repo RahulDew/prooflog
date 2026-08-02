@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { CTA_FOOTER_CONTENT } from "../../constants/home.constants";
+import { Button } from "../ui/Button";
 
 export function HeroCtaBanner() {
   return (
@@ -13,13 +14,14 @@ export function HeroCtaBanner() {
           {CTA_FOOTER_CONTENT.description}
         </p>
         <div className="flex justify-center">
-          <Link
+          <Button
+            as={Link}
             to={CTA_FOOTER_CONTENT.primaryCtaLink}
-            className="btn-primary"
+            variant="primary"
+            rightIcon={<ArrowRight className="w-4 h-4" />}
           >
-            <span>{CTA_FOOTER_CONTENT.primaryCtaText}</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+            {CTA_FOOTER_CONTENT.primaryCtaText}
+          </Button>
         </div>
       </div>
     </section>

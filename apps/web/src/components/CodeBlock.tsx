@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { Button } from "./ui/Button";
 
 interface CodeBlockProps {
   code: string;
@@ -83,27 +84,15 @@ export function CodeBlock({
             {title || language}
           </span>
         </div>
-        <button
+        <Button
+          variant="secondary"
+          size="sm"
           onClick={handleCopy}
-          type="button"
-          className={`flex items-center gap-1.5 text-[11px] font-mono transition-colors cursor-pointer ${
-            isDark
-              ? "text-zinc-400 hover:text-white"
-              : "text-zinc-600 hover:text-zinc-900"
-          }`}
+          leftIcon={copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+          className="h-8 px-3 text-[11px]"
         >
-          {copied ? (
-            <>
-              <Check className="w-3.5 h-3.5 text-emerald-500" />
-              <span className="text-emerald-500 font-semibold">Copied</span>
-            </>
-          ) : (
-            <>
-              <Copy className="w-3.5 h-3.5" />
-              <span>Copy</span>
-            </>
-          )}
-        </button>
+          {copied ? <span className="text-emerald-500 font-semibold">Copied</span> : <span>Copy</span>}
+        </Button>
       </div>
 
       {/* Code container */}

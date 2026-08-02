@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ExternalLink, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { ABOUT_CONTENT } from "../constants/about.constants";
+import { Button } from "../components/ui/Button";
 
 export interface AboutProps {
   className?: string;
@@ -115,23 +116,25 @@ export default function About() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <a
+            <Button
+              as="a"
               href={ABOUT_CONTENT.primaryCtaLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="h-10 px-6 rounded-[4px] bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer"
+              variant="primary"
+              rightIcon={<ExternalLink className="w-4 h-4" />}
             >
-              <span>{ABOUT_CONTENT.primaryCtaText}</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
+              {ABOUT_CONTENT.primaryCtaText}
+            </Button>
 
-            <Link
+            <Button
+              as={Link}
               to={ABOUT_CONTENT.docsCtaLink}
-              className="h-10 px-6 rounded-[4px] border font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer bg-white border-zinc-300 text-zinc-800 hover:border-zinc-400 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-500"
+              variant="secondary"
+              rightIcon={<ArrowRight className="w-4 h-4" />}
             >
-              <span>{ABOUT_CONTENT.docsCtaText}</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+              {ABOUT_CONTENT.docsCtaText}
+            </Button>
           </div>
         </div>
       </main>

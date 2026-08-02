@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { NAVBAR_CONTENT } from "../constants/navbar.constants";
+import { Button } from "./ui/Button";
 
 export interface NavbarProps {
   className?: string;
@@ -94,17 +95,14 @@ export function Navbar({ className = "" }: NavbarProps) {
           </a>
 
           {/* Mobile Menu Toggle Button */}
-          <button
+          <Button
+            variant="icon"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle navigation menu"
-            className={`md:hidden flex items-center justify-center w-9 h-9 rounded-[4px] border cursor-pointer transition-colors ${
-              isDark
-                ? "border-zinc-800 bg-zinc-900 text-zinc-200 hover:border-zinc-700"
-                : "border-zinc-300 bg-zinc-100 text-zinc-800 hover:border-zinc-400"
-            }`}
+            className="md:hidden w-9 h-9 p-0"
           >
             {isOpen ? <X className="w-4 h-4 text-orange-500" /> : <Menu className="w-4 h-4" />}
-          </button>
+          </Button>
         </div>
       </div>
 

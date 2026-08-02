@@ -5,6 +5,7 @@ import {
   CHANGELOG_CONTENT,
   type ReleaseInfo,
 } from "../constants/changelog.constants";
+import { Button } from "../components/ui/Button";
 
 type FilterType = "all" | "major" | "minor" | "patch";
 
@@ -43,21 +44,16 @@ export default function Changelog() {
 
         {/* Filter Pills */}
         <div className="flex items-center gap-2">
-          {(["all", "patch", "minor", "major"] as FilterType[]).map(
-            (filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`px-3 py-1.5 text-xs font-mono font-bold uppercase tracking-wider border rounded-[4px] transition-all cursor-pointer ${
-                  activeFilter === filter
-                    ? "bg-orange-600 text-white border-orange-600"
-                    : "bg-zinc-100 border-zinc-300 text-zinc-700 hover:bg-zinc-200 dark:bg-[#0a0a0c] dark:border-zinc-800 dark:text-zinc-400 dark:hover:text-white dark:hover:border-zinc-700"
-                }`}
-              >
-                {filter}
-              </button>
-            ),
-          )}
+          {(["all", "patch", "minor", "major"] as FilterType[]).map((filter) => (
+            <Button
+              key={filter}
+              variant="pill"
+              onClick={() => setActiveFilter(filter)}
+              className={activeFilter === filter ? "bg-orange-600 text-white border-orange-600" : ""}
+            >
+              {filter}
+            </Button>
+          ))}
         </div>
 
         {/* Vertical Progress Timeline Layout */}
@@ -144,15 +140,16 @@ export default function Changelog() {
             {CHANGELOG_CONTENT.ctaDescription}
           </p>
           <div className="flex justify-center">
-            <a
+            <Button
+              as="a"
               href={CHANGELOG_CONTENT.primaryCtaLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="h-10 px-6 rounded-[4px] bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer"
+              variant="primary"
+              rightIcon={<ExternalLink className="w-4 h-4" />}
             >
-              <span>{CHANGELOG_CONTENT.primaryCtaText}</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
+              {CHANGELOG_CONTENT.primaryCtaText}
+            </Button>
           </div>
         </div>
       </main>

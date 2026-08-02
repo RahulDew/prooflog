@@ -4,6 +4,7 @@ import { ArrowRight, Terminal, Check, Copy } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { HeroHashChainVisualizer } from "./HeroHashChainVisualizer";
 import { HERO_CONTENT } from "../../constants/home.constants";
+import { Button } from "../ui/Button";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -68,22 +69,28 @@ export function HeroHeader() {
 
         <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 pt-2">
           <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
-            <Link to={HERO_CONTENT.primaryCtaLink} className="btn-primary dark-hover-shimmer">
-              <span>{HERO_CONTENT.primaryCtaText}</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <Button
+              as={Link}
+              to={HERO_CONTENT.primaryCtaLink}
+              variant="primary"
+              rightIcon={<ArrowRight className="w-4 h-4" />}
+              className="dark-hover-shimmer"
+            >
+              {HERO_CONTENT.primaryCtaText}
+            </Button>
           </motion.div>
 
-          <motion.button
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={handleCopy}
-            className="btn-secondary dark-hover-shimmer"
-          >
-            <Terminal className="w-4 h-4 text-orange-500" />
-            <span>{HERO_CONTENT.installCommand}</span>
-            {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-zinc-500" />}
-          </motion.button>
+          <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
+            <Button
+              variant="secondary"
+              onClick={handleCopy}
+              leftIcon={<Terminal className="w-4 h-4 text-orange-500" />}
+              rightIcon={copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-zinc-500" />}
+              className="dark-hover-shimmer"
+            >
+              {HERO_CONTENT.installCommand}
+            </Button>
+          </motion.div>
         </motion.div>
       </motion.div>
 

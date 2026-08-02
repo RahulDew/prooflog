@@ -3,6 +3,7 @@ import { Lock, Shield, ArrowRight, CheckCircle, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { CodeBlock } from "../components/CodeBlock";
 import { VERIFICATION_CONTENT } from "../constants/verification.constants";
+import { Button } from "../components/ui/Button";
 
 export interface VerificationProps {
   className?: string;
@@ -165,14 +166,14 @@ export default function Verification() {
               </div>
             </div>
 
-            <button
+            <Button
               type="button"
+              variant="disabled"
               disabled
-              className="w-full py-3.5 px-6 rounded-[4px] font-mono font-bold text-xs uppercase tracking-wider cursor-not-allowed border flex items-center justify-center gap-2 bg-zinc-200 text-zinc-500 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-500 dark:border-zinc-700"
+              leftIcon={<Lock className="w-4 h-4" />}
             >
-              <Lock className="w-4 h-4" />
-              <span>{VERIFICATION_CONTENT.formSection.buttonText}</span>
-            </button>
+              {VERIFICATION_CONTENT.formSection.buttonText}
+            </Button>
           </form>
         </div>
 

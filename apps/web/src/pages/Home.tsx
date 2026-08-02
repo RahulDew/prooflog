@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useTheme } from "../context/ThemeContext";
 import { INITIAL_LIVE_LOGS, type LiveLog } from "../constants/home.constants";
+import { Button } from "../components/ui/Button";
 
 import { HeroHeader } from "../components/home/HeroHeader";
 import { AuditLifecycle } from "../components/home/AuditLifecycle";
@@ -128,17 +129,13 @@ export default function Home() {
 
       {/* Floating Theme Switcher Button - Sharp Square */}
       <div className="fixed bottom-6 right-6 z-[150]">
-        <button
+        <Button
+          variant="icon"
           onClick={toggleTheme}
-          className={`p-3.5 rounded-[4px] border transition-all cursor-pointer flex items-center justify-center ${
-            isDark
-              ? "bg-[#0a0a0c] border-zinc-800 text-orange-500 hover:border-orange-500"
-              : "bg-white border-zinc-300 text-blue-600 hover:border-blue-600 shadow-md"
-          }`}
           aria-label="Toggle Theme"
         >
-          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
+          {isDark ? <Sun className="w-5 h-5 text-orange-500" /> : <Moon className="w-5 h-5 text-blue-600" />}
+        </Button>
       </div>
 
       {/* Main Page Content */}
