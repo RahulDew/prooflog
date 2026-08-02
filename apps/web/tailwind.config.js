@@ -1,10 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "class",
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -46,7 +43,7 @@ export default {
       },
       animation: {
         "nav-glow": "navGlow 2s ease-in-out infinite",
-        "float": "plFloat 4s ease-in-out infinite",
+        float: "plFloat 4s ease-in-out infinite",
       },
       keyframes: {
         navGlow: {
@@ -57,6 +54,9 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-7px)" },
         },
+      },
+      transitionDuration: {
+        DEFAULT: "300ms",
       },
     },
   },
