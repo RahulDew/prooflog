@@ -125,7 +125,6 @@ export const LIVE_FEED_CONTENT = {
   title: "Real-Time Event Audit Stream",
   description:
     "Incoming events are sequentially hashed and cryptographically linked to the previous block signature in real-time.",
-  statusBadge: "LIVE STREAM ACTIVE",
   headers: [
     "SEQ #",
     "ACTION EVENT",

@@ -36,7 +36,7 @@ export function Navbar({ className = "" }: NavbarProps) {
         {/* Brand Logo & Name */}
         <Link to="/" className="flex items-center gap-3 group">
           <img src="/svg/logo.svg" alt="ProofLog Logo" className="w-8 h-8" />
-          <span className="font-extrabold text-lg tracking-tight group-hover:opacity-90">
+          <span className="font-extrabold text-lg tracking-tight text-foreground group-hover:opacity-90">
             {NAVBAR_CONTENT.logoText}
           </span>
         </Link>

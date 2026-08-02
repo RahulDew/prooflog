@@ -12,18 +12,12 @@ export interface LiveIngestionStreamProps {
 export function LiveIngestionStream({ logs }: LiveIngestionStreamProps) {
   return (
     <section className="py-20 gsap-reveal">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <span className="section-tag-blue">{LIVE_FEED_CONTENT.tag}</span>
-          <h2 className="text-3xl font-extrabold">{LIVE_FEED_CONTENT.title}</h2>
-          <p className="text-sm mt-1 max-w-xl text-muted-adaptive">
-            {LIVE_FEED_CONTENT.description}
-          </p>
-        </div>
-        <div className="badge-emerald">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>{LIVE_FEED_CONTENT.statusBadge}</span>
-        </div>
+      <div className="mb-8">
+        <span className="section-tag-blue">{LIVE_FEED_CONTENT.tag}</span>
+        <h2 className="text-3xl font-extrabold">{LIVE_FEED_CONTENT.title}</h2>
+        <p className="text-sm mt-1 max-w-xl text-muted-adaptive">
+          {LIVE_FEED_CONTENT.description}
+        </p>
       </div>
 
       <div className="card-surface p-0 overflow-hidden min-h-[280px]">

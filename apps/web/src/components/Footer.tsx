@@ -33,7 +33,7 @@ export function Footer({ className = "" }: FooterProps) {
                 alt="ProofLog Logo"
                 className="w-8 h-8"
               />
-              <span className="font-bold text-base tracking-tight">
+              <span className="font-bold text-base tracking-tight text-foreground">
                 {FOOTER_CONTENT.brandName}
               </span>
             </Link>

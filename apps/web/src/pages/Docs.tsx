@@ -70,13 +70,13 @@ export default function Docs() {
   return (
     <div
       className={cn(
-        "pt-24 min-h-screen transition-colors",
+        "pt-24 min-h-screen transition-colors duration-300",
         isDark ? "bg-[#050505] text-zinc-100" : "bg-white text-zinc-900",
       )}
     >
       <div className="fixed inset-0 pointer-events-none z-0">
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 transition-opacity duration-300"
           style={{
             backgroundImage: isDark
               ? "linear-gradient(rgba(255,255,255,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.035) 1px,transparent 1px)"
@@ -93,7 +93,7 @@ export default function Docs() {
       {/* MOBILE: Clean & Spacious Sticky Navigation Header */}
       <div
         className={cn(
-          "md:hidden sticky top-16 z-30 border-b backdrop-blur-xl transition-colors py-3 space-y-2.5 px-4 shadow-sm",
+          "md:hidden sticky top-16 z-30 border-b backdrop-blur-xl transition-colors duration-300 py-3 space-y-2.5 px-4 shadow-sm",
           isDark
             ? "bg-[#050505]/95 border-zinc-800/90 text-zinc-100"
             : "bg-white/95 border-zinc-200 text-zinc-900",
@@ -114,7 +114,7 @@ export default function Docs() {
                 data-cat={cat.title}
                 onClick={() => scrollToSection(CATEGORY_ANCHORS[cat.title])}
                 className={cn(
-                  "shrink-0 text-xs font-mono px-3.5 py-1.5 rounded-[4px] border transition-all whitespace-nowrap cursor-pointer",
+                  "shrink-0 text-xs font-mono px-3.5 py-1.5 rounded-[4px] border transition-colors duration-300 whitespace-nowrap cursor-pointer",
                   isActive
                     ? "border-orange-500 text-orange-500 bg-orange-500/10 font-bold shadow-sm"
                     : isDark
@@ -143,7 +143,7 @@ export default function Docs() {
                 type="button"
                 onClick={() => scrollToSection(link.id)}
                 className={cn(
-                  "shrink-0 text-[11px] font-mono px-3 py-1 rounded-[4px] border transition-all whitespace-nowrap cursor-pointer",
+                  "shrink-0 text-[11px] font-mono px-3 py-1 rounded-[4px] border transition-colors duration-300 whitespace-nowrap cursor-pointer",
                   isSubActive
                     ? isDark
                       ? "border-orange-500/40 text-orange-400 bg-orange-500/10 font-bold"
@@ -175,19 +175,21 @@ export default function Docs() {
                     return (
                       <li key={link.id}>
                         <button
+                          type="button"
                           onClick={() => scrollToSection(link.id)}
-                          className={`w-full text-left text-xs font-mono px-3 py-1.5 rounded-[4px] transition-all border cursor-pointer ${
+                          className={cn(
+                            "w-full text-left text-xs font-mono px-3 py-1.5 rounded-[4px] border cursor-pointer transition-colors duration-300",
                             isActive
                               ? isDark
-                                ? "border-orange-500/40 text-white bg-orange-500/10"
-                                : "border-orange-500/40 text-zinc-900 bg-orange-500/10"
+                                ? "border-orange-500/40 text-white bg-orange-500/10 font-medium"
+                                : "border-orange-500/40 text-zinc-900 bg-orange-500/10 font-medium"
                               : isDark
                                 ? "border-transparent text-zinc-400 hover:text-white hover:bg-zinc-900 hover:border-zinc-800"
-                                : "border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 hover:border-zinc-300"
-                          }`}
+                                : "border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 hover:border-zinc-300",
+                          )}
                         >
                           {isActive && (
-                            <span className="inline-block w-1 h-1 rounded-full bg-orange-500 mr-2 mb-0.5" />
+                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-orange-500 mr-2 mb-0.5" />
                           )}
                           {link.name}
                         </button>
@@ -214,22 +216,29 @@ export default function Docs() {
                 </span>
               </div>
               <h2
-                className={`text-3xl font-extrabold tracking-tight mb-4 pb-3 border-b ${
-                  isDark ? "border-zinc-800" : "border-zinc-200"
-                }`}
+                className={cn(
+                  "text-3xl font-extrabold tracking-tight mb-4 pb-3 border-b transition-colors duration-300",
+                  isDark
+                    ? "border-zinc-800 text-zinc-100"
+                    : "border-zinc-200 text-zinc-900",
+                )}
               >
                 {section.title}
               </h2>
 
               <p
-                className={`text-sm leading-relaxed mb-6 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}
+                className={cn(
+                  "text-sm leading-relaxed mb-6 transition-colors duration-300",
+                  isDark ? "text-zinc-400" : "text-zinc-600",
+                )}
               >
                 {section.description}
               </p>
 
               {section.callout && (
                 <div
-                  className={`p-4 mb-6 rounded-[4px] border flex items-start gap-3 text-xs leading-relaxed ${
+                  className={cn(
+                    "p-4 mb-6 rounded-[4px] border flex items-start gap-3 text-xs leading-relaxed transition-colors duration-300",
                     section.callout.type === "important"
                       ? isDark
                         ? "bg-red-500/10 border-red-500/30 text-red-300"
@@ -240,8 +249,8 @@ export default function Docs() {
                           : "bg-emerald-50 border-emerald-200 text-emerald-800"
                         : isDark
                           ? "bg-blue-500/10 border-blue-500/30 text-blue-300"
-                          : "bg-blue-50 border-blue-200 text-blue-800"
-                  }`}
+                          : "bg-blue-50 border-blue-200 text-blue-800",
+                  )}
                 >
                   {section.callout.type === "important" ? (
                     <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 mt-0.5" />
@@ -261,21 +270,23 @@ export default function Docs() {
 
               {section.table && (
                 <div
-                  className={`mb-6 rounded-[4px] border overflow-hidden ${
+                  className={cn(
+                    "mb-6 rounded-[4px] border overflow-hidden transition-colors duration-300",
                     isDark
                       ? "bg-[#0a0a0c] border-zinc-800"
-                      : "bg-white border-zinc-300 shadow-sm"
-                  }`}
+                      : "bg-white border-zinc-300 shadow-sm",
+                  )}
                 >
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs font-mono">
                       <thead>
                         <tr
-                          className={`border-b ${
+                          className={cn(
+                            "border-b transition-colors duration-300",
                             isDark
                               ? "border-zinc-800 bg-black/40 text-zinc-400"
-                              : "border-zinc-200 bg-zinc-50 text-zinc-600"
-                          }`}
+                              : "border-zinc-200 bg-zinc-50 text-zinc-600",
+                          )}
                         >
                           {section.table.headers.map((h, i) => (
                             <th key={i} className="py-3 px-4 font-semibold">
@@ -285,27 +296,32 @@ export default function Docs() {
                         </tr>
                       </thead>
                       <tbody
-                        className={`divide-y ${isDark ? "divide-zinc-800/60" : "divide-zinc-200"}`}
+                        className={cn(
+                          "divide-y transition-colors duration-300",
+                          isDark ? "divide-zinc-800/60" : "divide-zinc-200",
+                        )}
                       >
                         {section.table.rows.map((row, rIdx) => (
                           <tr
                             key={rIdx}
-                            className={
+                            className={cn(
+                              "transition-colors duration-300",
                               isDark
                                 ? "hover:bg-white/[0.02]"
-                                : "hover:bg-zinc-50"
-                            }
+                                : "hover:bg-zinc-50",
+                            )}
                           >
                             {row.map((cell, cIdx) => (
                               <td
                                 key={cIdx}
-                                className={`py-3 px-4 ${
+                                className={cn(
+                                  "py-3 px-4 transition-colors duration-300",
                                   cIdx === 0
                                     ? "font-bold text-orange-500"
                                     : isDark
                                       ? "text-zinc-300"
-                                      : "text-zinc-700"
-                                }`}
+                                      : "text-zinc-700",
+                                )}
                               >
                                 {cell}
                               </td>
