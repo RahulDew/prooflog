@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Info, AlertTriangle, Lightbulb, BookOpen } from "lucide-react";
+import { Info, AlertTriangle, Lightbulb } from "lucide-react";
 import {
   DOC_CATEGORIES,
   DOC_SECTIONS,
@@ -8,6 +8,7 @@ import {
 import { useTheme } from "../context/ThemeContext";
 import { CodeBlock } from "../components/CodeBlock";
 import { PackageManagerInstall } from "../components/PackageManagerInstall";
+import { cn } from "../lib/utils";
 
 const ALL_SECTION_IDS = DOC_SECTIONS.map((s) => s.id);
 
@@ -58,38 +59,20 @@ export default function Docs() {
     return () => observerRef.current?.disconnect();
   }, []);
 
-  useEffect(() => {
-    const activeCategory = DOC_CATEGORIES.find((cat) =>
-      cat.links.some((l) => l.id === activeSection),
-    );
-    if (!activeCategory || !tabsRef.current) return;
-    const btn = tabsRef.current.querySelector<HTMLButtonElement>(
-      `[data-cat="${activeCategory.title}"]`,
-    );
-    btn?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center",
-    });
-  }, [activeSection]);
-
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
-    if (!el) return;
-    const offset = 140;
-    const top = el.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: "smooth" });
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+      setActiveSection(id);
+    }
   };
-
-  const activeCategoryTitle =
-    DOC_CATEGORIES.find((cat) => cat.links.some((l) => l.id === activeSection))
-      ?.title ?? "";
 
   return (
     <div
-      className={`pt-24 min-h-screen transition-colors ${
-        isDark ? "bg-[#050505] text-zinc-100" : "bg-white text-zinc-900"
-      }`}
+      className={cn(
+        "pt-24 min-h-screen transition-colors",
+        isDark ? "bg-[#050505] text-zinc-100" : "bg-white text-zinc-900",
+      )}
     >
       <div className="fixed inset-0 pointer-events-none z-0">
         <div
@@ -107,30 +90,19 @@ export default function Docs() {
         />
       </div>
 
-      {/* MOBILE: Sticky Tab Strip */}
+      {/* MOBILE: Clean & Spacious Sticky Navigation Header */}
       <div
-        className={`md:hidden sticky top-16 z-30 border-b ${
+        className={cn(
+          "md:hidden sticky top-16 z-30 border-b backdrop-blur-xl transition-colors py-3 space-y-2.5 px-4 shadow-sm",
           isDark
-            ? "bg-[#050505]/95 border-zinc-800"
-            : "bg-white/95 border-zinc-200"
-        }`}
-        style={{
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-        }}
+            ? "bg-[#050505]/95 border-zinc-800/90 text-zinc-100"
+            : "bg-white/95 border-zinc-200 text-zinc-900",
+        )}
       >
-        <div
-          className={`flex items-center gap-2 px-4 pt-3 pb-1 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}
-        >
-          <BookOpen className="w-3 h-3" />
-          <span className="text-[10px] font-mono uppercase tracking-widest">
-            {activeCategoryTitle}
-          </span>
-        </div>
-
+        {/* Category Selection Pills */}
         <div
           ref={tabsRef}
-          className="flex gap-1 px-4 pb-3 overflow-x-auto"
+          className="flex gap-2 overflow-x-auto pb-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {DOC_CATEGORIES.map((cat) => {
@@ -138,15 +110,17 @@ export default function Docs() {
             return (
               <button
                 key={cat.title}
+                type="button"
                 data-cat={cat.title}
                 onClick={() => scrollToSection(CATEGORY_ANCHORS[cat.title])}
-                className={`shrink-0 text-[11px] font-mono px-3 py-1.5 rounded-[4px] border transition-all whitespace-nowrap cursor-pointer ${
+                className={cn(
+                  "shrink-0 text-xs font-mono px-3.5 py-1.5 rounded-[4px] border transition-all whitespace-nowrap cursor-pointer",
                   isActive
-                    ? "border-orange-500 text-orange-500 bg-orange-500/10"
+                    ? "border-orange-500 text-orange-500 bg-orange-500/10 font-bold shadow-sm"
                     : isDark
-                      ? "border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300"
-                      : "border-zinc-300 text-zinc-500 hover:border-zinc-400 hover:text-zinc-700"
-                }`}
+                      ? "border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200 bg-zinc-900/60"
+                      : "border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 bg-zinc-50",
+                )}
               >
                 {cat.title}
               </button>
@@ -154,29 +128,35 @@ export default function Docs() {
           })}
         </div>
 
+        {/* Sub-section Links Pills */}
         <div
-          className={`flex gap-2 px-4 pb-2 overflow-x-auto border-t ${isDark ? "border-zinc-900" : "border-zinc-100"}`}
+          className="flex gap-2 overflow-x-auto pt-2 pb-1 border-t border-zinc-200 dark:border-zinc-800/70"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {DOC_CATEGORIES.find((c) =>
             c.links.some((l) => l.id === activeSection),
-          )?.links.map((link) => (
-            <button
-              key={link.id}
-              onClick={() => scrollToSection(link.id)}
-              className={`shrink-0 text-[10px] font-mono px-2 py-1 transition-all whitespace-nowrap cursor-pointer ${
-                activeSection === link.id
-                  ? isDark
-                    ? "text-white underline underline-offset-4 decoration-orange-500"
-                    : "text-zinc-900 underline underline-offset-4 decoration-orange-500"
-                  : isDark
-                    ? "text-zinc-600 hover:text-zinc-400"
-                    : "text-zinc-400 hover:text-zinc-600"
-              }`}
-            >
-              {link.name}
-            </button>
-          ))}
+          )?.links.map((link) => {
+            const isSubActive = activeSection === link.id;
+            return (
+              <button
+                key={link.id}
+                type="button"
+                onClick={() => scrollToSection(link.id)}
+                className={cn(
+                  "shrink-0 text-[11px] font-mono px-3 py-1 rounded-[4px] border transition-all whitespace-nowrap cursor-pointer",
+                  isSubActive
+                    ? isDark
+                      ? "border-orange-500/40 text-orange-400 bg-orange-500/10 font-bold"
+                      : "border-orange-500/40 text-orange-600 bg-orange-500/10 font-bold"
+                    : isDark
+                      ? "border-transparent text-zinc-500 hover:text-zinc-300"
+                      : "border-transparent text-zinc-500 hover:text-zinc-800",
+                )}
+              >
+                {link.name}
+              </button>
+            );
+          })}
         </div>
       </div>
 
