@@ -1,4 +1,5 @@
-import { type FC, useEffect, useState, type ReactNode } from "react";
+import type { FC, ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { motion, useSpring, AnimatePresence } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 
@@ -29,7 +30,10 @@ function isTrackablePointer(pointerType: string) {
 }
 
 // 1. Sleek Custom Pointer Arrow SVG (Left-Pointed)
-const DefaultCursorSVG: FC<{ fillColor: string; isDark: boolean }> = ({ fillColor, isDark }) => {
+const DefaultCursorSVG: FC<{ fillColor: string; isDark: boolean }> = ({
+  fillColor,
+  isDark,
+}) => {
   const strokeColor = isDark ? "#ffffff" : "#000000";
 
   return (

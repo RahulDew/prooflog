@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Terminal, Check, Copy } from "lucide-react";
-import { motion, type Variants } from "framer-motion";
+import type { Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { HeroHashChainVisualizer } from "./HeroHashChainVisualizer";
 import { HERO_CONTENT } from "../../constants/home.constants";
 import { Button } from "../ui/Button";

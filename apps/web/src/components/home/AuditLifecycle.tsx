@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
-import { motion, type Variants } from "framer-motion";
+import type { Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { LIFECYCLE_CONTENT } from "../../constants/home.constants";
 
 const containerVariants: Variants = {
