@@ -8,6 +8,7 @@ import {
 import { useTheme } from "../context/ThemeContext";
 import { CodeBlock } from "../components/CodeBlock";
 import { PackageManagerInstall } from "../components/PackageManagerInstall";
+import { SEO } from "../components/SEO";
 import { cn } from "../lib/utils";
 
 const ALL_SECTION_IDS = DOC_SECTIONS.map((s) => s.id);
@@ -17,6 +18,19 @@ DOC_CATEGORIES.forEach((cat) => {
   if (cat.links.length > 0) CATEGORY_ANCHORS[cat.title] = cat.links[0].id;
 });
 
+const docsJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  headline: "ProofLog Engine Documentation & API Reference",
+  description:
+    "Complete developer guide, Node.js SDK documentation, REST API endpoints, and cryptographic verification specifications for ProofLog.",
+  url: "https://prooflog.dev/docs",
+  author: {
+    "@type": "Organization",
+    name: "ProofLog",
+  },
+};
+
 export default function Docs() {
   const { isDark } = useTheme();
   const [activeSection, setActiveSection] = useState<string>(
@@ -24,9 +38,6 @@ export default function Docs() {
   );
   const observerRef = useRef<IntersectionObserver | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    document.title = "Documentation — ProofLog Engine";
-  }, []);
 
   useEffect(() => {
     const visibleSections = new Map<string, number>();
@@ -78,6 +89,12 @@ export default function Docs() {
         isDark ? "bg-[#050505] text-zinc-100" : "bg-white text-zinc-900",
       )}
     >
+      <SEO
+        title="Documentation & API Reference — ProofLog Engine"
+        description="Complete developer guide, Node.js SDK documentation, REST API endpoints, and cryptographic verification specifications for ProofLog."
+        canonicalPath="/docs"
+        jsonLd={docsJsonLd}
+      />
       <div className="fixed inset-0 pointer-events-none z-0">
         <div
           className="absolute inset-0 transition-opacity duration-300"

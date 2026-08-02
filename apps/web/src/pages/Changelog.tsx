@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { GitCommit, Tag, ExternalLink } from "lucide-react";
 import {
   RELEASES,
@@ -6,6 +6,7 @@ import {
   type ReleaseInfo,
 } from "../constants/changelog.constants";
 import { Button } from "../components/ui/Button";
+import { SEO } from "../components/SEO";
 
 type FilterType = "all" | "major" | "minor" | "patch";
 
@@ -13,12 +14,17 @@ export interface ChangelogProps {
   className?: string;
 }
 
+const changelogJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "ProofLog Changelog & Release Notes",
+  description:
+    "Track all major, minor, and patch releases, feature additions, and security enhancements in ProofLog.",
+  url: "https://prooflog.dev/changelog",
+};
+
 export default function Changelog() {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-
-  useEffect(() => {
-    document.title = "Changelog & Release Notes — ProofLog Engine";
-  }, []);
 
   const filteredReleases = RELEASES.filter((release) => {
     return activeFilter === "all" || release.type === activeFilter;
@@ -26,6 +32,12 @@ export default function Changelog() {
 
   return (
     <div className="pt-24 min-h-screen relative pb-28 transition-colors bg-[#ffffff] text-zinc-900 dark:bg-[#050505] dark:text-zinc-100">
+      <SEO
+        title="Changelog & Release Notes — ProofLog Engine"
+        description="Release history, version updates, feature additions, performance optimizations, and security patches for ProofLog."
+        canonicalPath="/changelog"
+        jsonLd={changelogJsonLd}
+      />
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.04)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(circle_at_50%_35%,black_30%,rgba(0,0,0,0.4)_65%,transparent_90%)]" />

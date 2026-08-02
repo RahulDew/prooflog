@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -8,18 +7,30 @@ import {
 } from "lucide-react";
 import { ABOUT_CONTENT } from "../constants/about.constants";
 import { Button } from "../components/ui/Button";
+import { SEO } from "../components/SEO";
 
 export interface AboutProps {
   className?: string;
 }
 
-export default function About() {
-  useEffect(() => {
-    document.title = "About & Security Architecture — ProofLog Engine";
-  }, []);
+const aboutJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "ProofLog Engine",
+  url: "https://prooflog.dev/about",
+  description:
+    "Open-source audit logging engine designed for cryptographically verifiable log integrity and enterprise security compliance.",
+};
 
+export default function About() {
   return (
     <div className="pt-24 min-h-screen relative pb-28 transition-colors bg-[#ffffff] text-zinc-900 dark:bg-[#050505] dark:text-zinc-100">
+      <SEO
+        title="About & Security Architecture — ProofLog Engine"
+        description="Learn about ProofLog's architectural pillars, zero-trust security model, cryptographic hash chaining guarantees, and compliance warranties."
+        canonicalPath="/about"
+        jsonLd={aboutJsonLd}
+      />
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.04)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(circle_at_50%_35%,black_30%,rgba(0,0,0,0.4)_65%,transparent_90%)]" />

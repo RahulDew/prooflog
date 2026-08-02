@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -22,26 +23,28 @@ const PageLoader = () => (
 
 function App() {
   return (
-    <ThemeProvider>
-      <SmoothScroll>
-        <SmoothCursor />
-        <BrowserRouter>
-          <div className="min-h-screen font-sans selection:bg-orange-500 selection:text-white overflow-x-clip">
-            <Navbar />
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/docs/*" element={<Docs />} />
-                <Route path="/verification" element={<Verification />} />
-                <Route path="/changelog" element={<Changelog />} />
-                <Route path="/about" element={<About />} />
-              </Routes>
-            </Suspense>
-            <Footer />
-          </div>
-        </BrowserRouter>
-      </SmoothScroll>
-    </ThemeProvider>
+    <HelmetProvider>
+      <ThemeProvider>
+        <SmoothScroll>
+          <SmoothCursor />
+          <BrowserRouter>
+            <div className="min-h-screen font-sans selection:bg-orange-500 selection:text-white overflow-x-clip">
+              <Navbar />
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/docs/*" element={<Docs />} />
+                  <Route path="/verification" element={<Verification />} />
+                  <Route path="/changelog" element={<Changelog />} />
+                  <Route path="/about" element={<About />} />
+                </Routes>
+              </Suspense>
+              <Footer />
+            </div>
+          </BrowserRouter>
+        </SmoothScroll>
+      </ThemeProvider>
+    </HelmetProvider>
   );
 }
 

@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { useTheme } from "../context/ThemeContext";
 import { INITIAL_LIVE_LOGS, type LiveLog } from "../constants/home.constants";
 
+import { SEO } from "../components/SEO";
 import { HeroHeader } from "../components/home/HeroHeader";
 import { AuditLifecycle } from "../components/home/AuditLifecycle";
 import { QuickStartIntegration } from "../components/home/QuickStartIntegration";
@@ -16,14 +17,25 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+const homeJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "ProofLog Engine",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Cloud, Linux, macOS, Windows",
+  description:
+    "Zero-trust, open-source audit logging engine with SHA-256 cryptographic hash chaining for high-scale applications.",
+  url: "https://prooflog.dev",
+  author: {
+    "@type": "Organization",
+    name: "ProofLog",
+  },
+};
+
 export default function Home() {
   const { isDark } = useTheme();
   const [logs, setLogs] = useState<LiveLog[]>(INITIAL_LIVE_LOGS);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    document.title = "ProofLog — Immutable Zero-Trust Audit Logging";
-  }, []);
 
   // Simulate streaming live audit logs
   useEffect(() => {
@@ -33,39 +45,40 @@ export default function Home() {
         "apiKey.created",
         "tenant.config_updated",
         "billing.plan_upgraded",
-        "user.logout",
+        "user.password_reset",
+        "role.permissions_updated",
+        "webhook.endpoint_added",
       ];
       const randomAction = actions[Math.floor(Math.random() * actions.length)];
+      const randomSeq = Math.floor(1000 + Math.random() * 9000);
+      const randomHash = `sha256_${Math.random().toString(36).substring(2, 8)}...${Math.random().toString(36).substring(2, 5)}`;
+      const randomReq = `req_${Math.random().toString(36).substring(2, 7)}`;
 
-      setLogs((prev) => {
-        const nextSeq = (prev[0]?.sequence || 1042) + 1;
-        const newLog: LiveLog = {
-          sequence: nextSeq,
-          action: randomAction,
-          idempotencyKey: `req_${Math.random().toString(36).substring(2, 7)}`,
-          hash: `sha256_${Math.random().toString(36).substring(2, 10)}...${Math.random().toString(36).substring(2, 5)}`,
-          status: "Verified",
-          timestamp: "Just now",
-        };
-        return [newLog, ...prev.slice(0, 4)];
-      });
-    }, 4500);
+      const newLog: LiveLog = {
+        sequence: randomSeq,
+        action: randomAction,
+        idempotencyKey: randomReq,
+        hash: randomHash,
+        status: "Verified",
+        timestamp: "Just now",
+      };
+
+      setLogs((prev) => [newLog, ...prev.slice(0, 4)]);
+    }, 3500);
 
     return () => clearInterval(interval);
   }, []);
 
-  // GSAP Animations setup
   useGSAP(
     () => {
-      const revealElements = document.querySelectorAll(".gsap-reveal");
-      revealElements.forEach((el) => {
+      gsap.utils.toArray<HTMLElement>(".gsap-reveal").forEach((el) => {
         gsap.fromTo(
           el,
           { opacity: 0, y: 30 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.7,
+            duration: 0.8,
             ease: "power2.out",
             scrollTrigger: {
               trigger: el,
@@ -103,6 +116,12 @@ export default function Home() {
         isDark ? "bg-[#050505] text-zinc-100" : "bg-[#ffffff] text-zinc-900"
       }`}
     >
+      <SEO
+        title="ProofLog — Immutable Zero-Trust Audit Logging"
+        description="ProofLog is a zero-trust, open-source audit logging engine designed for high-concurrency cloud applications with SHA-256 cryptographic hash chaining."
+        canonicalPath="/"
+        jsonLd={homeJsonLd}
+      />
       {/* Vintage Retro Grid Pattern with Radial Vignette */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Vignette Masked Grid */}

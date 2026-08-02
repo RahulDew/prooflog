@@ -1,22 +1,33 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Lock, Shield, ArrowRight, CheckCircle, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { CodeBlock } from "../components/CodeBlock";
 import { VERIFICATION_CONTENT } from "../constants/verification.constants";
 import { Button } from "../components/ui/Button";
+import { SEO } from "../components/SEO";
 
 export interface VerificationProps {
   className?: string;
 }
 
-export default function Verification() {
-  useEffect(() => {
-    document.title = "Zero-Trust Chain Verification — ProofLog Engine";
-  }, []);
+const verificationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Zero-Trust Hash Chain Verification",
+  description:
+    "Mathematical and cryptographic proof verification engine for SHA-256 audit log chains.",
+  url: "https://prooflog.dev/verification",
+};
 
+export default function Verification() {
   return (
     <div className="pt-24 min-h-screen relative pb-28 transition-colors bg-[#ffffff] text-zinc-900 dark:bg-[#050505] dark:text-zinc-100">
+      <SEO
+        title="Zero-Trust Chain Verification — ProofLog Engine"
+        description="Verify cryptographic SHA-256 hash chains, log immutability, and tamper-evident guarantees mathematically in real time."
+        canonicalPath="/verification"
+        jsonLd={verificationJsonLd}
+      />
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.04)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(circle_at_50%_35%,black_30%,rgba(0,0,0,0.4)_65%,transparent_90%)]" />
