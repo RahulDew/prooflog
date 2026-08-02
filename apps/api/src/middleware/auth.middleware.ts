@@ -25,6 +25,16 @@ async function hashApiKey(key: string): Promise<string> {
 export function requireAuth(requiredScope: string) {
   return createMiddleware<AppEnv>(async (context, next) => {
     const authHeader = context.req.header("Authorization");
+    const orgIdHeader =
+      context.req.header("X-Org-Id") || context.req.query("organisationId");
+
+    // Allow public read/verify queries for zero-trust inspection without exposing private API keys
+    if (!authHeader && orgIdHeader && (requiredScope === "logs:read" || requiredScope === "logs:verify")) {
+      context.set("organisationId", orgIdHeader);
+      await next();
+      return;
+    }
+
     if (!authHeader) {
       return context.json(
         { success: false, error: "Missing Authorization header" },

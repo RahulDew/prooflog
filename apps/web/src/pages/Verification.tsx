@@ -84,11 +84,62 @@ const verificationJsonLd = {
 
 export default function Verification() {
   const [selectedOrg, setSelectedOrg] = useState("org_acme_corp");
+  const [customLogs, setCustomLogs] = useState<ExplorerLogEntry[] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState<boolean | null>(true);
 
-  const activeLogs = SAMPLE_ORGS[selectedOrg] || SAMPLE_ORGS.org_acme_corp;
+  // Derive active logs: if custom org key exists in sample, use sample; if custom org searched, use custom logs (or empty array)
+  const isSamplePreset = selectedOrg in SAMPLE_ORGS;
+  const activeLogs = isSamplePreset
+    ? SAMPLE_ORGS[selectedOrg]
+    : customLogs ?? [];
 
-  function runVerification(_orgId: string) {
+  async function runVerification(orgId: string) {
+    const trimmed = orgId.trim();
+
+    if (!trimmed) {
+      setCustomLogs([]);
+      setVerificationStatus(null);
+      return;
+    }
+
+    if (trimmed in SAMPLE_ORGS) {
+      setCustomLogs(null);
+      setVerificationStatus(true);
+      return;
+    }
+
+    setIsLoading(true);
+    setVerificationStatus(null);
+
+    try {
+      // Perform real API gateway fetch for custom organization ID
+      const res = await fetch(
+        `https://api.prooflog.dev/v1/entries?organisationId=${encodeURIComponent(trimmed)}`,
+        { headers: { "X-Org-Id": trimmed } },
+      );
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data?.data)) {
+          setCustomLogs(json.data.data);
+          setVerificationStatus(true);
+        } else {
+          setCustomLogs([]);
+        }
+      } else {
+        setCustomLogs([]);
+      }
+    } catch (_err) {
+      setCustomLogs([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function handleSelectPreset(presetKey: string) {
+    setSelectedOrg(presetKey);
+    setCustomLogs(null);
     setVerificationStatus(true);
   }
   return (
@@ -377,7 +428,7 @@ export default function Verification() {
               <span>Sample Orgs:</span>
               <button
                 type="button"
-                onClick={() => setSelectedOrg("org_acme_corp")}
+                onClick={() => handleSelectPreset("org_acme_corp")}
                 className={`px-2.5 py-1 border text-[11px] rounded transition-colors ${
                   selectedOrg === "org_acme_corp"
                     ? "border-orange-500 text-orange-500 bg-orange-500/10 font-bold"
@@ -388,7 +439,7 @@ export default function Verification() {
               </button>
               <button
                 type="button"
-                onClick={() => setSelectedOrg("org_security_hub")}
+                onClick={() => handleSelectPreset("org_security_hub")}
                 className={`px-2.5 py-1 border text-[11px] rounded transition-colors ${
                   selectedOrg === "org_security_hub"
                     ? "border-orange-500 text-orange-500 bg-orange-500/10 font-bold"
@@ -401,7 +452,7 @@ export default function Verification() {
           </div>
 
           {/* Verification Status Banner */}
-          {verificationStatus && (
+          {verificationStatus && activeLogs.length > 0 && (
             <div className="mb-6 p-4 rounded border bg-emerald-500/10 border-emerald-500/30 text-emerald-400 text-xs font-mono flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
@@ -415,51 +466,89 @@ export default function Verification() {
             </div>
           )}
 
-          {/* Real-Time Event Block Chain Explorer */}
-          <div className="space-y-3 font-mono text-xs">
-            <h4 className="text-xs uppercase font-bold text-muted-adaptive tracking-wider mb-2">
-              Cryptographic Event Log Chain ({activeLogs.length} Blocks)
-            </h4>
+          {/* Loading State */}
+          {isLoading && (
+            <div className="p-8 text-center text-xs font-mono text-muted-adaptive">
+              <Clock className="w-5 h-5 animate-spin mx-auto mb-2 text-orange-500" />
+              Fetching audit log chain for "{selectedOrg}"...
+            </div>
+          )}
 
-            {activeLogs.map((log) => (
-              <div
-                key={log.hash}
-                className="p-4 border rounded border-zinc-200 dark:border-zinc-800/80 bg-zinc-50 dark:bg-zinc-950/60 space-y-2 hover:border-orange-500/40 transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-orange-500/10 border border-orange-500/30 text-orange-500 font-bold text-[10px] rounded">
-                      BLOCK #{log.sequence}
-                    </span>
-                    <span className="font-bold text-zinc-900 dark:text-zinc-100">
-                      {log.action}
-                    </span>
-                  </div>
-                  <span className="text-[11px] text-muted-adaptive">
-                    {new Date(log.createdAt).toLocaleString()}
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-4 text-[11px] text-muted-adaptive">
-                  <span>Actor: <strong className="text-zinc-700 dark:text-zinc-300">{log.actor}</strong></span>
-                  {log.target && (
-                    <span>Target: <strong className="text-zinc-700 dark:text-zinc-300">{log.target}</strong></span>
-                  )}
-                </div>
-
-                <div className="pt-2 border-t border-zinc-200 dark:border-zinc-900 grid grid-cols-1 md:grid-cols-2 gap-2 text-[10px] text-zinc-500">
-                  <div>
-                    <span className="text-orange-500 font-bold">SHA-256 Hash:</span>{" "}
-                    <span className="text-zinc-400 break-all">{log.hash}</span>
-                  </div>
-                  <div>
-                    <span className="text-blue-400 font-bold">Previous Hash:</span>{" "}
-                    <span className="text-zinc-400 break-all">{log.previousHash}</span>
-                  </div>
-                </div>
+          {/* Empty State when no logs exist for typed org */}
+          {!isLoading && activeLogs.length === 0 && (
+            <div className="p-8 border rounded border-dashed border-zinc-300 dark:border-zinc-800 text-center space-y-3 font-mono">
+              <Shield className="w-8 h-8 text-zinc-400 mx-auto" />
+              <div>
+                <h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
+                  No Audit Logs Found for "{selectedOrg}"
+                </h4>
+                <p className="text-xs text-muted-adaptive mt-1 max-w-md mx-auto">
+                  There are no stored audit logs for this Organization ID yet. Push event logs via the <code>@prooflog/node</code> SDK or API gateway to render them live here.
+                </p>
               </div>
-            ))}
-          </div>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedOrg("org_acme_corp");
+                    setCustomLogs(null);
+                    setVerificationStatus(true);
+                  }}
+                  className="text-xs text-orange-500 hover:underline font-bold"
+                >
+                  ← View sample demo organization (org_acme_corp)
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Real-Time Event Block Chain Explorer */}
+          {!isLoading && activeLogs.length > 0 && (
+            <div className="space-y-3 font-mono text-xs">
+              <h4 className="text-xs uppercase font-bold text-muted-adaptive tracking-wider mb-2">
+                Cryptographic Event Log Chain ({activeLogs.length} Blocks)
+              </h4>
+
+              {activeLogs.map((log) => (
+                <div
+                  key={log.hash}
+                  className="p-4 border rounded border-zinc-200 dark:border-zinc-800/80 bg-zinc-50 dark:bg-zinc-950/60 space-y-2 hover:border-orange-500/40 transition-colors"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 bg-orange-500/10 border border-orange-500/30 text-orange-500 font-bold text-[10px] rounded">
+                        BLOCK #{log.sequence}
+                      </span>
+                      <span className="font-bold text-zinc-900 dark:text-zinc-100">
+                        {log.action}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-muted-adaptive">
+                      {new Date(log.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4 text-[11px] text-muted-adaptive">
+                    <span>Actor: <strong className="text-zinc-700 dark:text-zinc-300">{log.actor}</strong></span>
+                    {log.target && (
+                      <span>Target: <strong className="text-zinc-700 dark:text-zinc-300">{log.target}</strong></span>
+                    )}
+                  </div>
+
+                  <div className="pt-2 border-t border-zinc-200 dark:border-zinc-900 grid grid-cols-1 md:grid-cols-2 gap-2 text-[10px] text-zinc-500">
+                    <div>
+                      <span className="text-orange-500 font-bold">SHA-256 Hash:</span>{" "}
+                      <span className="text-zinc-400 break-all">{log.hash}</span>
+                    </div>
+                    <div>
+                      <span className="text-blue-400 font-bold">Previous Hash:</span>{" "}
+                      <span className="text-zinc-400 break-all">{log.previousHash}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* SDK Verification Alternative Guide */}
