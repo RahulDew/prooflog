@@ -53,15 +53,12 @@ export function PackageManagerInstall() {
               type="button"
               onClick={() => setActiveManager(mgr)}
               className={cn(
-                "flex items-center gap-1.5 text-xs font-mono px-3.5 py-1.5 rounded-none border transition-colors duration-300 cursor-pointer",
+                "text-xs font-mono px-3.5 py-1.5 rounded-none border transition-colors duration-300 cursor-pointer",
                 isActive
                   ? "border-orange-500 bg-orange-500/10 text-orange-600 dark:text-orange-400 font-bold shadow-sm"
                   : "border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/50",
               )}
             >
-              {isActive && (
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-              )}
               {mgr}
             </button>
           );

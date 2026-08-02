@@ -188,9 +188,6 @@ export default function Docs() {
                                 : "border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 hover:border-zinc-300",
                           )}
                         >
-                          {isActive && (
-                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-orange-500 mr-2 mb-0.5" />
-                          )}
                           {link.name}
                         </button>
                       </li>

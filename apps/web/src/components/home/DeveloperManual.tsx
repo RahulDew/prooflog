@@ -48,9 +48,6 @@ export function DeveloperManual() {
                   />
                   <span>{tab.label}</span>
                 </div>
-                {isActive && (
-                  <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse shrink-0" />
-                )}
               </button>
             );
           })}
