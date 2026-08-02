@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { DrizzleConnection } from '../database/database.provider';
+import { DrizzleConnection } from '../database/database.provider';
 import { eq, desc, and } from 'drizzle-orm';
 import { auditLogs } from '@prooflog/db';
 import { computeHash, GENESIS_HASH } from '@prooflog/crypto';

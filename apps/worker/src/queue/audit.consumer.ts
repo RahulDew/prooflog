@@ -1,7 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import type { Job } from 'bullmq';
-import type { LedgerService } from '../ledger/ledger.service';
+import { LedgerService } from '../ledger/ledger.service';
 
 @Processor('audit-logs')
 @Injectable()
