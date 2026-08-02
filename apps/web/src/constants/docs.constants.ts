@@ -13,34 +13,21 @@ export const DOC_CATEGORIES: SidebarCategory[] = [
     ],
   },
   {
-    title: "Node.js SDK Reference",
+    title: "Core Architecture & Security",
     links: [
-      { name: "client.ingest()", id: "sdk-ingest" },
-      { name: "client.verifyChain()", id: "sdk-verify" },
-      { name: "client.getHistory()", id: "sdk-history" },
+      { name: "Cryptographic Hashing", id: "hashing-algorithms" },
+      { name: "Zero-Trust Verification", id: "sdk-verify" },
+      { name: "Idempotency & Retry Safety", id: "idempotency" },
     ],
   },
   {
-    title: "Idempotency & Security",
+    title: "API & Framework Reference",
     links: [
-      { name: "Idempotency Policies", id: "idempotency" },
-      { name: "Hashing Algorithms", id: "hashing-algorithms" },
+      { name: "SDK Ingestion & Querying", id: "sdk-ingest" },
+      { name: "Framework Integrations", id: "nestjs-integration" },
+      { name: "REST Endpoints", id: "rest-api" },
+      { name: "Performance & Queue Scale", id: "performance-benchmarks" },
     ],
-  },
-  {
-    title: "Framework Integration",
-    links: [
-      { name: "NestJS Module", id: "nestjs-integration" },
-      { name: "Express / Fastify", id: "express-middleware" },
-    ],
-  },
-  {
-    title: "REST API Reference",
-    links: [{ name: "HTTP Endpoints", id: "rest-api" }],
-  },
-  {
-    title: "Performance & Latency",
-    links: [{ name: "Queue & Benchmarks", id: "performance-benchmarks" }],
   },
 ];
 
@@ -92,8 +79,72 @@ await client.ingest('org_1234', {
     },
   },
   {
+    id: "hashing-algorithms",
+    category: "Core Architecture & Security",
+    title: "Cryptographic Hashing Algorithms",
+    description:
+      "ProofLog supports dynamic cryptographic hashing primitives. Choose the algorithm that satisfies your compliance mandate:",
+    table: {
+      headers: ["Algorithm", "Digest Size", "Performance", "Use Case"],
+      rows: [
+        [
+          "SHA-256",
+          "256 bits (32 bytes)",
+          "Fast (Default)",
+          "Standard audit logging",
+        ],
+        [
+          "SHA-384",
+          "384 bits (48 bytes)",
+          "High Security",
+          "HIPAA & SOC-2 compliance",
+        ],
+        [
+          "SHA-512",
+          "512 bits (64 bytes)",
+          "Maximum Security",
+          "Financial & Defense grade ledgers",
+        ],
+      ],
+    },
+  },
+  {
+    id: "sdk-verify",
+    category: "Core Architecture & Security",
+    title: "Zero-Trust Chain Verification",
+    description:
+      "Performs a complete zero-trust mathematical verification over historical tenant blocks. Recomputes every block hash sequentially from Genesis to present.",
+    codeBlock: `const verification = await client.verifyChain('org_1234');
+
+if (verification.valid) {
+  console.log(\`Chain intact! Total blocks verified: \${verification.totalEntries}\`);
+} else {
+  console.error(\`TAMPERING DETECTED at block #\${verification.tamperedAt}\`);
+  console.error(\`Expected: \${verification.expectedHash}, Got: \${verification.actualHash}\`);
+}`,
+    codeLanguage: "typescript",
+    callout: {
+      type: "important",
+      text: "Run client.verifyChain() periodically in background cron jobs to verify database compliance and generate automated audit attestations.",
+    },
+  },
+  {
+    id: "idempotency",
+    category: "Core Architecture & Security",
+    title: "Idempotency & Retry Safety",
+    description:
+      "Under high-concurrency network failures, API clients may retry HTTP requests. Passing an idempotencyKey ensures duplicate requests return the existing block hash without creating duplicate ledger records.",
+    codeBlock: `// Passing a unique UUID or request ID as idempotencyKey
+await client.ingest('org_1234', {
+  action: 'org.member_removed',
+  actor: { id: 'usr_1' },
+  idempotencyKey: 'req_88f12-uuid-v4'
+});`,
+    codeLanguage: "typescript",
+  },
+  {
     id: "sdk-ingest",
-    category: "Node.js SDK Reference",
+    category: "API & Framework Reference",
     title: "client.ingest(orgId, payload)",
     description:
       "Appends an immutable audit block to the tenant ledger queue. Computes SHA-256 signatures incorporating the previous block's hash signature.",
@@ -141,89 +192,11 @@ await client.ingest('org_1234', {
     },
   },
   {
-    id: "sdk-verify",
-    category: "Node.js SDK Reference",
-    title: "client.verifyChain(orgId)",
-    description:
-      "Performs a complete zero-trust mathematical verification over historical tenant blocks. Recomputes every block hash sequentially from Genesis to present.",
-    codeBlock: `const verification = await client.verifyChain('org_1234');
-
-if (verification.valid) {
-  console.log(\`Chain intact! Total blocks verified: \${verification.totalEntries}\`);
-} else {
-  console.error(\`TAMPERING DETECTED at block #\${verification.tamperedAt}\`);
-  console.error(\`Expected: \${verification.expectedHash}, Got: \${verification.actualHash}\`);
-}`,
-    codeLanguage: "typescript",
-    callout: {
-      type: "important",
-      text: "Run client.verifyChain() periodically in background cron jobs to verify database compliance and generate automated audit attestations.",
-    },
-  },
-  {
-    id: "sdk-history",
-    category: "Node.js SDK Reference",
-    title: "client.getHistory(orgId, options)",
-    description:
-      "Fetches historical audit log entries with cursor pagination and sequence bounds filtering.",
-    codeBlock: `const history = await client.getHistory('org_1234', {
-  limit: 20,
-  order: 'desc'
-});
-
-console.log(history.data); // Array of verified AuditEntry objects`,
-    codeLanguage: "typescript",
-  },
-  {
-    id: "idempotency",
-    category: "Idempotency & Security",
-    title: "Idempotency & Retry Safety",
-    description:
-      "Under high-concurrency network failures, API clients may retry HTTP requests. Passing an idempotencyKey ensures duplicate requests return the existing block hash without creating duplicate ledger records.",
-    codeBlock: `// Passing a unique UUID or request ID as idempotencyKey
-await client.ingest('org_1234', {
-  action: 'org.member_removed',
-  actor: { id: 'usr_1' },
-  idempotencyKey: 'req_88f12-uuid-v4'
-});`,
-    codeLanguage: "typescript",
-  },
-  {
-    id: "hashing-algorithms",
-    category: "Idempotency & Security",
-    title: "Cryptographic Hashing Algorithms",
-    description:
-      "ProofLog supports dynamic cryptographic hashing primitives. Choose the algorithm that satisfies your compliance mandate:",
-    table: {
-      headers: ["Algorithm", "Digest Size", "Performance", "Use Case"],
-      rows: [
-        [
-          "SHA-256",
-          "256 bits (32 bytes)",
-          "Fast (Default)",
-          "Standard audit logging",
-        ],
-        [
-          "SHA-384",
-          "384 bits (48 bytes)",
-          "High Security",
-          "HIPAA & SOC-2 compliance",
-        ],
-        [
-          "SHA-512",
-          "512 bits (64 bytes)",
-          "Maximum Security",
-          "Financial & Defense grade ledgers",
-        ],
-      ],
-    },
-  },
-  {
     id: "nestjs-integration",
-    category: "Framework Integration",
-    title: "NestJS Module Integration",
+    category: "API & Framework Reference",
+    title: "NestJS & Express Framework Integration",
     description:
-      "Integrate ProofLog into NestJS applications using the dedicated `@prooflog/nestjs` provider module:",
+      "Integrate ProofLog into NestJS or Express applications using dedicated providers and middleware:",
     codeBlock: `@Module({
   imports: [
     ProofLogModule.forRoot({
@@ -235,23 +208,9 @@ export className AppModule {}`,
     codeLanguage: "typescript",
   },
   {
-    id: "express-middleware",
-    category: "Framework Integration",
-    title: "Express & Fastify Middleware",
-    description:
-      "Automatically capture incoming HTTP mutation requests (POST, PUT, DELETE) as audit entries:",
-    codeBlock: `import { createProofLogMiddleware } from '@prooflog/node';
-
-app.use(createProofLogMiddleware({
-  client,
-  orgIdResolver: (req) => req.user.orgId
-}));`,
-    codeLanguage: "typescript",
-  },
-  {
     id: "rest-api",
-    category: "REST API Reference",
-    title: "REST API Reference",
+    category: "API & Framework Reference",
+    title: "REST API Endpoints Reference",
     description:
       "Interact directly with the Fastify API server over HTTP REST endpoints:",
     table: {
@@ -280,7 +239,7 @@ app.use(createProofLogMiddleware({
   },
   {
     id: "performance-benchmarks",
-    category: "Performance & Latency",
+    category: "API & Framework Reference",
     title: "Ultra-Low Latency & High Scale Architecture",
     description:
       "ProofLog decouples event ingestion from database persistence. Client SDK calls execute asynchronously without blocking API responses, offloading event payloads directly to Redis BullMQ worker queues.",
