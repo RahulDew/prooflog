@@ -27,3 +27,12 @@ export const IngestRequestSchema = z.object({
 
 // Schema se automatically TypeScript type ban jaati hai
 export type IngestRequest = z.infer<typeof IngestRequestSchema>;
+
+export const BatchIngestRequestSchema = z.object({
+  events: z
+    .array(IngestRequestSchema)
+    .min(1, "Batch must contain at least 1 log entry")
+    .max(100, "Batch cannot exceed 100 log entries"),
+});
+
+export type BatchIngestRequest = z.infer<typeof BatchIngestRequestSchema>;

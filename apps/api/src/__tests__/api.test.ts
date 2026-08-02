@@ -421,4 +421,32 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
       expect(res.headers.get("X-RateLimit-Reset")).toBeDefined();
     });
   });
+
+  describe("ProofLog API - Batch Ingestion Endpoint", () => {
+    it("should accept batch log ingestion and return 202 status", async () => {
+      mockLimit.mockResolvedValueOnce([mockActiveKey]);
+      mockLimit.mockResolvedValueOnce([]);
+
+      const res = await app.request(
+        "/v1/ingest/batch",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer pl_live_goodkey",
+          },
+          body: JSON.stringify({
+            events: [createIngestBody(), createIngestBody()],
+          }),
+        },
+        mockEnv,
+      );
+
+      expect(res.status).toBe(202);
+      const json = (await res.json()) as any;
+      expect(json.success).toBe(true);
+      expect(json.data.totalReceived).toBe(2);
+      expect(json.data.enqueuedCount).toBe(2);
+    });
+  });
 });

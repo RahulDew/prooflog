@@ -1,14 +1,16 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import type { Job } from 'bullmq';
-import type { LedgerService } from '../ledger/ledger.service';
+import { LedgerService } from '../ledger/ledger.service';
 
 @Processor('audit-logs')
 @Injectable()
 export class AuditConsumer extends WorkerHost {
   private readonly logger = new Logger(AuditConsumer.name);
 
-  constructor(private readonly ledgerService: LedgerService) {
+  constructor(
+    @Inject(LedgerService) private readonly ledgerService: LedgerService,
+  ) {
     super();
   }
 

@@ -34,10 +34,10 @@ export class ProofLog {
     }
     this.apiKey = config.apiKey;
     this.baseUrl = config.baseUrl ?? "https://api.prooflog.dev";
-    
+
     // Default request timeout is 10 seconds
     this.timeout = config.timeout ?? 10000;
-    
+
     // Default transient retries is 3 attempts, starting with a 1-second delay
     this.retry = {
       maxRetries: config.retry?.maxRetries ?? 3,
@@ -53,7 +53,10 @@ export class ProofLog {
   /**
    * Safe request client that wraps native fetch with Timeout support.
    */
-  private async requestWithTimeout(url: string, init: RequestInit): Promise<any> {
+  private async requestWithTimeout(
+    url: string,
+    init: RequestInit,
+  ): Promise<any> {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeout);
 
@@ -71,22 +74,34 @@ export class ProofLog {
 
         switch (response.status) {
           case 401:
-            throw new AuthenticationError(`Authentication failed: ${errorMessage}`);
+            throw new AuthenticationError(
+              `Authentication failed: ${errorMessage}`,
+            );
           case 400:
-            throw new ValidationError(`Invalid request payload: ${errorMessage}`);
+            throw new ValidationError(
+              `Invalid request payload: ${errorMessage}`,
+            );
           case 429:
             throw new RateLimitError(`Rate limit exceeded: ${errorMessage}`);
           default:
             if (response.status >= 500) {
-              throw new ServerError(`Server error returned: ${errorMessage}`, response.status);
+              throw new ServerError(
+                `Server error returned: ${errorMessage}`,
+                response.status,
+              );
             }
-            throw new ProofLogError(`Request failed with status ${response.status}: ${errorMessage}`, response.status);
+            throw new ProofLogError(
+              `Request failed with status ${response.status}: ${errorMessage}`,
+              response.status,
+            );
         }
       }
 
       const json = (await response.json()) as any;
       if (!json.success || !json.data) {
-        throw new ProofLogError(json.error ?? "Malformed API response structure");
+        throw new ProofLogError(
+          json.error ?? "Malformed API response structure",
+        );
       }
 
       return json.data;
@@ -97,7 +112,9 @@ export class ProofLog {
         throw error;
       }
       if (error.name === "AbortError") {
-        throw new TimeoutError(`Request to ${url} exceeded timeout limit of ${this.timeout}ms`);
+        throw new TimeoutError(
+          `Request to ${url} exceeded timeout limit of ${this.timeout}ms`,
+        );
       }
       throw new NetworkError(`Network connection failure: ${error.message}`);
     }
@@ -116,7 +133,10 @@ export class ProofLog {
         lastError = error;
 
         // Do not retry client-side authentication or validation failures
-        if (error instanceof AuthenticationError || error instanceof ValidationError) {
+        if (
+          error instanceof AuthenticationError ||
+          error instanceof ValidationError
+        ) {
           throw error;
         }
 
@@ -136,7 +156,10 @@ export class ProofLog {
    * Pushes a new audit log event directly to the database or via the hosted API.
    * Handles concurrency retries internally when in database mode.
    */
-  async ingest(organisationId: string, options: IngestOptions): Promise<IngestResult> {
+  async ingest(
+    organisationId: string,
+    options: IngestOptions,
+  ): Promise<IngestResult> {
     if (this.db) {
       if (options.idempotencyKey) {
         const existing = await this.db
@@ -145,8 +168,8 @@ export class ProofLog {
           .where(
             and(
               eq(auditLogs.organisationId, organisationId),
-              eq(auditLogs.idempotencyKey, options.idempotencyKey)
-            )
+              eq(auditLogs.idempotencyKey, options.idempotencyKey),
+            ),
           )
           .limit(1);
 
@@ -162,7 +185,7 @@ export class ProofLog {
       }
 
       const maxRetries = 3;
-      
+
       for (let attempt = 0; attempt < maxRetries; attempt++) {
         try {
           const lastEntry = await this.db
@@ -172,7 +195,9 @@ export class ProofLog {
             .orderBy(desc(auditLogs.sequence))
             .limit(1);
 
-          const previousHash = lastEntry.length ? lastEntry[0].hash : GENESIS_HASH;
+          const previousHash = lastEntry.length
+            ? lastEntry[0].hash
+            : GENESIS_HASH;
           const sequence = lastEntry.length ? lastEntry[0].sequence + 1 : 1;
           const createdAt = new Date().toISOString();
           const chainVersion = options.chainVersion ?? 1;
@@ -216,7 +241,10 @@ export class ProofLog {
             hash,
           };
         } catch (error: any) {
-          const isUniqueViolation = error.code === '23505' || error.message?.includes('23505') || error.message?.includes('unique constraint');
+          const isUniqueViolation =
+            error.code === "23505" ||
+            error.message?.includes("23505") ||
+            error.message?.includes("unique constraint");
           if (isUniqueViolation) {
             if (options.idempotencyKey) {
               const existing = await this.db
@@ -225,8 +253,8 @@ export class ProofLog {
                 .where(
                   and(
                     eq(auditLogs.organisationId, organisationId),
-                    eq(auditLogs.idempotencyKey, options.idempotencyKey)
-                  )
+                    eq(auditLogs.idempotencyKey, options.idempotencyKey),
+                  ),
                 )
                 .limit(1);
               if (existing.length > 0) {
@@ -241,25 +269,64 @@ export class ProofLog {
             }
 
             if (attempt === maxRetries - 1) {
-              throw new Error("Failed to ingest audit log due to high concurrency. Please try again.");
+              throw new Error(
+                "Failed to ingest audit log due to high concurrency. Please try again.",
+              );
             }
             continue;
           }
           throw error;
         }
       }
-      
+
       throw new Error("Unreachable");
     } else {
       const result = await this.requestWithRetry(`${this.baseUrl}/v1/ingest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
           "X-Org-Id": organisationId,
         },
         body: JSON.stringify(options),
       });
+
+      return result;
+    }
+  }
+
+  /**
+   * Pushes a batch of audit log events (up to 100 entries).
+   */
+  async ingestBatch(
+    organisationId: string,
+    events: IngestOptions[],
+  ): Promise<any> {
+    if (this.db) {
+      const results = [];
+      for (const event of events) {
+        const res = await this.ingest(organisationId, event);
+        results.push(res);
+      }
+      return {
+        status: "completed",
+        totalReceived: events.length,
+        enqueuedCount: results.length,
+        duplicatesSkipped: 0,
+      };
+    } else {
+      const result = await this.requestWithRetry(
+        `${this.baseUrl}/v1/ingest/batch`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`,
+            "X-Org-Id": organisationId,
+          },
+          body: JSON.stringify({ events }),
+        },
+      );
 
       return result;
     }
@@ -283,8 +350,8 @@ export class ProofLog {
           .where(
             and(
               eq(auditLogs.organisationId, organisationId),
-              gt(auditLogs.sequence, currentSequence)
-            )
+              gt(auditLogs.sequence, currentSequence),
+            ),
           )
           .orderBy(asc(auditLogs.sequence))
           .limit(batchSize);
@@ -307,17 +374,20 @@ export class ProofLog {
             };
           }
 
-          const recomputed = computeHash({
-            organisationId: entry.organisationId,
-            sequence: entry.sequence,
-            action: entry.action,
-            actor: entry.actor,
-            target: entry.target,
-            metadata: entry.metadata,
-            createdAt: entry.createdAt.toISOString(),
-            chainVersion: entry.chainVersion,
-            hashAlgorithm: entry.hashAlgorithm,
-          }, entry.previousHash);
+          const recomputed = computeHash(
+            {
+              organisationId: entry.organisationId,
+              sequence: entry.sequence,
+              action: entry.action,
+              actor: entry.actor,
+              target: entry.target,
+              metadata: entry.metadata,
+              createdAt: entry.createdAt.toISOString(),
+              chainVersion: entry.chainVersion,
+              hashAlgorithm: entry.hashAlgorithm,
+            },
+            entry.previousHash,
+          );
 
           if (recomputed !== entry.hash) {
             return {
@@ -342,7 +412,7 @@ export class ProofLog {
       const result = await this.requestWithRetry(`${this.baseUrl}/v1/verify`, {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
           "X-Org-Id": organisationId,
         },
       });
@@ -356,20 +426,21 @@ export class ProofLog {
    */
   async getEntries(
     organisationId: string,
-    options: GetEntriesOptions = {}
+    options: GetEntriesOptions = {},
   ): Promise<GetEntriesResult> {
     if (this.db) {
       const limitCount = options.limit ?? 50;
       const orderDirection = options.order === "asc" ? asc : desc;
-      
+
       let cursorCondition = undefined;
       if (options.cursor !== undefined) {
-        cursorCondition = options.order === "asc" 
-          ? gt(auditLogs.sequence, options.cursor)
-          : lt(auditLogs.sequence, options.cursor);
+        cursorCondition =
+          options.order === "asc"
+            ? gt(auditLogs.sequence, options.cursor)
+            : lt(auditLogs.sequence, options.cursor);
       }
 
-      const conditions = cursorCondition 
+      const conditions = cursorCondition
         ? and(eq(auditLogs.organisationId, organisationId), cursorCondition)
         : eq(auditLogs.organisationId, organisationId);
 
@@ -414,7 +485,7 @@ export class ProofLog {
       const result = await this.requestWithRetry(url, {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
           "X-Org-Id": organisationId,
         },
       });

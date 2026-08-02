@@ -3,11 +3,19 @@ import { and, eq } from "drizzle-orm";
 import { auditLogs } from "@prooflog/db";
 import { Queue } from "bullmq";
 import type { AppEnv } from "../config/env";
-import type { IngestRequest } from "../schemas/ingest.schema";
+import type {
+  IngestRequest,
+  BatchIngestRequest,
+} from "../schemas/ingest.schema";
 import { getDb } from "../connections/db";
 import { HttpStatus } from "../config/http-status";
 
 type IngestContext = Context<AppEnv, "/", { out: { json: IngestRequest } }>;
+type BatchIngestContext = Context<
+  AppEnv,
+  "/",
+  { out: { json: BatchIngestRequest } }
+>;
 
 // Module-level cache to keep the Redis connection alive between requests
 let auditLogQueue: Queue | null = null;
@@ -104,4 +112,74 @@ export async function ingestHandler(context: IngestContext) {
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
+}
+
+export async function batchIngestHandler(context: BatchIngestContext) {
+  const db = getDb(context.env.DATABASE_URL);
+  const organisationId = context.var.organisationId;
+
+  if (!organisationId) {
+    return context.json(
+      { success: false, error: "Unauthorized: Missing organization ID" },
+      HttpStatus.UNAUTHORIZED,
+    );
+  }
+
+  const { events } = context.req.valid("json");
+  const queue = getQueue(context.env.REDIS_URL);
+
+  let enqueuedCount = 0;
+  let duplicatesSkipped = 0;
+
+  const queueJobs = [];
+
+  for (const body of events) {
+    if (body.idempotencyKey) {
+      const existing = await db
+        .select()
+        .from(auditLogs)
+        .where(
+          and(
+            eq(auditLogs.organisationId, organisationId),
+            eq(auditLogs.idempotencyKey, body.idempotencyKey),
+          ),
+        )
+        .limit(1);
+
+      if (existing.length > 0) {
+        duplicatesSkipped += 1;
+        continue;
+      }
+    }
+
+    queueJobs.push({
+      name: "ingest",
+      data: { organisationId, body },
+      opts: {
+        jobId: body.idempotencyKey ?? undefined,
+        removeOnComplete: true,
+        removeOnFail: false,
+      },
+    });
+    enqueuedCount += 1;
+  }
+
+  if (queueJobs.length > 0) {
+    await Promise.all(
+      queueJobs.map((job) => queue.add(job.name, job.data, job.opts)),
+    );
+  }
+
+  return context.json(
+    {
+      success: true,
+      data: {
+        status: "enqueued",
+        totalReceived: events.length,
+        enqueuedCount,
+        duplicatesSkipped,
+      },
+    },
+    HttpStatus.ACCEPTED,
+  );
 }

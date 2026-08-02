@@ -1,5 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
-import type { DrizzleConnection } from '../database/database.provider';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { DrizzleConnection } from '../database/database.provider';
 import { eq, desc, and } from 'drizzle-orm';
 import { auditLogs } from '@prooflog/db';
 import { computeHash, GENESIS_HASH } from '@prooflog/crypto';
@@ -8,7 +8,9 @@ import { computeHash, GENESIS_HASH } from '@prooflog/crypto';
 export class LedgerService {
   private readonly logger = new Logger(LedgerService.name);
 
-  constructor(private readonly db: DrizzleConnection) {}
+  constructor(
+    @Inject(DrizzleConnection) private readonly db: DrizzleConnection,
+  ) {}
 
   /**
    * Appends an audit log entry cryptographically.
