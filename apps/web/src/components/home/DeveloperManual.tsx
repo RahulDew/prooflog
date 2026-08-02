@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { REFERENCE_CONTENT } from "../../constants/home.constants";
-import { Button } from "../ui/Button";
+import { cn } from "../../lib/utils";
 
 export function DeveloperManual() {
   const [activeTab, setActiveTab] = useState<string>("auth");
@@ -24,20 +24,34 @@ export function DeveloperManual() {
           {REFERENCE_CONTENT.tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
+
             return (
-              <Button
+              <button
                 key={tab.id}
-                variant="pill"
+                type="button"
                 onClick={() => setActiveTab(tab.id)}
-                leftIcon={<Icon className="w-4 h-4 shrink-0" />}
-                className={`w-full p-4 justify-start ${
+                className={cn(
+                  "w-full p-4 rounded-[4px] border font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-between transition-all cursor-pointer text-left",
                   isActive
-                    ? "bg-blue-600 border-blue-600 text-white dark:bg-zinc-800 dark:border-zinc-700 dark:text-white font-bold"
-                    : ""
-                }`}
+                    ? "bg-orange-500/10 border-orange-500 text-orange-600 dark:text-orange-400 dark:bg-orange-500/10 dark:border-orange-500 shadow-sm"
+                    : "bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50 hover:border-zinc-300 dark:bg-[#0a0a0c] dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:border-zinc-700",
+                )}
               >
-                {tab.label}
-              </Button>
+                <div className="flex items-center gap-3">
+                  <Icon
+                    size={16}
+                    strokeWidth={2}
+                    className={cn(
+                      "shrink-0 transition-colors",
+                      isActive ? "text-orange-500" : "text-zinc-400",
+                    )}
+                  />
+                  <span>{tab.label}</span>
+                </div>
+                {isActive && (
+                  <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse shrink-0" />
+                )}
+              </button>
             );
           })}
         </div>
