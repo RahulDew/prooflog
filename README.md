@@ -19,13 +19,13 @@
 
 Managed with `pnpm` workspaces:
 
-| Package | Description | Version |
-|---------|-------------|---------|
-| [`@prooflog/node`](./packages/sdk) | Client SDK for log ingestion and cryptographic verification | `0.1.2` |
-| [`@prooflog/react`](./packages/react) | Component library for secure audit timeline displays | `0.1.0` |
-| [`@prooflog/crypto`](./packages/crypto) | SHA-256/384/512 cryptographic hashing operations | `0.0.1` |
-| [`@prooflog/db`](./packages/db) | Drizzle ORM schema mappings for PostgreSQL | `0.0.1` |
-| [`@prooflog/web`](./apps/web) | Documentation landing page and verification dashboard | `private` |
+| Package                                 | Description                                                 | Version   |
+| --------------------------------------- | ----------------------------------------------------------- | --------- |
+| [`@prooflog/node`](./packages/sdk)      | Client SDK for log ingestion and cryptographic verification | `0.1.2`   |
+| [`@prooflog/react`](./packages/react)   | Component library for secure audit timeline displays        | `0.1.0`   |
+| [`@prooflog/crypto`](./packages/crypto) | SHA-256/384/512 cryptographic hashing operations            | `0.0.1`   |
+| [`@prooflog/db`](./packages/db)         | Drizzle ORM schema mappings for PostgreSQL                  | `0.0.1`   |
+| [`@prooflog/web`](./apps/web)           | Documentation landing page and verification dashboard       | `private` |
 
 ## ⚙️ Key Primitives
 
@@ -48,18 +48,24 @@ pnpm add @prooflog/node @prooflog/react
 Initialize the SDK client and pass payload attributes along with idempotency and hardening parameters:
 
 ```typescript
-import { ProofLog } from '@prooflog/node';
+import { ProofLog } from "@prooflog/node";
 
 const client = new ProofLog({ apiKey: process.env.PROOFLOG_API_KEY });
 
-// Ingest a tamper-proof block
-await client.ingest('org_1234', {
-  action: 'billing.invoice_paid',
-  actor: { id: 'usr_99' },
-  idempotencyKey: 'invoice_payment_req_xyz',
+// Ingest a single tamper-proof block
+await client.ingest("org_1234", {
+  action: "billing.invoice_paid",
+  actor: { id: "usr_99" },
+  idempotencyKey: "invoice_payment_req_xyz",
   chainVersion: 2, // binds ledger version metadata
-  hashAlgorithm: 'sha512' // options: sha256 | sha384 | sha512
+  hashAlgorithm: "sha512", // options: sha256 | sha384 | sha512
 });
+
+// High-throughput batch ingestion (up to 100 entries per HTTP payload)
+await client.ingestBatch("org_1234", [
+  { action: "auth.mfa_enabled", actor: { id: "usr_1" } },
+  { action: "user.password_reset", actor: { id: "usr_2" } },
+]);
 ```
 
 ### 2. Cryptographic Chain Verification
@@ -67,11 +73,13 @@ await client.ingest('org_1234', {
 Periodically execute verification routines to mathematically guarantee ledger integrity:
 
 ```typescript
-const result = await client.verify('org_1234');
+const result = await client.verify("org_1234");
 
 if (!result.valid) {
   console.error(`Tampering detected at sequence: ${result.tamperedAt}`);
-  console.error(`Expected: ${result.expectedHash} | Stored: ${result.actualHash}`);
+  console.error(
+    `Expected: ${result.expectedHash} | Stored: ${result.actualHash}`,
+  );
 } else {
   console.log(`Success: All ${result.totalEntries} event blocks verified.`);
 }
@@ -82,16 +90,13 @@ if (!result.valid) {
 Import the styling sheet and embed the timeline widget:
 
 ```tsx
-import { ProofLogTimeline } from '@prooflog/react';
-import '@prooflog/react/dist/index.css';
+import { ProofLogTimeline } from "@prooflog/react";
+import "@prooflog/react/dist/index.css";
 
 function LogViewer({ logs }) {
   return (
     <div className="min-h-screen bg-zinc-950 p-8">
-      <ProofLogTimeline 
-        logs={logs} 
-        title="Audit Trail" 
-      />
+      <ProofLogTimeline logs={logs} title="Audit Trail" />
     </div>
   );
 }
@@ -99,24 +104,20 @@ function LogViewer({ logs }) {
 
 ---
 
-## 🏗️ System Flow
+## 🐳 Self-Hosted Deployment (Docker Compose)
 
-```mermaid
-sequenceDiagram
-    participant Client as Application client
-    participant API as Hono API Worker
-    participant DB as Neon PostgreSQL
-    
-    Client->>API: Ingest (Payload, IdempotencyKey)
-    API->>DB: Check idempotency cache
-    alt Duplicate Request
-        API-->>Client: Return cached success response
-    else New Request
-        API->>API: Compute Hash (Payload + Previous Hash)
-        API->>DB: Insert block entry & save idempotency cache
-        API-->>Client: Return 202 Accepted
-    end
+Run the full ProofLog backend stack locally or on your own VPS with a single command:
+
+```bash
+docker-compose up -d
 ```
+
+This spins up:
+
+- **PostgreSQL 16**: Database storage for audit log chains (`postgres://postgres:postgrespassword@localhost:5432/prooflog`).
+- **Redis 7**: Idempotency cache and BullMQ job broker.
+- **ProofLog API Gateway**: Ingestion & verification REST endpoints on port `3000`.
+- **ProofLog Worker**: NestJS background worker for SHA-256 hash chaining.
 
 ---
 
@@ -140,10 +141,10 @@ sequenceDiagram
 
 If you are showcasing **ProofLog** on your resume or portfolio, here are the key engineering highlights you can feature:
 
-* **Cryptographic Event Chain**: Implemented a tamper-evident audit logging engine using sequential hashing algorithms (SHA-256/384/512) to mathematically prove the integrity of client event ledgers.
-* **Asynchronous Ingestion Pipeline**: Designed a high-throughput, edge-compatible backend using Hono (Cloudflare Workers) that enqueues logs to a Redis-backed queue (BullMQ), processed asynchronously by a NestJS background worker to decouple HTTP response latency from database write times.
-* **Concurrency & Race Condition Handling**: Engineered retry mechanisms inside the background worker to handle sequence clashes during high concurrency, catching PostgreSQL unique constraint violations to recalculate and insert blocks dynamically.
-* **Robust Node Client SDK**: Developed a typed SDK supporting custom timeouts, automatic exponential backoff retry loops for transient failures, and custom mapped errors (e.g., `AuthenticationError`, `ValidationError`).
+- **Cryptographic Event Chain**: Implemented a tamper-evident audit logging engine using sequential hashing algorithms (SHA-256/384/512) to mathematically prove the integrity of client event ledgers.
+- **Asynchronous Ingestion Pipeline**: Designed a high-throughput, edge-compatible backend using Hono (Cloudflare Workers) that enqueues logs to a Redis-backed queue (BullMQ), processed asynchronously by a NestJS background worker to decouple HTTP response latency from database write times.
+- **Concurrency & Race Condition Handling**: Engineered retry mechanisms inside the background worker to handle sequence clashes during high concurrency, catching PostgreSQL unique constraint violations to recalculate and insert blocks dynamically.
+- **Robust Node Client SDK**: Developed a typed SDK supporting custom timeouts, automatic exponential backoff retry loops for transient failures, and custom mapped errors (e.g., `AuthenticationError`, `ValidationError`).
 
 ## License
 
