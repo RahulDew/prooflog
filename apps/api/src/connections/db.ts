@@ -1,7 +1,15 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 
+/**
+ * Returns a Drizzle ORM database client instance.
+ * Supports both self-hosted PostgreSQL (Docker, local, AWS RDS) and Neon serverless HTTP contexts.
+ */
 export function getDb(databaseUrl: string) {
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL environment variable is missing.");
+  }
+
   const sql = neon(databaseUrl);
   return drizzle(sql);
 }

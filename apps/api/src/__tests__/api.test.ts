@@ -50,13 +50,17 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
   });
 
   it("should reject request with 401 if Authorization header is missing", async () => {
-    const res = await app.request("/v1/ingest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await app.request(
+      "/v1/ingest",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(createIngestBody()),
       },
-      body: JSON.stringify(createIngestBody()),
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(401);
     const json = await res.json();
@@ -67,14 +71,18 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
   });
 
   it("should reject request with 401 if Authorization header is malformed", async () => {
-    const res = await app.request("/v1/ingest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Basic dummy-token",
+    const res = await app.request(
+      "/v1/ingest",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Basic dummy-token",
+        },
+        body: JSON.stringify(createIngestBody()),
       },
-      body: JSON.stringify(createIngestBody()),
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(401);
     const json = await res.json();
@@ -87,14 +95,18 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
   it("should reject request with 401 if API key is not found in database", async () => {
     mockLimit.mockResolvedValueOnce([]); // No key record matched
 
-    const res = await app.request("/v1/ingest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer pl_live_invalidkey",
+    const res = await app.request(
+      "/v1/ingest",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer pl_live_invalidkey",
+        },
+        body: JSON.stringify(createIngestBody()),
       },
-      body: JSON.stringify(createIngestBody()),
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(401);
     const json = await res.json();
@@ -105,18 +117,20 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
   });
 
   it("should reject request with 401 if API key is revoked", async () => {
-    mockLimit.mockResolvedValueOnce([
-      { ...mockActiveKey, status: "revoked" },
-    ]);
+    mockLimit.mockResolvedValueOnce([{ ...mockActiveKey, status: "revoked" }]);
 
-    const res = await app.request("/v1/ingest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer pl_live_revokedkey",
+    const res = await app.request(
+      "/v1/ingest",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer pl_live_revokedkey",
+        },
+        body: JSON.stringify(createIngestBody()),
       },
-      body: JSON.stringify(createIngestBody()),
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(401);
     const json = await res.json();
@@ -134,14 +148,18 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
       },
     ]);
 
-    const res = await app.request("/v1/ingest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer pl_live_expiredkey",
+    const res = await app.request(
+      "/v1/ingest",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer pl_live_expiredkey",
+        },
+        body: JSON.stringify(createIngestBody()),
       },
-      body: JSON.stringify(createIngestBody()),
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(401);
     const json = await res.json();
@@ -156,14 +174,18 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
       { ...mockActiveKey, scopes: ["logs:read"] }, // lacks logs:write
     ]);
 
-    const res = await app.request("/v1/ingest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer pl_live_wrongscope",
+    const res = await app.request(
+      "/v1/ingest",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer pl_live_wrongscope",
+        },
+        body: JSON.stringify(createIngestBody()),
       },
-      body: JSON.stringify(createIngestBody()),
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(403);
     const json = await res.json();
@@ -177,14 +199,18 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     // mock api keys fetch
     mockLimit.mockResolvedValueOnce([mockActiveKey]);
 
-    const res = await app.request("/v1/ingest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer pl_live_goodkey",
+    const res = await app.request(
+      "/v1/ingest",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer pl_live_goodkey",
+        },
+        body: JSON.stringify(createIngestBody()),
       },
-      body: JSON.stringify(createIngestBody()),
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(202);
     const json = (await res.json()) as any;
@@ -199,12 +225,16 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     // mock verify audit logs batch fetch (empty result means valid verify with 0 logs)
     mockLimit.mockResolvedValueOnce([]);
 
-    const res = await app.request("/v1/verify", {
-      method: "GET",
-      headers: {
-        "Authorization": "Bearer pl_live_goodkey",
+    const res = await app.request(
+      "/v1/verify",
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer pl_live_goodkey",
+        },
       },
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(200);
     const json = (await res.json()) as any;
@@ -216,17 +246,21 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     mockLimit.mockResolvedValueOnce([mockActiveKey]);
     mockLimit.mockResolvedValueOnce([]);
 
-    const res = await app.request("/v1/ingest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer pl_live_goodkey",
+    const res = await app.request(
+      "/v1/ingest",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer pl_live_goodkey",
+        },
+        body: JSON.stringify({
+          ...createIngestBody(),
+          idempotencyKey: "idem_1",
+        }),
       },
-      body: JSON.stringify({
-        ...createIngestBody(),
-        idempotencyKey: "idem_1",
-      }),
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(202);
     const json = (await res.json()) as any;
@@ -244,17 +278,21 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
       },
     ]);
 
-    const res = await app.request("/v1/ingest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer pl_live_goodkey",
+    const res = await app.request(
+      "/v1/ingest",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer pl_live_goodkey",
+        },
+        body: JSON.stringify({
+          ...createIngestBody(),
+          idempotencyKey: "idem_1",
+        }),
       },
-      body: JSON.stringify({
-        ...createIngestBody(),
-        idempotencyKey: "idem_1",
-      }),
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(202);
     const json = (await res.json()) as any;
@@ -268,18 +306,22 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
   it("should support ingestion with custom hashAlgorithm and chainVersion", async () => {
     mockLimit.mockResolvedValueOnce([mockActiveKey]);
 
-    const res = await app.request("/v1/ingest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer pl_live_goodkey",
+    const res = await app.request(
+      "/v1/ingest",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer pl_live_goodkey",
+        },
+        body: JSON.stringify({
+          ...createIngestBody(),
+          chainVersion: 2,
+          hashAlgorithm: "sha512",
+        }),
       },
-      body: JSON.stringify({
-        ...createIngestBody(),
-        chainVersion: 2,
-        hashAlgorithm: "sha512",
-      }),
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(202);
     const json = (await res.json()) as any;
@@ -304,12 +346,16 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
       },
     ]);
 
-    const res = await app.request("/v1/verify", {
-      method: "GET",
-      headers: {
-        "Authorization": "Bearer pl_live_goodkey",
+    const res = await app.request(
+      "/v1/verify",
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer pl_live_goodkey",
+        },
       },
-    }, mockEnv);
+      mockEnv,
+    );
 
     expect(res.status).toBe(200);
     const json = (await res.json()) as any;
@@ -338,7 +384,11 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     it("should return 200 OK when database and Redis are operational", async () => {
       mockExecute.mockResolvedValueOnce({ rows: [[1]] });
 
-      const res = await app.request("/health", { method: "GET" }, healthMockEnv);
+      const res = await app.request(
+        "/health",
+        { method: "GET" },
+        healthMockEnv,
+      );
       expect(res.status).toBe(200);
       const json = (await res.json()) as any;
       expect(json.success).toBe(true);
@@ -349,13 +399,26 @@ describe("ProofLog API - Authentication Middleware & Routes", () => {
     it("should return 503 Service Unavailable when database probe fails", async () => {
       mockExecute.mockRejectedValueOnce(new Error("Connection reset"));
 
-      const res = await app.request("/health", { method: "GET" }, healthMockEnv);
+      const res = await app.request(
+        "/health",
+        { method: "GET" },
+        healthMockEnv,
+      );
       expect(res.status).toBe(503);
       const json = (await res.json()) as any;
       expect(json.success).toBe(false);
       expect(json.data.status).toBe("degraded");
       expect(json.data.details.database).toBe("down");
       expect(json.error).toContain("connection failed");
+    });
+  });
+
+  describe("ProofLog API - Rate Limiting Middleware", () => {
+    it("should inject rate limit headers (X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset)", async () => {
+      const res = await app.request("/", { method: "GET" }, mockEnv);
+      expect(res.headers.get("X-RateLimit-Limit")).toBe("100");
+      expect(res.headers.get("X-RateLimit-Remaining")).toBeDefined();
+      expect(res.headers.get("X-RateLimit-Reset")).toBeDefined();
     });
   });
 });
