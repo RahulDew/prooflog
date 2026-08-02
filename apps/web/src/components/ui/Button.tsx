@@ -1,7 +1,8 @@
 import type { ComponentPropsWithoutRef, ReactNode, ElementType } from "react";
 import { cn } from "../../lib/utils";
 
-export type ButtonVariant = "primary" | "secondary" | "pill" | "sm" | "icon" | "disabled";
+export type ButtonVariant =
+  "primary" | "secondary" | "pill" | "sm" | "icon" | "disabled";
 export type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 export type ButtonProps<T extends ElementType = "button"> = {
@@ -13,22 +14,26 @@ export type ButtonProps<T extends ElementType = "button"> = {
   rightIcon?: ReactNode;
   className?: string;
   children?: ReactNode;
-} & Omit<ComponentPropsWithoutRef<T>, "as" | "variant" | "size" | "leftIcon" | "rightIcon">;
+} & Omit<
+  ComponentPropsWithoutRef<T>,
+  "as" | "variant" | "size" | "leftIcon" | "rightIcon"
+>;
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: "btn-primary",
   secondary: "btn-secondary",
   pill: "px-3 py-1.5 rounded-[4px] border font-mono text-xs font-bold uppercase tracking-wider bg-zinc-100 border-zinc-300 text-zinc-700 hover:bg-zinc-200 dark:bg-[#0a0a0c] dark:border-zinc-800 dark:text-zinc-400 dark:hover:text-white dark:hover:border-zinc-700",
   sm: "h-10 px-4 rounded-[4px] border font-mono text-xs font-bold uppercase tracking-wider bg-white border-zinc-300 text-zinc-800 hover:border-zinc-400 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-500",
-  icon: "p-3.5 rounded-[4px] border flex items-center justify-center bg-white border-zinc-300 text-blue-600 hover:border-blue-600 dark:bg-[#0a0a0c] dark:border-zinc-800 dark:text-orange-500 dark:hover:border-orange-500",
-  disabled: "w-full py-3.5 px-6 rounded-[4px] font-mono font-bold text-xs uppercase tracking-wider cursor-not-allowed border flex items-center justify-center gap-2 bg-zinc-200 text-zinc-500 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-500 dark:border-zinc-700",
+  icon: "p-2 rounded-[4px] border flex items-center justify-center bg-white border-zinc-300 text-blue-600 hover:border-blue-600 dark:bg-[#0a0a0c] dark:border-zinc-800 dark:text-orange-500 dark:hover:border-orange-500",
+  disabled:
+    "w-full py-3.5 px-6 rounded-[4px] font-mono font-bold text-xs uppercase tracking-wider cursor-not-allowed border flex items-center justify-center gap-2 bg-zinc-200 text-zinc-500 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-500 dark:border-zinc-700",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
   sm: "h-9 px-3 text-xs",
   md: "h-12 px-5 text-xs",
   lg: "h-14 px-7 text-sm",
-  icon: "p-3.5",
+  icon: "p-2",
 };
 
 export function Button<T extends ElementType = "button">({
@@ -71,7 +76,7 @@ export function Button<T extends ElementType = "button">({
         variantStyles[variant],
         sizeClass,
         isButtonDisabled && "opacity-60 cursor-not-allowed pointer-events-none",
-        className
+        className,
       )}
       {...props}
     >

@@ -12,9 +12,9 @@ const containerVariants: Variants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.12,
-      delayChildren: 0.1
-    }
-  }
+      delayChildren: 0.1,
+    },
+  },
 };
 
 const itemVariants: Variants = {
@@ -22,8 +22,8 @@ const itemVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 24 }
-  }
+    transition: { type: "spring", stiffness: 300, damping: 24 },
+  },
 };
 
 export function HeroHeader() {
@@ -63,17 +63,23 @@ export function HeroHeader() {
           </span>
         </motion.h1>
 
-        <motion.p variants={itemVariants} className="text-base leading-relaxed max-w-xl text-muted-adaptive">
+        <motion.p
+          variants={itemVariants}
+          className="text-base leading-relaxed max-w-xl text-muted-adaptive"
+        >
           {HERO_CONTENT.description}
         </motion.p>
 
-        <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 pt-2">
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-wrap items-center gap-4 pt-2"
+        >
           <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
             <Button
               as={Link}
               to={HERO_CONTENT.primaryCtaLink}
               variant="primary"
-              rightIcon={<ArrowRight className="w-4 h-4" />}
+              rightIcon={<ArrowRight size={16} strokeWidth={2} />}
               className="dark-hover-shimmer"
             >
               {HERO_CONTENT.primaryCtaText}
@@ -84,8 +90,24 @@ export function HeroHeader() {
             <Button
               variant="secondary"
               onClick={handleCopy}
-              leftIcon={<Terminal className="w-4 h-4 text-orange-500" />}
-              rightIcon={copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-zinc-500" />}
+              leftIcon={
+                <Terminal
+                  size={16}
+                  strokeWidth={2}
+                  className="text-orange-500"
+                />
+              }
+              rightIcon={
+                copied ? (
+                  <Check
+                    size={16}
+                    strokeWidth={2}
+                    className="text-emerald-400"
+                  />
+                ) : (
+                  <Copy size={16} strokeWidth={2} className="text-zinc-500" />
+                )
+              }
               className="dark-hover-shimmer"
             >
               {HERO_CONTENT.installCommand}

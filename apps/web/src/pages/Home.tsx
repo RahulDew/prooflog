@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { Sun, Moon } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useTheme } from "../context/ThemeContext";
 import { INITIAL_LIVE_LOGS, type LiveLog } from "../constants/home.constants";
-import { Button } from "../components/ui/Button";
 
 import { HeroHeader } from "../components/home/HeroHeader";
 import { AuditLifecycle } from "../components/home/AuditLifecycle";
@@ -21,7 +19,7 @@ if (typeof window !== "undefined") {
 }
 
 export default function Home() {
-  const { isDark, toggleTheme } = useTheme();
+  const { isDark } = useTheme();
   const [logs, setLogs] = useState<LiveLog[]>(INITIAL_LIVE_LOGS);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -125,17 +123,6 @@ export default function Home() {
             isDark ? "bg-orange-600/30" : "bg-amber-400/20"
           }`}
         />
-      </div>
-
-      {/* Floating Theme Switcher Button - Sharp Square */}
-      <div className="fixed bottom-6 right-6 z-[150]">
-        <Button
-          variant="icon"
-          onClick={toggleTheme}
-          aria-label="Toggle Theme"
-        >
-          {isDark ? <Sun className="w-5 h-5 text-orange-500" /> : <Moon className="w-5 h-5 text-blue-600" />}
-        </Button>
       </div>
 
       {/* Main Page Content */}

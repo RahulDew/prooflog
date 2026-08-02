@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { NAVBAR_CONTENT } from "../constants/navbar.constants";
+import { cn } from "../lib/utils";
 import { Button } from "./ui/Button";
 
 export interface NavbarProps {
@@ -11,7 +12,7 @@ export interface NavbarProps {
 
 export function Navbar({ className = "" }: NavbarProps) {
   const location = useLocation();
-  const { isDark } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
   // Close mobile menu on route changes
@@ -23,11 +24,13 @@ export function Navbar({ className = "" }: NavbarProps) {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 border-b backdrop-blur-md ${
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-colors duration-300 border-b backdrop-blur-md",
         isDark
           ? "bg-[#050505]/90 border-zinc-800/80 text-zinc-100"
-          : "bg-white/90 border-zinc-200 text-zinc-900"
-      } ${className}`}
+          : "bg-white/90 border-zinc-200 text-zinc-900",
+        className,
+      )}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Brand Logo & Name */}
@@ -49,15 +52,16 @@ export function Navbar({ className = "" }: NavbarProps) {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-xs font-mono uppercase tracking-wider px-3 py-2 rounded-[4px] transition-colors ${
+                className={cn(
+                  "text-xs font-mono uppercase tracking-wider px-3 py-2 rounded-[4px] transition-colors",
                   isActive
                     ? isDark
                       ? "text-white bg-zinc-800 border border-zinc-700 font-bold"
                       : "text-blue-600 bg-blue-50 border border-blue-200 font-bold"
                     : isDark
-                    ? "text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent"
-                    : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 border border-transparent"
-                }`}
+                      ? "text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent"
+                      : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 border border-transparent",
+                )}
               >
                 {link.name}
               </Link>
@@ -67,16 +71,31 @@ export function Navbar({ className = "" }: NavbarProps) {
 
         {/* Right CTA Actions */}
         <div className="flex items-center gap-3 shrink-0">
+          {/* Theme Switcher Button */}
+          <Button
+            variant="icon"
+            onClick={toggleTheme}
+            aria-label="Toggle Theme"
+            className="w-9 h-9 flex items-center justify-center shrink-0"
+          >
+            {isDark ? (
+              <Sun size={20} strokeWidth={2} className="text-orange-500" />
+            ) : (
+              <Moon size={20} strokeWidth={2} className="text-blue-600" />
+            )}
+          </Button>
+
           {/* GitHub Button (Desktop) */}
           <a
             href={NAVBAR_CONTENT.githubUrl}
             target="_blank"
             rel="noreferrer"
-            className={`hidden sm:flex items-center gap-2 text-xs font-mono uppercase tracking-wider px-3 py-2 rounded-[4px] border transition-colors ${
+            className={cn(
+              "hidden sm:flex items-center gap-2 text-xs font-mono uppercase tracking-wider px-3 py-2 rounded-[4px] border transition-colors",
               isDark
                 ? "border-zinc-800 bg-zinc-900 hover:border-zinc-700 text-zinc-300"
-                : "border-zinc-300 bg-zinc-100 hover:border-zinc-400 text-zinc-800"
-            }`}
+                : "border-zinc-300 bg-zinc-100 hover:border-zinc-400 text-zinc-800",
+            )}
           >
             <svg
               width="14"
@@ -101,7 +120,11 @@ export function Navbar({ className = "" }: NavbarProps) {
             aria-label="Toggle navigation menu"
             className="md:hidden w-9 h-9 p-0"
           >
-            {isOpen ? <X className="w-4 h-4 text-orange-500" /> : <Menu className="w-4 h-4" />}
+            {isOpen ? (
+              <X size={16} strokeWidth={2} className="text-orange-500" />
+            ) : (
+              <Menu size={16} strokeWidth={2} />
+            )}
           </Button>
         </div>
       </div>
@@ -109,11 +132,12 @@ export function Navbar({ className = "" }: NavbarProps) {
       {/* Mobile Drawer Dropdown Menu */}
       {isOpen && (
         <div
-          className={`md:hidden border-b px-6 py-4 space-y-2 backdrop-blur-xl transition-all ${
+          className={cn(
+            "md:hidden border-b px-6 py-4 space-y-2 backdrop-blur-xl transition-all",
             isDark
               ? "bg-[#050505]/98 border-zinc-800 text-zinc-100"
-              : "bg-white/98 border-zinc-200 text-zinc-900"
-          }`}
+              : "bg-white/98 border-zinc-200 text-zinc-900",
+          )}
         >
           {navLinks.map((link) => {
             const isActive =
@@ -125,15 +149,16 @@ export function Navbar({ className = "" }: NavbarProps) {
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsOpen(false)}
-                className={`block text-xs font-mono uppercase tracking-wider px-4 py-3 rounded-[4px] border transition-colors ${
+                className={cn(
+                  "block text-xs font-mono uppercase tracking-wider px-4 py-3 rounded-[4px] border transition-colors",
                   isActive
                     ? isDark
                       ? "text-white bg-orange-500/10 border-orange-500/40 font-bold"
                       : "text-blue-600 bg-blue-50 border-blue-200 font-bold"
                     : isDark
-                    ? "text-zinc-400 hover:text-white hover:bg-zinc-900 border-transparent"
-                    : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 border-transparent"
-                }`}
+                      ? "text-zinc-400 hover:text-white hover:bg-zinc-900 border-transparent"
+                      : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 border-transparent",
+                )}
               >
                 <div className="flex items-center justify-between">
                   <span>{link.name}</span>
@@ -151,11 +176,12 @@ export function Navbar({ className = "" }: NavbarProps) {
               target="_blank"
               rel="noreferrer"
               onClick={() => setIsOpen(false)}
-              className={`flex items-center justify-center gap-2 text-xs font-mono uppercase tracking-wider w-full py-3 rounded-[4px] border transition-colors ${
+              className={cn(
+                "flex items-center justify-center gap-2 text-xs font-mono uppercase tracking-wider w-full py-3 rounded-[4px] border transition-colors",
                 isDark
                   ? "border-zinc-800 bg-zinc-900 hover:border-zinc-700 text-zinc-300"
-                  : "border-zinc-300 bg-zinc-100 hover:border-zinc-400 text-zinc-800"
-              }`}
+                  : "border-zinc-300 bg-zinc-100 hover:border-zinc-400 text-zinc-800",
+              )}
             >
               <svg
                 width="14"

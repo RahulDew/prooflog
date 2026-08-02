@@ -31,7 +31,7 @@ export default function Changelog() {
         {/* Header */}
         <div>
           <div className="badge-orange mb-4">
-            <Tag className="w-4 h-4" />
+            <Tag size={16} strokeWidth={2} />
             <span>{CHANGELOG_CONTENT.badge}</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">
@@ -44,16 +44,22 @@ export default function Changelog() {
 
         {/* Filter Pills */}
         <div className="flex items-center gap-2">
-          {(["all", "patch", "minor", "major"] as FilterType[]).map((filter) => (
-            <Button
-              key={filter}
-              variant="pill"
-              onClick={() => setActiveFilter(filter)}
-              className={activeFilter === filter ? "bg-orange-600 text-white border-orange-600" : ""}
-            >
-              {filter}
-            </Button>
-          ))}
+          {(["all", "patch", "minor", "major"] as FilterType[]).map(
+            (filter) => (
+              <Button
+                key={filter}
+                variant="pill"
+                onClick={() => setActiveFilter(filter)}
+                className={
+                  activeFilter === filter
+                    ? "bg-orange-600 text-white border-orange-600"
+                    : ""
+                }
+              >
+                {filter}
+              </Button>
+            ),
+          )}
         </div>
 
         {/* Vertical Progress Timeline Layout */}
@@ -112,8 +118,15 @@ export default function Changelog() {
                   <div className="space-y-1.5 pt-2 border-t border-zinc-200 dark:border-zinc-800/50">
                     <ul className="space-y-1.5 font-mono text-[11px]">
                       {release.changes.map((change, j) => (
-                        <li key={j} className="flex items-start gap-2 text-subtle-adaptive">
-                          <GitCommit className="w-3.5 h-3.5 text-orange-500 mt-0.5 shrink-0" />
+                        <li
+                          key={j}
+                          className="flex items-start gap-2 text-subtle-adaptive"
+                        >
+                          <GitCommit
+                            size={14}
+                            strokeWidth={2}
+                            className="text-orange-500 mt-0.5 shrink-0"
+                          />
                           <span>{change}</span>
                         </li>
                       ))}
@@ -146,7 +159,7 @@ export default function Changelog() {
               target="_blank"
               rel="noopener noreferrer"
               variant="primary"
-              rightIcon={<ExternalLink className="w-4 h-4" />}
+              rightIcon={<ExternalLink size={16} strokeWidth={2} />}
             >
               {CHANGELOG_CONTENT.primaryCtaText}
             </Button>

@@ -18,7 +18,7 @@ export function HeroCtaBanner() {
             as={Link}
             to={CTA_FOOTER_CONTENT.primaryCtaLink}
             variant="primary"
-            rightIcon={<ArrowRight className="w-4 h-4" />}
+            rightIcon={<ArrowRight size={16} strokeWidth={2} />}
           >
             {CTA_FOOTER_CONTENT.primaryCtaText}
           </Button>

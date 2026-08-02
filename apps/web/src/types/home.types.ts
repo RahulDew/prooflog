@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import type { LucideProps } from "lucide-react";
 
 export interface LiveLog {
   sequence: number;
@@ -13,13 +14,13 @@ export interface LifecycleCard {
   q: string;
   title: string;
   desc: string;
-  icon: ComponentType<{ className?: string }>;
+  icon: ComponentType<LucideProps>;
 }
 
 export interface ReferenceTab {
   id: string;
   label: string;
-  icon: ComponentType<{ className?: string }>;
+  icon: ComponentType<LucideProps>;
 }
 
 export interface MetricItem {

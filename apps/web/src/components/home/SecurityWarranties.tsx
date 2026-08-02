@@ -10,25 +10,41 @@ export function SecurityWarranties() {
             {QUOTE_CONTENT.quote}
           </blockquote>
           <div className="mt-4 font-mono text-xs">
-            <span className="font-bold text-orange-500">{QUOTE_CONTENT.author}</span>
+            <span className="font-bold text-orange-500">
+              {QUOTE_CONTENT.author}
+            </span>
             <span className="ml-2 text-muted-adaptive">
               — {QUOTE_CONTENT.role}, {QUOTE_CONTENT.company}
             </span>
           </div>
         </div>
         <div className="lg:col-span-5 card-surface text-left">
-          <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-orange-500 mb-3">Primary Validation Method</h4>
+          <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-orange-500 mb-3">
+            Primary Validation Method
+          </h4>
           <ul className="space-y-2 text-xs font-mono text-muted-adaptive">
             <li className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+              <Check
+                size={16}
+                strokeWidth={2}
+                className="text-emerald-500 shrink-0"
+              />
               <span>SHA-256/384/512 Hashing</span>
             </li>
             <li className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+              <Check
+                size={16}
+                strokeWidth={2}
+                className="text-emerald-500 shrink-0"
+              />
               <span>Sequential cryptographic chain linking</span>
             </li>
             <li className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+              <Check
+                size={16}
+                strokeWidth={2}
+                className="text-emerald-500 shrink-0"
+              />
               <span>Idempotency deduplication keys</span>
             </li>
           </ul>

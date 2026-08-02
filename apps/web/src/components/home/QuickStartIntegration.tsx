@@ -10,15 +10,24 @@ export function QuickStartIntegration() {
           <span className="section-tag-blue">
             {CODE_INTEGRATION_CONTENT.tag}
           </span>
-          <h2 className="text-3xl font-extrabold">{CODE_INTEGRATION_CONTENT.title}</h2>
+          <h2 className="text-3xl font-extrabold">
+            {CODE_INTEGRATION_CONTENT.title}
+          </h2>
           <p className="text-sm leading-relaxed text-muted-adaptive">
             {CODE_INTEGRATION_CONTENT.description}
           </p>
           <div className="space-y-3">
             {CODE_INTEGRATION_CONTENT.features.map((item, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm font-medium">
+              <div
+                key={i}
+                className="flex items-center gap-3 text-sm font-medium"
+              >
                 <div className="w-4 h-4 bg-emerald-500/10 border border-emerald-500/40 grid place-items-center shrink-0 rounded-[2px]">
-                  <Check className="w-3 h-3 text-emerald-400" />
+                  <Check
+                    size={12}
+                    strokeWidth={2}
+                    className="text-emerald-400"
+                  />
                 </div>
                 <span>{item}</span>
               </div>

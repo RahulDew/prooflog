@@ -1,6 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle } from "lucide-react";
-import { LIVE_FEED_CONTENT, type LiveLog } from "../../constants/home.constants";
+import {
+  LIVE_FEED_CONTENT,
+  type LiveLog,
+} from "../../constants/home.constants";
 
 export interface LiveIngestionStreamProps {
   logs: LiveLog[];
@@ -11,9 +14,7 @@ export function LiveIngestionStream({ logs }: LiveIngestionStreamProps) {
     <section className="py-20 gsap-reveal">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
-          <span className="section-tag-blue">
-            {LIVE_FEED_CONTENT.tag}
-          </span>
+          <span className="section-tag-blue">{LIVE_FEED_CONTENT.tag}</span>
           <h2 className="text-3xl font-extrabold">{LIVE_FEED_CONTENT.title}</h2>
           <p className="text-sm mt-1 max-w-xl text-muted-adaptive">
             {LIVE_FEED_CONTENT.description}
@@ -30,11 +31,21 @@ export function LiveIngestionStream({ logs }: LiveIngestionStreamProps) {
           <table className="w-full text-left text-xs font-mono table-fixed">
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:bg-black/40 dark:text-zinc-400">
-                <th className="py-3.5 px-4 font-semibold w-24">{LIVE_FEED_CONTENT.headers[0]}</th>
-                <th className="py-3.5 px-4 font-semibold w-48">{LIVE_FEED_CONTENT.headers[1]}</th>
-                <th className="py-3.5 px-4 font-semibold w-36">{LIVE_FEED_CONTENT.headers[2]}</th>
-                <th className="py-3.5 px-4 font-semibold w-48">{LIVE_FEED_CONTENT.headers[3]}</th>
-                <th className="py-3.5 px-4 font-semibold w-28">{LIVE_FEED_CONTENT.headers[4]}</th>
+                <th className="py-3.5 px-4 font-semibold w-24">
+                  {LIVE_FEED_CONTENT.headers[0]}
+                </th>
+                <th className="py-3.5 px-4 font-semibold w-48">
+                  {LIVE_FEED_CONTENT.headers[1]}
+                </th>
+                <th className="py-3.5 px-4 font-semibold w-36">
+                  {LIVE_FEED_CONTENT.headers[2]}
+                </th>
+                <th className="py-3.5 px-4 font-semibold w-48">
+                  {LIVE_FEED_CONTENT.headers[3]}
+                </th>
+                <th className="py-3.5 px-4 font-semibold w-28">
+                  {LIVE_FEED_CONTENT.headers[4]}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -49,13 +60,21 @@ export function LiveIngestionStream({ logs }: LiveIngestionStreamProps) {
                     transition={{ duration: 0.3 }}
                     className="border-b border-zinc-100 hover:bg-zinc-50 dark:border-zinc-800/60 dark:hover:bg-white/[0.02] h-12 transition-colors"
                   >
-                    <td className="py-3.5 px-4 font-bold text-orange-500">#{log.sequence}</td>
-                    <td className="py-3.5 px-4 font-medium truncate">{log.action}</td>
-                    <td className="py-3.5 px-4 truncate text-muted-adaptive">{log.idempotencyKey}</td>
-                    <td className="py-3.5 px-4 truncate text-muted-adaptive">{log.hash}</td>
+                    <td className="py-3.5 px-4 font-bold text-orange-500">
+                      #{log.sequence}
+                    </td>
+                    <td className="py-3.5 px-4 font-medium truncate">
+                      {log.action}
+                    </td>
+                    <td className="py-3.5 px-4 truncate text-muted-adaptive">
+                      {log.idempotencyKey}
+                    </td>
+                    <td className="py-3.5 px-4 truncate text-muted-adaptive">
+                      {log.hash}
+                    </td>
                     <td className="py-3.5 px-4">
                       <span className="badge-emerald">
-                        <CheckCircle className="w-4 h-4" />
+                        <CheckCircle size={16} strokeWidth={2} />
                         {log.status}
                       </span>
                     </td>

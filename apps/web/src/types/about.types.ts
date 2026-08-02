@@ -1,9 +1,10 @@
 import type { ComponentType } from "react";
+import type { LucideProps } from "lucide-react";
 
 export interface AboutPillar {
   title: string;
   desc: string;
-  icon: ComponentType<{ className?: string }>;
+  icon: ComponentType<LucideProps>;
 }
 
 export interface SecurityGuarantee {

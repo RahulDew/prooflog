@@ -28,12 +28,16 @@ export function PackageManagerInstall() {
     }
   };
 
-  let copyIconElement: ReactNode = <Copy className="w-4 h-4" />;
+  let copyIconElement: ReactNode = <Copy size={16} strokeWidth={2} />;
   let copyTextElement: ReactNode = null;
 
   if (copied) {
-    copyIconElement = <Check className="w-4 h-4 text-emerald-500" />;
-    copyTextElement = <span className="text-emerald-500 font-bold">Copied</span>;
+    copyIconElement = (
+      <Check size={16} strokeWidth={2} className="text-emerald-500" />
+    );
+    copyTextElement = (
+      <span className="text-emerald-500 font-bold">Copied</span>
+    );
   }
 
   return (
@@ -45,7 +49,11 @@ export function PackageManagerInstall() {
             key={mgr}
             variant="pill"
             onClick={() => setActiveManager(mgr)}
-            className={activeManager === mgr ? "bg-orange-600 text-white border-orange-500 shadow-sm" : ""}
+            className={
+              activeManager === mgr
+                ? "bg-orange-600 text-white border-orange-500 shadow-sm"
+                : ""
+            }
           >
             {mgr}
           </Button>
@@ -55,8 +63,12 @@ export function PackageManagerInstall() {
       {/* Sleek Terminal Command Bar */}
       <div className="card-surface px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-orange-500 font-bold font-mono text-sm">&gt;_</span>
-          <span className="font-mono text-xs sm:text-sm font-medium">{command}</span>
+          <span className="text-orange-500 font-bold font-mono text-sm">
+            &gt;_
+          </span>
+          <span className="font-mono text-xs sm:text-sm font-medium">
+            {command}
+          </span>
         </div>
 
         <Button

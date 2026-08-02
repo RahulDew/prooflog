@@ -18,7 +18,7 @@ const SAMPLE_ACTIONS = [
   "org.role_updated",
   "data.export_requested",
   "api.token_rotated",
-  "user.password_reset"
+  "user.password_reset",
 ];
 
 export function HeroHashChainVisualizer() {
@@ -29,15 +29,15 @@ export function HeroHashChainVisualizer() {
       action: "billing.invoice_paid",
       prevHash: "sha256_000...00",
       hash: "sha256_e8f23...a9b",
-      status: "VERIFIED"
+      status: "VERIFIED",
     },
     {
       id: 1042,
       action: "auth.session_created",
       prevHash: "sha256_e8f23...a9b",
       hash: "sha256_d7e12...b8c",
-      status: "LINKED"
-    }
+      status: "LINKED",
+    },
   ]);
 
   const [isSimulating, setIsSimulating] = useState(false);
@@ -48,7 +48,8 @@ export function HeroHashChainVisualizer() {
 
     const lastBlock = blocks[blocks.length - 1];
     const nextId = lastBlock.id + 1;
-    const randomAction = SAMPLE_ACTIONS[Math.floor(Math.random() * SAMPLE_ACTIONS.length)];
+    const randomAction =
+      SAMPLE_ACTIONS[Math.floor(Math.random() * SAMPLE_ACTIONS.length)];
     const randomHex = Math.random().toString(36).substring(2, 7);
     const newHash = `sha256_${randomHex}...${Math.floor(Math.random() * 899 + 100)}`;
 
@@ -57,7 +58,7 @@ export function HeroHashChainVisualizer() {
       action: randomAction,
       prevHash: lastBlock.hash,
       hash: newHash,
-      status: "NEW"
+      status: "NEW",
     };
 
     setTimeout(() => {
@@ -103,7 +104,11 @@ export function HeroHashChainVisualizer() {
                 : "border-orange-500/50 bg-orange-50 text-orange-600 hover:bg-orange-100"
             }`}
           >
-            <Play className={`w-3 h-3 ${isSimulating ? "animate-spin" : ""}`} />
+            <Play
+              size={12}
+              strokeWidth={2}
+              className={isSimulating ? "animate-spin" : ""}
+            />
             <span>{isSimulating ? "COMPUTING..." : "INGEST BLOCK"}</span>
           </button>
         </div>
@@ -115,20 +120,32 @@ export function HeroHashChainVisualizer() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
           className={`p-3.5 border mb-3 relative ${
-            isDark ? "bg-black/60 border-zinc-800" : "bg-zinc-50 border-zinc-200"
+            isDark
+              ? "bg-black/60 border-zinc-800"
+              : "bg-zinc-50 border-zinc-200"
           }`}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="font-bold text-orange-500">BLOCK #{block1.id}</span>
-            <span className="text-[10px] text-emerald-500 font-bold">VERIFIED</span>
+            <span className="font-bold text-orange-500">
+              BLOCK #{block1.id}
+            </span>
+            <span className="text-[10px] text-emerald-500 font-bold">
+              VERIFIED
+            </span>
           </div>
           <div className="space-y-1 text-[11px]">
             <div className="flex justify-between">
-              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>PREV_HASH:</span>
-              <span className={isDark ? "text-zinc-400" : "text-zinc-600"}>{block1.prevHash}</span>
+              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>
+                PREV_HASH:
+              </span>
+              <span className={isDark ? "text-zinc-400" : "text-zinc-600"}>
+                {block1.prevHash}
+              </span>
             </div>
             <div className="flex justify-between">
-              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>ACTION:</span>
+              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>
+                ACTION:
+              </span>
               <span className="text-blue-500 font-bold">{block1.action}</span>
             </div>
             <div
@@ -136,7 +153,9 @@ export function HeroHashChainVisualizer() {
                 isDark ? "border-zinc-800/60" : "border-zinc-200"
               }`}
             >
-              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>COMPUTED_HASH:</span>
+              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>
+                COMPUTED_HASH:
+              </span>
               <span className="text-orange-500 font-bold font-mono bg-orange-500/10 px-1">
                 {block1.hash}
               </span>
@@ -187,27 +206,41 @@ export function HeroHashChainVisualizer() {
           }`}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="font-bold text-blue-500">BLOCK #{block2.id} ({block2.status})</span>
-            <span className="text-[10px] text-emerald-500 font-bold">LINKED</span>
+            <span className="font-bold text-blue-500">
+              BLOCK #{block2.id} ({block2.status})
+            </span>
+            <span className="text-[10px] text-emerald-500 font-bold">
+              LINKED
+            </span>
           </div>
           <div className="space-y-1 text-[11px]">
             <div className="flex justify-between">
-              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>PREV_HASH:</span>
+              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>
+                PREV_HASH:
+              </span>
               <span className="text-orange-500 font-bold font-mono bg-orange-500/10 px-1">
                 {block2.prevHash}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>ACTION:</span>
-              <span className="text-emerald-500 font-bold">{block2.action}</span>
+              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>
+                ACTION:
+              </span>
+              <span className="text-emerald-500 font-bold">
+                {block2.action}
+              </span>
             </div>
             <div
               className={`flex justify-between pt-1 border-t ${
                 isDark ? "border-zinc-800/60" : "border-zinc-200"
               }`}
             >
-              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>NEW_HASH:</span>
-              <span className="text-blue-500 font-bold font-mono">{block2.hash}</span>
+              <span className={isDark ? "text-zinc-500" : "text-zinc-400"}>
+                NEW_HASH:
+              </span>
+              <span className="text-blue-500 font-bold font-mono">
+                {block2.hash}
+              </span>
             </div>
           </div>
         </motion.div>
@@ -215,11 +248,13 @@ export function HeroHashChainVisualizer() {
         {/* Status Footer */}
         <div
           className={`mt-4 pt-3 border-t flex items-center justify-between text-[10px] ${
-            isDark ? "border-zinc-800/80 text-zinc-400" : "border-zinc-200 text-zinc-600"
+            isDark
+              ? "border-zinc-800/80 text-zinc-400"
+              : "border-zinc-200 text-zinc-600"
           }`}
         >
           <span className="flex items-center gap-1.5 text-emerald-500 font-bold">
-            <CheckCircle className="w-3.5 h-3.5" />
+            <CheckCircle size={14} strokeWidth={2} />
             CHAIN STATUS: 100% INTACT
           </span>
           <span>ZERO TAMPERING</span>
@@ -228,4 +263,3 @@ export function HeroHashChainVisualizer() {
     </div>
   );
 }
-

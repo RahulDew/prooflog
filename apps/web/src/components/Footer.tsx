@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { FOOTER_CONTENT } from "../constants/footer.constants";
+import { cn } from "../lib/utils";
 
 export interface FooterProps {
   className?: string;
@@ -11,21 +12,37 @@ export function Footer({ className = "" }: FooterProps) {
 
   return (
     <footer
-      className={`border-t transition-colors relative z-20 ${
+      className={cn(
+        "border-t transition-colors relative z-20",
         isDark
           ? "border-zinc-800 bg-[#050505] text-zinc-100"
-          : "border-zinc-200 bg-white text-zinc-900"
-      } ${className}`}
+          : "border-zinc-200 bg-white text-zinc-900",
+        className,
+      )}
     >
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-3 no-underline shrink-0">
-              <img src="/svg/logo.svg" alt="ProofLog Logo" className="w-8 h-8" />
-              <span className="font-bold text-base tracking-tight">{FOOTER_CONTENT.brandName}</span>
+            <Link
+              to="/"
+              className="flex items-center gap-3 no-underline shrink-0"
+            >
+              <img
+                src="/svg/logo.svg"
+                alt="ProofLog Logo"
+                className="w-8 h-8"
+              />
+              <span className="font-bold text-base tracking-tight">
+                {FOOTER_CONTENT.brandName}
+              </span>
             </Link>
-            <p className={`text-xs max-w-sm leading-relaxed ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
+            <p
+              className={cn(
+                "text-xs max-w-sm leading-relaxed",
+                isDark ? "text-zinc-400" : "text-zinc-600",
+              )}
+            >
               {FOOTER_CONTENT.brandDescription}
             </p>
           </div>
@@ -40,9 +57,12 @@ export function Footer({ className = "" }: FooterProps) {
                 <li key={idx}>
                   <Link
                     to={link.path}
-                    className={`hover:underline no-underline ${
-                      isDark ? "text-zinc-400 hover:text-white" : "text-zinc-600 hover:text-zinc-900"
-                    }`}
+                    className={cn(
+                      "hover:underline no-underline",
+                      isDark
+                        ? "text-zinc-400 hover:text-white"
+                        : "text-zinc-600 hover:text-zinc-900",
+                    )}
                   >
                     {link.name}
                   </Link>
@@ -64,18 +84,24 @@ export function Footer({ className = "" }: FooterProps) {
                       href={link.url}
                       target="_blank"
                       rel="noreferrer"
-                      className={`hover:underline no-underline ${
-                        isDark ? "text-zinc-400 hover:text-white" : "text-zinc-600 hover:text-zinc-900"
-                      }`}
+                      className={cn(
+                        "hover:underline no-underline",
+                        isDark
+                          ? "text-zinc-400 hover:text-white"
+                          : "text-zinc-600 hover:text-zinc-900",
+                      )}
                     >
                       {link.name}
                     </a>
                   ) : (
                     <Link
                       to={link.path || "/"}
-                      className={`hover:underline no-underline ${
-                        isDark ? "text-zinc-400 hover:text-white" : "text-zinc-600 hover:text-zinc-900"
-                      }`}
+                      className={cn(
+                        "hover:underline no-underline",
+                        isDark
+                          ? "text-zinc-400 hover:text-white"
+                          : "text-zinc-600 hover:text-zinc-900",
+                      )}
                     >
                       {link.name}
                     </Link>
@@ -87,9 +113,12 @@ export function Footer({ className = "" }: FooterProps) {
         </div>
 
         <div
-          className={`border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono ${
-            isDark ? "border-zinc-800 text-zinc-500" : "border-zinc-200 text-zinc-600"
-          }`}
+          className={cn(
+            "border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono",
+            isDark
+              ? "border-zinc-800 text-zinc-500"
+              : "border-zinc-200 text-zinc-600",
+          )}
         >
           <p>{FOOTER_CONTENT.copyright}</p>
 
