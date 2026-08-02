@@ -35,7 +35,13 @@ export function Navbar({ className = "" }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Brand Logo & Name */}
         <Link to="/" className="flex items-center gap-3 group">
-          <img src="/svg/logo.svg" alt="ProofLog Logo" className="w-8 h-8" />
+          <img
+            src="/svg/logo.svg"
+            alt="ProofLog Logo"
+            width={32}
+            height={32}
+            className="w-8 h-8"
+          />
           <span className="font-extrabold text-lg tracking-tight text-foreground group-hover:opacity-90">
             {NAVBAR_CONTENT.logoText}
           </span>

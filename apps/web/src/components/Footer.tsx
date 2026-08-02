@@ -31,6 +31,8 @@ export function Footer({ className = "" }: FooterProps) {
               <img
                 src="/svg/logo.svg"
                 alt="ProofLog Logo"
+                width={32}
+                height={32}
                 className="w-8 h-8"
               />
               <span className="font-bold text-base tracking-tight text-foreground">

@@ -21,6 +21,10 @@ export default function Home() {
   const [logs, setLogs] = useState<LiveLog[]>(INITIAL_LIVE_LOGS);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    document.title = "ProofLog — Immutable Zero-Trust Audit Logging";
+  }, []);
+
   // Simulate streaming live audit logs
   useEffect(() => {
     const interval = setInterval(() => {

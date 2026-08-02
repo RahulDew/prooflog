@@ -4,10 +4,64 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <title>ProofLog</title>
+    <meta
+      name="description"
+      content="ProofLog is a zero-trust, open-source audit logging engine designed for high-concurrency cloud applications with SHA-256 cryptographic hash chaining."
+    />
+    <meta
+      name="keywords"
+      content="audit log, zero trust, cryptography, SHA-256, hash chain, security, compliance, Node.js, NestJS"
+    />
+
+    <!-- Open Graph / Social Media Meta -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="ProofLog — Immutable Zero-Trust Audit Logging"
+    />
+    <meta
+      property="og:description"
+      content="Open-source cryptographic audit logging engine. Guarantee log integrity with SHA-256 hash chains."
+    />
+    <meta property="og:image" content="/favicon.svg" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="ProofLog — Immutable Zero-Trust Audit Logging"
+    />
+    <meta
+      name="twitter:description"
+      content="Open-source cryptographic audit logging engine. Guarantee log integrity with SHA-256 hash chains."
+    />
+
+    <!-- Zero-FOUC Inline Theme Script -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem("prooflog_theme_preference");
+          var hours = new Date().getHours();
+          var isDark =
+            saved === "dark" || (!saved && (hours >= 18 || hours < 6));
+          if (isDark) {
+            document.documentElement.classList.add("dark");
+            document.documentElement.classList.remove("light");
+          } else {
+            document.documentElement.classList.add("light");
+            document.documentElement.classList.remove("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>ProofLog — Immutable Zero-Trust Audit Logging</title>
   </head>
   <body>
     <div id="root"></div>

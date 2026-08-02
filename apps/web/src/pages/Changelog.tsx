@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GitCommit, Tag, ExternalLink } from "lucide-react";
 import {
   RELEASES,
@@ -15,6 +15,10 @@ export interface ChangelogProps {
 
 export default function Changelog() {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+
+  useEffect(() => {
+    document.title = "Changelog & Release Notes — ProofLog Engine";
+  }, []);
 
   const filteredReleases = RELEASES.filter((release) => {
     return activeFilter === "all" || release.type === activeFilter;

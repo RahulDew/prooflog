@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Lock, Shield, ArrowRight, CheckCircle, Clock } from "lucide-react";
 import { motion } from "framer-motion";
@@ -10,6 +11,10 @@ export interface VerificationProps {
 }
 
 export default function Verification() {
+  useEffect(() => {
+    document.title = "Zero-Trust Chain Verification — ProofLog Engine";
+  }, []);
+
   return (
     <div className="pt-24 min-h-screen relative pb-28 transition-colors bg-[#ffffff] text-zinc-900 dark:bg-[#050505] dark:text-zinc-100">
       {/* Background Grid Pattern */}
@@ -46,10 +51,24 @@ export default function Verification() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* SVG Diagram Canvas */}
             <div className="lg:col-span-7 flex justify-center">
-              <svg className="w-full max-w-md h-52" viewBox="0 0 400 200" fill="none">
+              <svg
+                className="w-full max-w-md h-52"
+                viewBox="0 0 400 200"
+                fill="none"
+              >
                 {/* Background Grid Lines */}
-                <path d="M20 100H380" className="stroke-zinc-300 dark:stroke-zinc-800" strokeWidth="1" strokeDasharray="4 4" />
-                <path d="M200 20V180" className="stroke-zinc-300 dark:stroke-zinc-800" strokeWidth="1" strokeDasharray="4 4" />
+                <path
+                  d="M20 100H380"
+                  className="stroke-zinc-300 dark:stroke-zinc-800"
+                  strokeWidth="1"
+                  strokeDasharray="4 4"
+                />
+                <path
+                  d="M200 20V180"
+                  className="stroke-zinc-300 dark:stroke-zinc-800"
+                  strokeWidth="1"
+                  strokeDasharray="4 4"
+                />
 
                 {/* Outer Pulse Shield Ring */}
                 <motion.circle
@@ -60,7 +79,11 @@ export default function Verification() {
                   strokeWidth="1.5"
                   strokeDasharray="6 6"
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                  transition={{
+                    duration: 25,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
                 />
 
                 {/* Inner Laser Ring */}
@@ -70,33 +93,124 @@ export default function Verification() {
                   r="55"
                   stroke="#3b82f6"
                   strokeWidth="2"
-                  animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.6, 1, 0.6] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  animate={{
+                    scale: [0.95, 1.05, 0.95],
+                    opacity: [0.6, 1, 0.6],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                 />
 
                 {/* Node 1 (Genesis Block) */}
                 <g transform="translate(60, 100)">
-                  <rect x="-25" y="-25" width="50" height="50" rx="4" className="fill-white dark:fill-zinc-900" stroke="#f97316" strokeWidth="2" />
-                  <text x="0" y="-35" textAnchor="middle" className="fill-zinc-600 dark:fill-zinc-400" fontSize="9" fontFamily="monospace" fontWeight="bold">BLOCK #1</text>
-                  <text x="0" y="4" textAnchor="middle" fill="#f97316" fontSize="10" fontFamily="monospace" fontWeight="bold">SHA-256</text>
+                  <rect
+                    x="-25"
+                    y="-25"
+                    width="50"
+                    height="50"
+                    rx="4"
+                    className="fill-white dark:fill-zinc-900"
+                    stroke="#f97316"
+                    strokeWidth="2"
+                  />
+                  <text
+                    x="0"
+                    y="-35"
+                    textAnchor="middle"
+                    className="fill-zinc-600 dark:fill-zinc-400"
+                    fontSize="9"
+                    fontFamily="monospace"
+                    fontWeight="bold"
+                  >
+                    BLOCK #1
+                  </text>
+                  <text
+                    x="0"
+                    y="4"
+                    textAnchor="middle"
+                    fill="#f97316"
+                    fontSize="10"
+                    fontFamily="monospace"
+                    fontWeight="bold"
+                  >
+                    SHA-256
+                  </text>
                 </g>
 
                 {/* Node 2 (Central Lock Node) */}
                 <g transform="translate(200, 100)">
-                  <rect x="-30" y="-30" width="60" height="60" rx="4" className="fill-white dark:fill-zinc-950" stroke="#3b82f6" strokeWidth="2.5" />
-                  <path d="M-10 -5V-12A10 10 0 0 1 10 -12V-5H12V15H-12V-5H-10ZM-5 -5H5V-12A5 5 0 0 0 -5 -12V-5Z" fill="#3b82f6" />
+                  <rect
+                    x="-30"
+                    y="-30"
+                    width="60"
+                    height="60"
+                    rx="4"
+                    className="fill-white dark:fill-zinc-950"
+                    stroke="#3b82f6"
+                    strokeWidth="2.5"
+                  />
+                  <path
+                    d="M-10 -5V-12A10 10 0 0 1 10 -12V-5H12V15H-12V-5H-10ZM-5 -5H5V-12A5 5 0 0 0 -5 -12V-5Z"
+                    fill="#3b82f6"
+                  />
                 </g>
 
                 {/* Node 3 (Next Block) */}
                 <g transform="translate(340, 100)">
-                  <rect x="-25" y="-25" width="50" height="50" rx="4" className="fill-white dark:fill-zinc-900" stroke="#10b981" strokeWidth="2" />
-                  <text x="0" y="-35" textAnchor="middle" className="fill-zinc-600 dark:fill-zinc-400" fontSize="9" fontFamily="monospace" fontWeight="bold">BLOCK #N</text>
-                  <text x="0" y="4" textAnchor="middle" fill="#10b981" fontSize="10" fontFamily="monospace" fontWeight="bold">VERIFIED</text>
+                  <rect
+                    x="-25"
+                    y="-25"
+                    width="50"
+                    height="50"
+                    rx="4"
+                    className="fill-white dark:fill-zinc-900"
+                    stroke="#10b981"
+                    strokeWidth="2"
+                  />
+                  <text
+                    x="0"
+                    y="-35"
+                    textAnchor="middle"
+                    className="fill-zinc-600 dark:fill-zinc-400"
+                    fontSize="9"
+                    fontFamily="monospace"
+                    fontWeight="bold"
+                  >
+                    BLOCK #N
+                  </text>
+                  <text
+                    x="0"
+                    y="4"
+                    textAnchor="middle"
+                    fill="#10b981"
+                    fontSize="10"
+                    fontFamily="monospace"
+                    fontWeight="bold"
+                  >
+                    VERIFIED
+                  </text>
                 </g>
 
                 {/* Laser Connecting Lines */}
-                <line x1="85" y1="100" x2="170" y2="100" stroke="#f97316" strokeWidth="2" />
-                <line x1="230" y1="100" x2="315" y2="100" stroke="#10b981" strokeWidth="2" />
+                <line
+                  x1="85"
+                  y1="100"
+                  x2="170"
+                  y2="100"
+                  stroke="#f97316"
+                  strokeWidth="2"
+                />
+                <line
+                  x1="230"
+                  y1="100"
+                  x2="315"
+                  y2="100"
+                  stroke="#10b981"
+                  strokeWidth="2"
+                />
 
                 {/* Laser Pulse Dot */}
                 <motion.circle
@@ -192,7 +306,11 @@ export default function Verification() {
             {VERIFICATION_CONTENT.sdkSection.description}
           </p>
 
-          <CodeBlock code={VERIFICATION_CONTENT.sdkSection.codeSnippet} language="typescript" title="sdk-verify.ts" />
+          <CodeBlock
+            code={VERIFICATION_CONTENT.sdkSection.codeSnippet}
+            language="typescript"
+            title="sdk-verify.ts"
+          />
 
           <div className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 flex items-center justify-between text-xs font-mono">
             <span>{VERIFICATION_CONTENT.sdkSection.linkPrompt}</span>

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -13,6 +14,10 @@ export interface AboutProps {
 }
 
 export default function About() {
+  useEffect(() => {
+    document.title = "About & Security Architecture — ProofLog Engine";
+  }, []);
+
   return (
     <div className="pt-24 min-h-screen relative pb-28 transition-colors bg-[#ffffff] text-zinc-900 dark:bg-[#050505] dark:text-zinc-100">
       {/* Background Grid Pattern */}

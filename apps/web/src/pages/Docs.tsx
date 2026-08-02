@@ -25,6 +25,10 @@ export default function Docs() {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    document.title = "Documentation — ProofLog Engine";
+  }, []);
+
+  useEffect(() => {
     const visibleSections = new Map<string, number>();
 
     observerRef.current = new IntersectionObserver(
