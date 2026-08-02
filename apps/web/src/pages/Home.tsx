@@ -9,8 +9,6 @@ import { HeroHeader } from "../components/home/HeroHeader";
 import { AuditLifecycle } from "../components/home/AuditLifecycle";
 import { QuickStartIntegration } from "../components/home/QuickStartIntegration";
 import { LiveIngestionStream } from "../components/home/LiveIngestionStream";
-import { TelemetryPreview } from "../components/home/TelemetryPreview";
-import { DeveloperManual } from "../components/home/DeveloperManual";
 import { SecurityWarranties } from "../components/home/SecurityWarranties";
 import { HeroCtaBanner } from "../components/home/HeroCtaBanner";
 
@@ -131,8 +129,6 @@ export default function Home() {
         <AuditLifecycle />
         <QuickStartIntegration />
         <LiveIngestionStream logs={logs} />
-        <TelemetryPreview />
-        <DeveloperManual />
         <SecurityWarranties />
         <HeroCtaBanner />
       </div>
