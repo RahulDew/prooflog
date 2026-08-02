@@ -1,26 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
-  <defs>
-    <linearGradient id="prooflog-orange-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F97316" />
-      <stop offset="100%" stop-color="#EA580C" />
-    </linearGradient>
-    <linearGradient id="prooflog-blue-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3B82F6" />
-      <stop offset="100%" stop-color="#1D4ED8" />
-    </linearGradient>
-  </defs>
-  <!-- Outer Cryptographic Shield -->
-  <path d="M 100,20 L 165,50 V 110 C 165,150 100,180 100,180 C 100,180 35,150 35,110 V 50 Z" fill="#0A0A0C" stroke="url(#prooflog-orange-grad)" stroke-width="6" stroke-linejoin="round" />
-  <!-- Inner Lock Shackle -->
-  <path d="M 80,85 V 68 C 80,56 120,56 120,68 V 85" fill="none" stroke="url(#prooflog-blue-grad)" stroke-width="7" stroke-linecap="round" />
-  <!-- Lock Body Block -->
-  <rect x="70" y="85" width="60" height="48" rx="4" fill="url(#prooflog-orange-grad)" />
-  <!-- Keyhole / Hash Core -->
-  <circle cx="100" cy="104" r="6" fill="#FFFFFF" />
-  <path d="M 97,108 L 103,108 L 105,121 L 95,121 Z" fill="#FFFFFF" />
-  <!-- Sequential Chain Link Dots -->
-  <circle cx="50" cy="110" r="4" fill="#F97316" />
-  <line x1="54" y1="110" x2="70" y2="110" stroke="#F97316" stroke-width="3" stroke-dasharray="3 3" />
-  <circle cx="150" cy="110" r="4" fill="#3B82F6" />
-  <line x1="130" y1="110" x2="146" y2="110" stroke="#3B82F6" stroke-width="3" stroke-dasharray="3 3" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 100" fill="none">
+  <!-- Translucent Tint Container with Sharp Corners (rx=4) & Matching Electric Blue Border -->
+  <rect x="5" y="5" width="100" height="90" rx="4" fill="rgba(37, 99, 235, 0.08)" stroke="#2563EB" stroke-width="1.5" />
+
+  <!-- JetBrains Mono Heavy P & L -->
+  <text x="22" y="68" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="52" font-weight="800" fill="#2563EB" letter-spacing="4">PL</text>
 </svg>
